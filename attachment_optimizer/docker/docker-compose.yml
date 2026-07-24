@@ -1,0 +1,79 @@
+services:
+  db:
+    image: postgres:15
+    container_name: fp18-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - fp18-db-data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  odoo:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: ao-odoo:18.0
+    container_name: ao18-odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "18018:8069"
+    volumes:
+      - ..:/mnt/extra-addons/attachment_optimizer
+      - fp18-odoo-data:/var/lib/odoo
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: odoo
+      DB_PASSWORD: odoo
+    command: odoo -d attachment_opt18 --db_host db --db_user odoo --db_password odoo --db_port 5432
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: fp18-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - fp18-minio-data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  createbuckets:
+    image: minio/mc:latest
+    container_name: fp18-mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      sleep 2 &&
+      mc alias set local http://minio:9000 minioadmin minioadmin &&
+      mc mb local/attachment-storage-test --ignore-existing &&
+      mc anonymous set public local/attachment-storage-test &&
+      echo 'Bucket attachment-storage-test created' &&
+      exit 0
+      "
+
+volumes:
+  fp18-db-data:
+  fp18-odoo-data:
+  fp18-minio-data:

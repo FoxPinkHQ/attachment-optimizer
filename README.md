@@ -1,0 +1,69 @@
+# Attachment Optimizer
+
+> Analyze Odoo attachment storage and migrate files to S3-compatible object storage for **Odoo 18.0** Community Edition.
+
+![Attachment Optimizer](attachment_optimizer/static/description/banner.png)
+
+**Version:** 18.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 18.0**
+
+## Features
+
+- **Storage Analysis** -- scan all binary attachments and identify migration candidates
+- **S3 Migration Pipeline** -- upload attachments to S3-compatible storage with content-addressed keys (SHA-256)
+- **Checksum Verification** -- verify S3 object integrity before finalizing the migration
+- **Transparent Read Flow** -- externalized attachments are served from S3 via standard `/web/content` without modifying `ir.attachment`
+- **No Filestore Modification** -- original filestore files are preserved; S3 is an additional source, not a replacement
+- **Migration Dashboard** -- monitor queue status, retry failed operations, track progress
+- **Audit Trail** -- immutable log of all migration actions (user, action, timestamp, result)
+
+## Screenshots
+
+![Dashboard](attachment_optimizer/static/description/screenshot_01_dashboard.png)
+![Storage List](attachment_optimizer/static/description/screenshot_02_storage_list.png)
+![Migration List](attachment_optimizer/static/description/screenshot_03_migration_list.png)
+![Audit Log](attachment_optimizer/static/description/screenshot_04_audit_log.png)
+![Configuration](attachment_optimizer/static/description/screenshot_05_config.png)
+
+## Installation
+
+**Option 1 - Odoo Apps Store:** Download the ZIP for Odoo 18.0 from the [Releases](https://github.com/FoxPinkHQ/attachment-optimizer/releases) page, unzip into your addons directory, restart Odoo, and install via Apps.
+
+**Option 2 - Git:**
+
+```bash
+git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+```
+
+After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> Update Apps List**, search for "Attachment Optimizer", and install.
+
+## Configuration
+
+1. Set the following system parameters (**Settings > Technical > System Parameters**):
+   - `attachment_storage.s3.bucket` -- S3 bucket name
+   - `attachment_storage.s3.region` -- AWS region (default: `us-east-1`)
+   - `attachment_storage.s3.access_key_id` -- S3 access key
+   - `attachment_storage.s3.secret_access_key` -- S3 secret key
+   - `attachment_storage.s3.endpoint_url` -- optional, for S3-compatible providers (MinIO, AWS S3, DigitalOcean Spaces)
+2. Grant **Storage Optimization Manager** role to users who will manage migrations
+
+## Dependencies
+
+- `base` (always)
+- `web` (views)
+
+## Compatibility
+
+| Odoo Version | Status |
+|---|---|
+| 18.0 | Supported |
+
+Each series has its own git branch and validated release ZIP. Install the build matching your Odoo version.
+
+## Support
+
+- **Issues:** [GitHub Issues](https://github.com/FoxPinkHQ/attachment-optimizer/issues)
+- **Email:** aduy000@gmail.com
+
+## License
+
+**LGPL-3** -- see [LICENSE](LICENSE).

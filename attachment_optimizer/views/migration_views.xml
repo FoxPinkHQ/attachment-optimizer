@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="foxpink_migration_operation_tree" model="ir.ui.view">
+        <field name="name">attachment.migration.operation.tree</field>
+        <field name="model">attachment.migration.operation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="attachment_id"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'queued'"
+                       decoration-info="state in ('uploading','uploaded')"
+                       decoration-success="state in ('verified','finalized')"
+                       decoration-danger="state == 'failed'"/>
+                <field name="mapping_id"/>
+                <field name="error_message"/>
+                <field name="queued_at"/>
+                <field name="started_at"/>
+                <field name="completed_at"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="foxpink_migration_operation_form" model="ir.ui.view">
+        <field name="name">attachment.migration.operation.form</field>
+        <field name="model">attachment.migration.operation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_upload" string="Upload to S3" type="object"
+                            class="btn-primary"
+                            invisible="state not in ('queued', 'failed')"/>
+                    <button name="action_retry" string="Retry" type="object"
+                            invisible="state != 'failed'" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="attachment_id"/>
+                            <field name="state" widget="badge"
+                                   decoration-warning="state == 'queued'"
+                                   decoration-info="state in ('uploading','uploaded')"
+                                   decoration-success="state in ('verified','finalized')"
+                                   decoration-danger="state == 'failed'"/>
+                            <field name="mapping_id"/>
+                        </group>
+                        <group>
+                            <field name="queued_at"/>
+                            <field name="started_at"/>
+                            <field name="completed_at"/>
+                        </group>
+                    </group>
+                    <group string="Error Information">
+                        <field name="error_message" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="foxpink_migration_operation_search" model="ir.ui.view">
+        <field name="name">attachment.migration.operation.search</field>
+        <field name="model">attachment.migration.operation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="attachment_id"/>
+                <field name="state"/>
+                <separator/>
+                <filter name="queued" string="Queued" domain="[('state', '=', 'queued')]"/>
+                <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
+                <filter name="finalized" string="Finalized" domain="[('state', '=', 'finalized')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="foxpink_migration_operation_action" model="ir.actions.act_window">
+        <field name="name">Migration Operations</field>
+        <field name="res_model">attachment.migration.operation</field>
+        <field name="view_mode">list,form</field>
+        <field name="help">
+            No migration operations yet. Click the Action button (top-left toolbar) then
+            "Create Migration Queue" to scan attachments and build the migration queue.
+        </field>
+    </record>
+
+    <record id="action_analyze_and_queue_server" model="ir.actions.server">
+        <field name="name">Create Migration Queue</field>
+        <field name="model_id" ref="model_attachment_migration_operation"/>
+        <field name="binding_model_id" ref="model_attachment_migration_operation"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">action = env['attachment.migration.operation'].action_analyze_and_queue()</field>
+    </record>
+
+    <record id="action_upload_server" model="ir.actions.server">
+        <field name="name">Upload Selected to S3</field>
+        <field name="model_id" ref="model_attachment_migration_operation"/>
+        <field name="binding_model_id" ref="model_attachment_migration_operation"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+records = env['attachment.migration.operation'].browse(env.context.get('active_ids', []))
+if records:
+    action = records.action_upload()
+else:
+    action = env['attachment.migration.operation'].action_upload()
+</field>
+    </record>
+
+    <menuitem id="foxpink_migration_operation_menu"
+              name="Migration Operations"
+              parent="storage_optimization_menu"
+              action="foxpink_migration_operation_action"
+              sequence="20"/>
+    </data>
+</odoo>

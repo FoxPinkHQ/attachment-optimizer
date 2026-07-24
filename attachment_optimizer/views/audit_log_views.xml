@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="foxpink_audit_log_tree" model="ir.ui.view">
+        <field name="name">attachment.audit.log.tree</field>
+        <field name="model">attachment.audit.log</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="create_date"/>
+                <field name="user_id"/>
+                <field name="action" widget="badge"/>
+                <field name="attachment_id"/>
+                <field name="result" widget="badge"
+                       decoration-success="result == 'success'"
+                       decoration-danger="result == 'failure'"/>
+                <field name="error_message"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="foxpink_audit_log_search" model="ir.ui.view">
+        <field name="name">attachment.audit.log.search</field>
+        <field name="model">attachment.audit.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="action"/>
+                <field name="attachment_id"/>
+                <field name="result"/>
+                <separator/>
+                <filter name="success" string="Success" domain="[('result', '=', 'success')]"/>
+                <filter name="failure" string="Failure" domain="[('result', '=', 'failure')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_action" string="Action" context="{'group_by': 'action'}"/>
+                    <filter name="group_by_result" string="Result" context="{'group_by': 'result'}"/>
+                    <filter name="group_by_user" string="User" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_by_date" string="Date" context="{'group_by': 'create_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="foxpink_audit_log_action" model="ir.actions.act_window">
+        <field name="name">Audit Logs</field>
+        <field name="res_model">attachment.audit.log</field>
+        <field name="view_mode">list</field>
+        <field name="help">
+            Audit trail of all storage migration actions.
+            Records are read-only and cannot be modified or deleted.
+        </field>
+    </record>
+
+    <menuitem id="foxpink_audit_log_menu"
+              name="Audit Logs"
+              parent="storage_optimization_menu"
+              action="foxpink_audit_log_action"
+              sequence="30"/>
+</odoo>

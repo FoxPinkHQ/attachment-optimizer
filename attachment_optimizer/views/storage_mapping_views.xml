@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="foxpink_storage_mapping_tree" model="ir.ui.view">
+        <field name="name">attachment.storage.mapping.tree</field>
+        <field name="model">attachment.storage.mapping</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="attachment_id"/>
+                <field name="s3_bucket"/>
+                <field name="s3_key"/>
+                <field name="s3_region"/>
+                <field name="status" widget="badge"/>
+                <field name="checksum_sha256"/>
+                <field name="verification_timestamp"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="foxpink_storage_mapping_form" model="ir.ui.view">
+        <field name="name">attachment.storage.mapping.form</field>
+        <field name="model">attachment.storage.mapping</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="attachment_id"/>
+                <field name="status" widget="badge"
+                       decoration-success="status in ('verified','finalized')"
+                       decoration-warning="status == 'pending'"
+                       decoration-info="status in ('uploading','uploaded')"
+                       decoration-danger="status in ('failed','verification_failed')"/>
+                            <field name="s3_bucket"/>
+                            <field name="s3_key"/>
+                            <field name="s3_region"/>
+                        </group>
+                        <group>
+                            <field name="checksum_sha256"/>
+                            <field name="verification_timestamp"/>
+                            <field name="error_message"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="foxpink_storage_mapping_search" model="ir.ui.view">
+        <field name="name">attachment.storage.mapping.search</field>
+        <field name="model">attachment.storage.mapping</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="attachment_id"/>
+                <field name="s3_bucket"/>
+                <field name="s3_key"/>
+                <field name="status"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="pending" string="Pending" domain="[('status', '=', 'pending')]"/>
+                <filter name="finalized" string="Finalized" domain="[('status', '=', 'finalized')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_by_bucket" string="Bucket" context="{'group_by': 's3_bucket'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="foxpink_storage_mapping_action" model="ir.actions.act_window">
+        <field name="name">Storage Mappings</field>
+        <field name="res_model">attachment.storage.mapping</field>
+        <field name="view_mode">list,form</field>
+        <field name="help">
+            Monitor and manage attachment storage mapping records.
+        </field>
+    </record>
+
+    <menuitem id="storage_optimization_menu"
+              name="Storage Optimization"
+              sequence="10"/>
+
+    <menuitem id="attachment_storage_mapping_menu"
+              name="Storage Mappings"
+              parent="storage_optimization_menu"
+              action="foxpink_storage_mapping_action"
+              sequence="10"/>
+</odoo>
