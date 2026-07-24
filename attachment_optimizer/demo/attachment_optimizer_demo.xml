@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="demo_attachment_01" model="ir.attachment">
+            <field name="name">invoice_2026_001.pdf</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/pdf</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'PDF invoice for order 1042 - FoxPink Vietnam')"/>
+        </record>
+
+        <record id="demo_attachment_02" model="ir.attachment">
+            <field name="name">invoice_2026_002.pdf</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/pdf</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'PDF invoice for order 1043 - FoxPink Vietnam')"/>
+        </record>
+
+        <record id="demo_attachment_03" model="ir.attachment">
+            <field name="name">contract_vip_partner_A.docx</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'DOCX contract for VIP partner A - FoxPink')"/>
+        </record>
+
+        <record id="demo_attachment_04" model="ir.attachment">
+            <field name="name">contract_vip_partner_B.docx</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'DOCX contract for VIP partner B - FoxPink')"/>
+        </record>
+
+        <record id="demo_attachment_05" model="ir.attachment">
+            <field name="name">product_catalog_2026.xlsx</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'XLSX product catalog 2026')"/>
+        </record>
+
+        <record id="demo_attachment_06" model="ir.attachment">
+            <field name="name">receipt_payment_0501.pdf</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/pdf</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'PDF receipt payment receipt May 2026')"/>
+        </record>
+
+        <record id="demo_attachment_07" model="ir.attachment">
+            <field name="name">shipping_label_1042.pdf</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/pdf</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'PDF shipping label 1042')"/>
+        </record>
+
+        <record id="demo_attachment_08" model="ir.attachment">
+            <field name="name">photo_product_42.jpg</field>
+            <field name="type">binary</field>
+            <field name="mimetype">image/jpeg</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'\xff\xd8\xff\xe0\x00\x10JFIF')"/>
+        </record>
+
+        <record id="demo_attachment_09" model="ir.attachment">
+            <field name="name">photo_product_87.jpg</field>
+            <field name="type">binary</field>
+            <field name="mimetype">image/jpeg</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'\xff\xd8\xff\xe0\x00\x10JFIF')"/>
+        </record>
+
+        <record id="demo_attachment_10" model="ir.attachment">
+            <field name="name">tax_declaration_q1.pdf</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/pdf</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'PDF tax declaration Q1 2026')"/>
+        </record>
+
+        <record id="demo_attachment_11" model="ir.attachment">
+            <field name="name">bank_statement_jan.pdf</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/pdf</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'PDF bank statement January 2026')"/>
+        </record>
+
+        <record id="demo_attachment_12" model="ir.attachment">
+            <field name="name">contract_template.docx</field>
+            <field name="type">binary</field>
+            <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="raw" eval="base64.b64encode(b'DOCX contract template')"/>
+        </record>
+
+        <!-- Storage Mappings with various statuses for screenshot -->
+        <record id="demo_mapping_01" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_01"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/invoice_2026_001_final.pdf</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">finalized</field>
+            <field name="checksum_sha256">a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2</field>
+        </record>
+
+        <record id="demo_mapping_02" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_02"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/invoice_2026_002_final.pdf</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">verified</field>
+            <field name="checksum_sha256">b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3</field>
+        </record>
+
+        <record id="demo_mapping_03" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_03"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/contract_vip_a_final.docx</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">finalized</field>
+            <field name="checksum_sha256">c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4</field>
+        </record>
+
+        <record id="demo_mapping_04" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_04"/>
+            <field name="s3_bucket">foxpink-staging</field>
+            <field name="s3_key">objects/staging/contract_vip_b.docx</field>
+            <field name="s3_region">eu-west-1</field>
+            <field name="status">uploaded</field>
+            <field name="checksum_sha256">d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5</field>
+        </record>
+
+        <record id="demo_mapping_05" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_05"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/catalog_2026.xlsx</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">pending</field>
+        </record>
+
+        <record id="demo_mapping_06" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_06"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/receipt_0501.pdf</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">uploading</field>
+        </record>
+
+        <record id="demo_mapping_07" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_07"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/label_1042.pdf</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">verification_failed</field>
+            <field name="error_message">Checksum mismatch after upload</field>
+        </record>
+
+        <record id="demo_mapping_08" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_08"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/photo_42.jpg</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">failed</field>
+            <field name="error_message">S3 access denied - invalid credentials</field>
+        </record>
+
+        <record id="demo_mapping_09" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_09"/>
+            <field name="s3_bucket">foxpink-staging</field>
+            <field name="s3_key">objects/staging/photo_87.jpg</field>
+            <field name="s3_region">ap-southeast-1</field>
+            <field name="status">pending</field>
+        </record>
+
+        <record id="demo_mapping_10" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_10"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/tax_q1_2026.pdf</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">finalized</field>
+            <field name="checksum_sha256">e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6</field>
+        </record>
+
+        <record id="demo_mapping_11" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_11"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/in/bank_jan.pdf</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">finalized</field>
+            <field name="checksum_sha256">f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1</field>
+        </record>
+
+        <record id="demo_mapping_12" model="attachment.storage.mapping">
+            <field name="attachment_id" ref="demo_attachment_12"/>
+            <field name="s3_bucket">foxpink-production</field>
+            <field name="s3_key">objects/templates/contract_template.docx</field>
+            <field name="s3_region">us-east-1</field>
+            <field name="status">uploaded</field>
+        </record>
+
+        <!-- Migration Operations in various states -->
+        <record id="demo_op_01" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_01"/>
+            <field name="mapping_id" ref="demo_mapping_01"/>
+            <field name="state">finalized</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(days=5))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(days=5, hours=1))"/>
+            <field name="completed_at" eval="(datetime.now() - relativedelta(days=4))"/>
+        </record>
+
+        <record id="demo_op_02" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_02"/>
+            <field name="mapping_id" ref="demo_mapping_02"/>
+            <field name="state">finalized</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(days=4))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(days=4, hours=2))"/>
+            <field name="completed_at" eval="(datetime.now() - relativedelta(days=3))"/>
+        </record>
+
+        <record id="demo_op_03" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_03"/>
+            <field name="mapping_id" ref="demo_mapping_03"/>
+            <field name="state">finalized</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(days=3))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(days=3, hours=1))"/>
+            <field name="completed_at" eval="(datetime.now() - relativedelta(days=2))"/>
+        </record>
+
+        <record id="demo_op_04" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_04"/>
+            <field name="mapping_id" ref="demo_mapping_04"/>
+            <field name="state">uploaded</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(days=2))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(days=2, hours=3))"/>
+        </record>
+
+        <record id="demo_op_05" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_05"/>
+            <field name="mapping_id" ref="demo_mapping_05"/>
+            <field name="state">queued</field>
+            <field name="queued_at" eval="datetime.now()"/>
+        </record>
+
+        <record id="demo_op_06" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_06"/>
+            <field name="mapping_id" ref="demo_mapping_06"/>
+            <field name="state">queued</field>
+            <field name="queued_at" eval="datetime.now()"/>
+        </record>
+
+        <record id="demo_op_07" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_07"/>
+            <field name="mapping_id" ref="demo_mapping_07"/>
+            <field name="state">failed</field>
+            <field name="error_message">Checksum verification failed after upload</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(days=1))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(days=1, hours=4))"/>
+            <field name="completed_at" eval="(datetime.now() - relativedelta(days=1, hours=3))"/>
+        </record>
+
+        <record id="demo_op_08" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_08"/>
+            <field name="mapping_id" ref="demo_mapping_08"/>
+            <field name="state">failed</field>
+            <field name="error_message">S3 access denied - check credentials: InvalidAccessKeyId</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(hours=12))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(hours=12, minutes=30))"/>
+            <field name="completed_at" eval="(datetime.now() - relativedelta(hours=12, minutes=5))"/>
+        </record>
+
+        <record id="demo_op_09" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_09"/>
+            <field name="state">draft</field>
+            <field name="queued_at" eval="datetime.now()"/>
+        </record>
+
+        <record id="demo_op_10" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_10"/>
+            <field name="mapping_id" ref="demo_mapping_10"/>
+            <field name="state">uploading</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(hours=6))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(hours=6, minutes=30))"/>
+        </record>
+
+        <record id="demo_op_11" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_11"/>
+            <field name="mapping_id" ref="demo_mapping_11"/>
+            <field name="state">finalized</field>
+            <field name="queued_at" eval="(datetime.now() - relativedelta(days=7))"/>
+            <field name="started_at" eval="(datetime.now() - relativedelta(days=7, hours=2))"/>
+            <field name="completed_at" eval="(datetime.now() - relativedelta(days=6))"/>
+        </record>
+
+        <record id="demo_op_12" model="attachment.migration.operation">
+            <field name="attachment_id" ref="demo_attachment_12"/>
+            <field name="mapping_id" ref="demo_mapping_12"/>
+            <field name="state">queued</field>
+            <field name="queued_at" eval="datetime.now()"/>
+        </record>
+
+        <!-- Audit Logs -->
+        <record id="demo_audit_01" model="attachment.audit.log">
+            <field name="action">migration_queue_created</field>
+            <field name="result">success</field>
+            <field name="attachment_name">12 operations queued</field>
+        </record>
+
+        <record id="demo_audit_02" model="attachment.audit.log">
+            <field name="action">analyze</field>
+            <field name="result">success</field>
+            <field name="attachment_name">12 candidates found</field>
+        </record>
+
+        <record id="demo_audit_03" model="attachment.audit.log">
+            <field name="action">queue</field>
+            <field name="result">success</field>
+            <field name="attachment_id" ref="demo_attachment_01"/>
+            <field name="attachment_name">invoice_2026_001.pdf</field>
+        </record>
+
+        <record id="demo_audit_04" model="attachment.audit.log">
+            <field name="action">upload</field>
+            <field name="result">success</field>
+            <field name="attachment_id" ref="demo_attachment_02"/>
+            <field name="attachment_name">invoice_2026_002.pdf</field>
+        </record>
+
+        <record id="demo_audit_05" model="attachment.audit.log">
+            <field name="action">finalize</field>
+            <field name="result">success</field>
+            <field name="attachment_id" ref="demo_attachment_03"/>
+            <field name="attachment_name">contract_vip_partner_A.docx</field>
+        </record>
+
+        <record id="demo_audit_06" model="attachment.audit.log">
+            <field name="action">verify</field>
+            <field name="result">failure</field>
+            <field name="attachment_id" ref="demo_attachment_07"/>
+            <field name="attachment_name">shipping_label_1042.pdf</field>
+            <field name="error_message">Checksum mismatch after upload</field>
+        </record>
+
+        <record id="demo_audit_07" model="attachment.audit.log">
+            <field name="action">upload</field>
+            <field name="result">failure</field>
+            <field name="attachment_id" ref="demo_attachment_08"/>
+            <field name="attachment_name">photo_product_42.jpg</field>
+            <field name="error_message">S3 access denied - invalid credentials</field>
+        </record>
+
+    </data>
+</odoo>

@@ -22,7 +22,9 @@
         "views/migration_views.xml",
         "views/audit_log_views.xml",
     ],
-    "demo": [],
+    "demo": [
+        "demo/attachment_optimizer_demo.xml",
+    ],
     "installable": True,
     "application": False,
     "auto_install": False,
