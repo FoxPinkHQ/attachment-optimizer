@@ -21,20 +21,18 @@
 | # | View | Description |
 |---|------|-------------|
 | 01 | **Storage Mappings List** | Danh sách mappings — điểm vào chính, lọc theo trạng thái |
-| 02 | **Storage Mappings Kanban** | Tổng quan trực quan theo trạng thái (Pending/Uploading/Finalized) |
-| 03 | **Storage Mapping Form** | Chi tiết mapping: attachment, S3 bucket/key, checksum, timestamp |
-| 04 | **Migration Operations List** | Theo dõi tiến trình migration: queued/uploading/finalized/failed |
-| 05 | **Migration Operation Form** | Chi tiết operation: state, mapping liên quan, error message |
-| 06 | **Audit Log List** | Lịch sử thay đổi: user, action, attachment, result, timestamp |
-| 07 | **Storage Mappings Search/Filter** | Tìm kiếm & lọc nâng cao (status, bucket, active) |
+| 02 | **Storage Mapping Form** | Chi tiết mapping: attachment, S3 bucket/key, checksum, timestamp |
+| 03 | **Migration Operations List** | Theo dõi tiến trình migration: queued/uploading/finalized/failed |
+| 04 | **Migration Operation Form** | Chi tiết operation: state, mapping liên quan, error message |
+| 05 | **Audit Log List** | Lịch sử thay đổi: user, action, attachment, result, timestamp |
+| 06 | **Storage Mappings Search/Filter** | Tìm kiếm & lọc nâng cao (status, bucket, active) |
 
 ![01 Storage Mappings List](attachment_optimizer/static/description/screenshot_01_storage_mapping_list.png)
-![02 Storage Mappings Kanban](attachment_optimizer/static/description/screenshot_02_storage_mapping_kanban.png)
-![03 Storage Mapping Form](attachment_optimizer/static/description/screenshot_03_storage_mapping_form.png)
-![04 Migration Operations List](attachment_optimizer/static/description/screenshot_04_migration_operation_list.png)
-![05 Migration Operation Form](attachment_optimizer/static/description/screenshot_05_migration_operation_form.png)
-![06 Audit Log List](attachment_optimizer/static/description/screenshot_06_audit_log_list.png)
-![07 Storage Mappings Search](attachment_optimizer/static/description/screenshot_07_storage_mapping_search.png)
+![02 Storage Mapping Form](attachment_optimizer/static/description/screenshot_02_storage_mapping_form.png)
+![03 Migration Operations List](attachment_optimizer/static/description/screenshot_03_migration_operation_list.png)
+![04 Migration Operation Form](attachment_optimizer/static/description/screenshot_04_migration_operation_form.png)
+![05 Audit Log List](attachment_optimizer/static/description/screenshot_05_audit_log_list.png)
+![06 Storage Mappings Search](attachment_optimizer/static/description/screenshot_06_storage_mapping_search.png)
 
 ## Installation
 
