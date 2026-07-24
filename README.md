@@ -4,7 +4,7 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/banner.png)
 
-**Version:** 18.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 18.0**
+**Version:** 18.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-18.0**
 
 ## Features
 
@@ -18,11 +18,13 @@
 
 ## Screenshots
 
-![Dashboard](attachment_optimizer/static/description/screenshot_01_dashboard.png)
-![Storage List](attachment_optimizer/static/description/screenshot_02_storage_list.png)
-![Migration List](attachment_optimizer/static/description/screenshot_03_migration_list.png)
-![Audit Log](attachment_optimizer/static/description/screenshot_04_audit_log.png)
-![Configuration](attachment_optimizer/static/description/screenshot_05_config.png)
+![Storage Mappings List](attachment_optimizer/static/description/screenshot_01_storage_mapping_list.png)
+![Migration Operations List](attachment_optimizer/static/description/screenshot_02_migration_operation_list.png)
+![Audit Log List](attachment_optimizer/static/description/screenshot_03_audit_log_list.png)
+![Storage Mapping Form](attachment_optimizer/static/description/screenshot_04_storage_mapping_form.png)
+![Migration Operation Form](attachment_optimizer/static/description/screenshot_05_migration_operation_form.png)
+![Storage Mappings Kanban](attachment_optimizer/static/description/screenshot_06_storage_mapping_kanban.png)
+![Storage Mappings Search](attachment_optimizer/static/description/screenshot_07_storage_mapping_search.png)
 
 ## Installation
 
@@ -56,6 +58,10 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 | Odoo Version | Status |
 |---|---|
 | 18.0 | Supported |
+| 17.0 | Supported |
+| 16.0 | Supported |
+| 15.0 | Supported |
+| 14.0 | Supported |
 
 Each series has its own git branch and validated release ZIP. Install the build matching your Odoo version.
 
