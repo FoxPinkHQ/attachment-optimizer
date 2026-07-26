@@ -37,6 +37,12 @@ class MigrationService:
         ]
         if res_model:
             domain.append(('res_model', '=', res_model))
+        # Exclude Odoo web assets (JS/CSS bundles) to avoid FK conflicts
+        domain += [
+            '|',
+            ('res_model', '!=', 'ir.ui.view'),
+            ('name', 'not like', '/web/assets/%'),
+        ]
         attachments = self.env['ir.attachment'].search(domain)
         mapped = self.env['attachment.storage.mapping'].search([
             ('attachment_id', 'in', attachments.ids),

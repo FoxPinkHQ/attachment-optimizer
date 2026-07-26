@@ -89,10 +89,11 @@ export class StorageDashboard extends Component {
                 "action_get_queue_impact",
                 []
             );
-            this.action.doAction({
+            await this.action.doAction({
                 type: "ir.actions.act_window",
                 name: "Confirm Migration Queue",
                 res_model: "attachment.migration.queue.confirm",
+                views: [[false, "form"]],
                 view_mode: "form",
                 target: "new",
                 context: {
@@ -102,6 +103,7 @@ export class StorageDashboard extends Component {
                     default_candidate_ids: [[6, 0, impact.candidate_ids]],
                 },
             });
+            await this._loadDashboard();
         } catch (err) {
             this.notification.add("Unable to check queue impact.", { type: "danger" });
         }
