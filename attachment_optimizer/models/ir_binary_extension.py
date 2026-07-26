@@ -28,6 +28,7 @@ class IrBinaryExtension(models.AbstractModel):
             mapping = self.env['attachment.storage.mapping'].sudo().search([
                 ('attachment_id', '=', record.id),
                 ('status', '=', 'finalized'),
+                ('company_id', '=', record.company_id.id),
             ], limit=1)
             if mapping:
                 bridge = S3Bridge(self.env)

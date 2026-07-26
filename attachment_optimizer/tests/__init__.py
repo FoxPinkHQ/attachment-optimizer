@@ -7,3 +7,4 @@ from . import test_dashboard
 from . import test_s3_bridge
 from . import test_integration
 from . import test_uninstall
+from . import test_read_flow_edge_cases

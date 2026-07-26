@@ -10,7 +10,7 @@ class TestReadFlow(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.test_bucket = 'foxpink-test-bucket'
+        cls.test_bucket = 'test-bucket'
         cls.test_data = b'read flow test content'
         cls.checksum = hashlib.sha256(cls.test_data).hexdigest()
         cls.s3_key = 'objects/%s/%s' % (cls.checksum[:2], cls.checksum)

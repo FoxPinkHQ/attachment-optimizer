@@ -1,0 +1,147 @@
+.o_dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.o_dashboard_empty {
+    text-align: center;
+    padding: 80px 24px;
+}
+
+.o_dashboard_empty_icon {
+    margin-bottom: 16px;
+}
+
+.o_dashboard_empty h3 {
+    margin-bottom: 12px;
+}
+
+.o_dashboard_empty p {
+    max-width: 480px;
+    margin: 0 auto 24px;
+}
+
+.o_dashboard_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.o_dashboard_header h2 {
+    margin: 0;
+}
+
+.o_dashboard_actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* KPI Cards */
+.o_kpi_row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.o_kpi_card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.o_kpi_value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 4px;
+}
+
+.o_kpi_label {
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.o_kpi_success .o_kpi_value {
+    color: #22c55e;
+}
+
+.o_kpi_info .o_kpi_value {
+    color: #3b82f6;
+}
+
+.o_kpi_danger {
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+
+.o_kpi_danger .o_kpi_value {
+    color: #ef4444;
+}
+
+/* Progress Section */
+.o_progress_section {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.o_progress_section h4 {
+    margin: 0 0 12px;
+}
+
+.o_progress_header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+}
+
+/* Recent Activity */
+.o_recent_section {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.o_recent_section h4 {
+    margin: 0 0 12px;
+}
+
+.o_recent_table {
+    width: 100%;
+}
+
+.o_recent_row {
+    display: grid;
+    grid-template-columns: 2fr 140px 1fr 100px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.875rem;
+}
+
+.o_recent_header {
+    font-weight: 600;
+    color: #718096;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.o_recent_row:last-child {
+    border-bottom: none;
+}
+
+.o_row_failed {
+    background: #fef2f2;
+}
+
+.o_col_state .badge {
+    font-size: 0.75rem;
+}

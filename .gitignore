@@ -3,3 +3,6 @@
 !/README.md
 !/LICENSE
 !/.gitignore
+
+__pycache__/
+*.pyc

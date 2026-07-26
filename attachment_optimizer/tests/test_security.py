@@ -38,11 +38,11 @@ class TestSecurity(TransactionCase):
         self.assertFalse(self._visible_to(menu, self.non_manager))
 
     def test_02_non_manager_cannot_see_dashboard_menu(self):
-        menu = self.env.ref('attachment_optimizer.foxpink_dashboard_menu')
+        menu = self.env.ref('attachment_optimizer.attachment_optimizer_dashboard_menu')
         self.assertFalse(self._visible_to(menu, self.non_manager))
 
     def test_03_non_manager_cannot_see_audit_menu(self):
-        menu = self.env.ref('attachment_optimizer.foxpink_audit_log_menu')
+        menu = self.env.ref('attachment_optimizer.attachment_optimizer_audit_log_menu')
         self.assertFalse(self._visible_to(menu, self.non_manager))
 
     # -- Model ACL --

@@ -12,7 +12,7 @@ class TestS3Bridge(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.bridge = S3Bridge(cls.env)
-        cls.test_bucket = 'foxpink-test-bucket'
+        cls.test_bucket = 'test-bucket'
         cls.test_key = 'attachments/test_doc.pdf'
         cls.test_data = b'fake binary content for testing'
 

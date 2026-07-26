@@ -1,53 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="foxpink_storage_mapping_tree" model="ir.ui.view">
+    <!-- ── List View ─────────────────────────────────────── -->
+    <record id="attachment_optimizer_storage_mapping_tree" model="ir.ui.view">
         <field name="name">attachment.storage.mapping.tree</field>
         <field name="model">attachment.storage.mapping</field>
         <field name="arch" type="xml">
             <list>
                 <field name="attachment_id"/>
-                <field name="s3_bucket"/>
-                <field name="s3_key"/>
-                <field name="s3_region"/>
-                <field name="status" widget="badge"/>
-                <field name="checksum_sha256"/>
-                <field name="verification_timestamp"/>
-                <field name="create_date"/>
-            </list>
-        </field>
-    </record>
-
-    <record id="foxpink_storage_mapping_form" model="ir.ui.view">
-        <field name="name">attachment.storage.mapping.form</field>
-        <field name="model">attachment.storage.mapping</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="attachment_id"/>
                 <field name="status" widget="badge"
                        decoration-success="status in ('verified','finalized')"
                        decoration-warning="status == 'pending'"
                        decoration-info="status in ('uploading','uploaded')"
                        decoration-danger="status in ('failed','verification_failed')"/>
-                            <field name="s3_bucket"/>
-                            <field name="s3_key"/>
-                            <field name="s3_region"/>
-                        </group>
-                        <group>
-                            <field name="checksum_sha256"/>
-                            <field name="verification_timestamp"/>
-                            <field name="error_message"/>
-                            <field name="active"/>
-                        </group>
-                    </group>
+                <field name="s3_bucket" optional="show"/>
+                <field name="verification_timestamp" optional="show"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Form View ─────────────────────────────────────── -->
+    <record id="attachment_optimizer_storage_mapping_form" model="ir.ui.view">
+        <field name="name">attachment.storage.mapping.form</field>
+        <field name="model">attachment.storage.mapping</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attachment" type="object"
+                                class="oe_stat_button" icon="fa-file">
+                            View Attachment
+                        </button>
+                        <button name="action_view_operations" type="object"
+                                class="oe_stat_button" icon="fa-tasks">
+                            View Operations
+                        </button>
+                        <button name="action_view_audit" type="object"
+                                class="oe_stat_button" icon="fa-history">
+                            View Audit
+                        </button>
+                    </div>
+
+                    <notebook>
+                        <!-- ═══ Overview Tab ═══ -->
+                        <page string="Overview">
+                            <group>
+                                <group>
+                                    <field name="attachment_id"/>
+                                    <field name="status" widget="badge"
+                                           decoration-success="status in ('verified','finalized')"
+                                           decoration-warning="status == 'pending'"
+                                           decoration-info="status in ('uploading','uploaded')"
+                                           decoration-danger="status in ('failed','verification_failed')"/>
+                                    <field name="s3_bucket" string="Storage Location"/>
+                                </group>
+                                <group>
+                                    <field name="s3_region"/>
+                                    <field name="verification_timestamp"/>
+                                    <field name="active"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ═══ Verification Tab ═══ -->
+                        <page string="Verification">
+                            <group>
+                                <group>
+                                    <field name="checksum_sha256" string="Checksum SHA256"/>
+                                    <field name="verification_timestamp" string="Verified At"/>
+                                </group>
+                                <group>
+                                    <p class="text-muted">
+                                        Data integrity is verified by comparing the SHA-256 checksum
+                                        of the original attachment with the stored S3 object.
+                                        The original filestore file is always preserved.
+                                    </p>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ═══ Technical Tab ═══ -->
+                        <page string="Technical">
+                            <group>
+                                <group>
+                                    <field name="s3_key" string="S3 Object Key"/>
+                                    <field name="error_message"/>
+                                    <field name="create_date" string="Created"/>
+                                </group>
+                                <group>
+                                    <field name="checksum_sha256" string="Full Checksum"/>
+                                    <field name="write_date" string="Last Updated"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <record id="foxpink_storage_mapping_search" model="ir.ui.view">
+    <!-- ── Search View ───────────────────────────────────── -->
+    <record id="attachment_optimizer_storage_mapping_search" model="ir.ui.view">
         <field name="name">attachment.storage.mapping.search</field>
         <field name="model">attachment.storage.mapping</field>
         <field name="arch" type="xml">
@@ -58,8 +111,9 @@
                 <field name="status"/>
                 <separator/>
                 <filter name="active" string="Active" domain="[('active', '=', True)]"/>
-                <filter name="pending" string="Pending" domain="[('status', '=', 'pending')]"/>
-                <filter name="finalized" string="Finalized" domain="[('status', '=', 'finalized')]"/>
+                <filter name="pending" string="Waiting" domain="[('status', '=', 'pending')]"/>
+                <filter name="finalized" string="Completed" domain="[('status', '=', 'finalized')]"/>
+                <filter name="verification_failed" string="Needs Attention" domain="[('status', '=', 'verification_failed')]"/>
                 <group expand="0" string="Group By">
                     <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
                     <filter name="group_by_bucket" string="Bucket" context="{'group_by': 's3_bucket'}"/>
@@ -68,12 +122,13 @@
         </field>
     </record>
 
-    <record id="foxpink_storage_mapping_action" model="ir.actions.act_window">
-        <field name="name">Storage Mappings</field>
+    <!-- ── Action ─────────────────────────────────────────── -->
+    <record id="attachment_optimizer_storage_mapping_action" model="ir.actions.act_window">
+        <field name="name">Managed Attachments</field>
         <field name="res_model">attachment.storage.mapping</field>
         <field name="view_mode">list,form</field>
         <field name="help">
-            Monitor and manage attachment storage mapping records.
+            Manage attachment storage mapping records.
         </field>
     </record>
 
@@ -82,8 +137,8 @@
               sequence="10"/>
 
     <menuitem id="attachment_storage_mapping_menu"
-              name="Storage Mappings"
+              name="Managed Attachments"
               parent="storage_optimization_menu"
-              action="foxpink_storage_mapping_action"
+              action="attachment_optimizer_storage_mapping_action"
               sequence="10"/>
 </odoo>

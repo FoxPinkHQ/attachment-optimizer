@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="foxpink_audit_log_tree" model="ir.ui.view">
+    <!-- ── List View ─────────────────────────────────────── -->
+    <record id="attachment_optimizer_audit_log_tree" model="ir.ui.view">
         <field name="name">attachment.audit.log.tree</field>
         <field name="model">attachment.audit.log</field>
         <field name="arch" type="xml">
@@ -12,12 +13,65 @@
                 <field name="result" widget="badge"
                        decoration-success="result == 'success'"
                        decoration-danger="result == 'failure'"/>
-                <field name="error_message"/>
+                <field name="error_message" optional="show"/>
             </list>
         </field>
     </record>
 
-    <record id="foxpink_audit_log_search" model="ir.ui.view">
+    <!-- ── Form View (read-only) ─────────────────────────── -->
+    <record id="attachment_optimizer_audit_log_form" model="ir.ui.view">
+        <field name="name">attachment.audit.log.form</field>
+        <field name="model">attachment.audit.log</field>
+        <field name="arch" type="xml">
+            <form edit="false">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <i class="fa fa-lock"/>
+                        <strong>READ ONLY</strong>
+                        — This record is part of the immutable audit trail and cannot be modified or deleted.
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attachment" type="object"
+                                class="oe_stat_button" icon="fa-file"
+                                invisible="not attachment_id">
+                            View Attachment
+                        </button>
+                        <button name="action_view_operation" type="object"
+                                class="oe_stat_button" icon="fa-tasks"
+                                invisible="not operation_id">
+                            View Operation
+                        </button>
+                    </div>
+                    <notebook>
+                        <page string="Event Details">
+                            <group>
+                                <group>
+                                    <field name="action" widget="badge"/>
+                                    <field name="result" widget="badge"
+                                           decoration-success="result == 'success'"
+                                           decoration-danger="result == 'failure'"/>
+                                    <field name="create_date" string="Timestamp"/>
+                                </group>
+                                <group>
+                                    <field name="user_id"/>
+                                    <field name="attachment_id"/>
+                                    <field name="res_model" string="Related Model"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Error Context"
+                              invisible="not error_message">
+                            <field name="error_message" nolabel="1"
+                                   class="font-monospace bg-light p-3 rounded"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Search View ───────────────────────────────────── -->
+    <record id="attachment_optimizer_audit_log_search" model="ir.ui.view">
         <field name="name">attachment.audit.log.search</field>
         <field name="model">attachment.audit.log</field>
         <field name="arch" type="xml">
@@ -39,19 +93,21 @@
         </field>
     </record>
 
-    <record id="foxpink_audit_log_action" model="ir.actions.act_window">
+    <!-- ── Action (now includes form) ─────────────────────── -->
+    <record id="attachment_optimizer_audit_log_action" model="ir.actions.act_window">
         <field name="name">Audit Logs</field>
         <field name="res_model">attachment.audit.log</field>
-        <field name="view_mode">list</field>
+        <field name="view_mode">list,form</field>
         <field name="help">
             Audit trail of all storage migration actions.
             Records are read-only and cannot be modified or deleted.
         </field>
     </record>
 
-    <menuitem id="foxpink_audit_log_menu"
+    <!-- ── Menu ───────────────────────────────────────────── -->
+    <menuitem id="attachment_optimizer_audit_log_menu"
               name="Audit Logs"
               parent="storage_optimization_menu"
-              action="foxpink_audit_log_action"
+              action="attachment_optimizer_audit_log_action"
               sequence="30"/>
 </odoo>

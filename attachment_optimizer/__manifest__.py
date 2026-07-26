@@ -1,6 +1,6 @@
 {
     "name": "Attachment Optimizer",
-    "version": "18.0.1.0.0",
+    "version": "18.0.2.0.0",
     "category": "Storage",
     "summary": "Analyze attachment storage and migrate files to S3-compatible object storage.",
     "description": """
@@ -10,6 +10,9 @@
     "author": "FoxPink",
     "website": "https://foxpink.dev",
     "license": "LGPL-3",
+    "images": [
+        "static/description/preview.png",
+    ],
     "depends": [
         "base",
         "web",
@@ -17,14 +20,23 @@
     "data": [
         "security/groups.xml",
         "security/ir.model.access.csv",
+        "security/record_rules.xml",
         "views/storage_mapping_views.xml",
         "views/dashboard_menu.xml",
         "views/migration_views.xml",
         "views/audit_log_views.xml",
+        "wizard/views/migration_confirm_views.xml",
     ],
     "demo": [
         "demo/attachment_optimizer_demo.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "attachment_optimizer/static/src/components/dashboard/dashboard.js",
+            "attachment_optimizer/static/src/components/dashboard/dashboard.xml",
+            "attachment_optimizer/static/src/components/dashboard/dashboard.scss",
+        ],
+    },
     "installable": True,
     "application": False,
     "auto_install": False,

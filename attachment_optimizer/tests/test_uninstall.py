@@ -63,8 +63,8 @@ class TestUninstall(TransactionCase):
 
     def test_04_our_models_are_removable(self):
         """Our model records can be cleaned up without side effects."""
-        self.operation.unlink()
-        self.mapping.unlink()
+        self.env['attachment.migration.operation'].search([]).unlink()
+        self.env['attachment.storage.mapping'].search([]).unlink()
         remaining_mappings = self.env['attachment.storage.mapping'].search([])
         remaining_ops = self.env['attachment.migration.operation'].search([])
         self.assertEqual(len(remaining_mappings), 0)

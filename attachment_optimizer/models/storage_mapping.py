@@ -1,5 +1,9 @@
+import logging
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class StorageMapping(models.Model):
@@ -12,6 +16,11 @@ class StorageMapping(models.Model):
          'Each attachment can have only one storage mapping.'),
     ]
 
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        required=True, default=lambda self: self.env.company,
+        index=True,
+    )
     attachment_id = fields.Many2one(
         'ir.attachment', string='Attachment', required=True,
         ondelete='cascade', index=True,
@@ -40,20 +49,24 @@ class StorageMapping(models.Model):
         res = super().default_get(fields_list)
         ICP = self.env['ir.config_parameter'].sudo()
         if 's3_bucket' in fields_list and not res.get('s3_bucket'):
-            res['s3_bucket'] = ICP.get_param('attachment_storage_s3_bucket', 'attachment-storage-test')
+            res['s3_bucket'] = ICP.get_param('attachment_storage.s3.bucket', '')
         if 's3_region' in fields_list and not res.get('s3_region'):
-            res['s3_region'] = ICP.get_param('attachment_storage_s3_region', 'us-east-1')
+            res['s3_region'] = ICP.get_param('attachment_storage.s3.region', 'us-east-1')
         return res
 
     @api.model
-    def create_mapping(self, attachment_id, s3_bucket, s3_key, s3_region):
+    def create_mapping(self, attachment_id, s3_bucket, s3_key, s3_region, company_id=None):
         existing = self.search([('attachment_id', '=', attachment_id)])
         if existing:
             raise ValidationError(
                 _('Mapping already exists for attachment %s') % attachment_id
             )
+        attachment = self.env['ir.attachment'].browse(attachment_id)
+        if not company_id:
+            company_id = attachment.company_id.id if attachment.company_id else self.env.company.id
         return self.create({
             'attachment_id': attachment_id,
+            'company_id': company_id,
             's3_bucket': s3_bucket,
             's3_key': s3_key,
             's3_region': s3_region,
@@ -111,8 +124,44 @@ class StorageMapping(models.Model):
             'error_message': False,
         })
 
+    def action_view_attachment(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'ir.attachment',
+            'view_mode': 'form',
+            'res_id': self.attachment_id.id,
+            'target': 'current',
+        }
+
+    def action_view_operations(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'attachment.migration.operation',
+            'view_mode': 'list,form',
+            'domain': [('mapping_id', '=', self.id)],
+            'name': 'Migration Operations',
+        }
+
+    def action_view_audit(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'attachment.audit.log',
+            'view_mode': 'list,form',
+            'domain': [('mapping_id', '=', self.id)],
+            'name': 'Audit Logs',
+        }
+
     def action_mark_failed(self, error_message):
         self.write({
             'status': 'failed',
             'error_message': error_message,
         })
+
+    @api.model
+    def action_get_dashboard_data(self):
+        from ..services.dashboard_service import DashboardService
+        service = DashboardService(self.env)
+        return service.get_dashboard_data()

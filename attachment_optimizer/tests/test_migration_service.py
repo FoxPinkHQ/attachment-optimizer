@@ -13,7 +13,7 @@ class TestMigrationService(TransactionCase):
         super().setUpClass()
         cls.service = MigrationService(cls.env)
         cls.bridge = S3Bridge(cls.env)
-        cls.test_bucket = 'foxpink-test-bucket'
+        cls.test_bucket = 'test-bucket'
         cls.test_data = b'fake binary content for migration test'
 
         cls.attachment = cls.env['ir.attachment'].create({

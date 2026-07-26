@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    <record id="foxpink_migration_operation_tree" model="ir.ui.view">
+    <!-- ── List View ─────────────────────────────────────── -->
+    <record id="attachment_optimizer_migration_operation_tree" model="ir.ui.view">
         <field name="name">attachment.migration.operation.tree</field>
         <field name="model">attachment.migration.operation</field>
         <field name="arch" type="xml">
@@ -12,16 +13,16 @@
                        decoration-info="state in ('uploading','uploaded')"
                        decoration-success="state in ('verified','finalized')"
                        decoration-danger="state == 'failed'"/>
-                <field name="mapping_id"/>
-                <field name="error_message"/>
-                <field name="queued_at"/>
                 <field name="started_at"/>
                 <field name="completed_at"/>
+                <field name="duration_display"/>
+                <field name="mapping_id" optional="show"/>
             </list>
         </field>
     </record>
 
-    <record id="foxpink_migration_operation_form" model="ir.ui.view">
+    <!-- ── Form View ─────────────────────────────────────── -->
+    <record id="attachment_optimizer_migration_operation_form" model="ir.ui.view">
         <field name="name">attachment.migration.operation.form</field>
         <field name="model">attachment.migration.operation</field>
         <field name="arch" type="xml">
@@ -34,31 +35,96 @@
                             invisible="state != 'failed'" class="btn-primary"/>
                 </header>
                 <sheet>
-                    <group>
-                        <group>
-                            <field name="attachment_id"/>
-                            <field name="state" widget="badge"
-                                   decoration-warning="state == 'queued'"
-                                   decoration-info="state in ('uploading','uploaded')"
-                                   decoration-success="state in ('verified','finalized')"
-                                   decoration-danger="state == 'failed'"/>
-                            <field name="mapping_id"/>
-                        </group>
-                        <group>
-                            <field name="queued_at"/>
-                            <field name="started_at"/>
-                            <field name="completed_at"/>
-                        </group>
-                    </group>
-                    <group string="Error Information">
-                        <field name="error_message" nolabel="1"/>
-                    </group>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attachment" type="object"
+                                class="oe_stat_button" icon="fa-file">
+                            View Attachment
+                        </button>
+                    </div>
+
+                    <notebook>
+                        <!-- ═══ Overview Tab ═══ -->
+                        <page string="Overview">
+                            <group>
+                                <group>
+                                    <field name="attachment_id"/>
+                                    <field name="state" widget="badge"
+                                           decoration-warning="state == 'queued'"
+                                           decoration-info="state in ('uploading','uploaded')"
+                                           decoration-success="state in ('verified','finalized')"
+                                           decoration-danger="state == 'failed'"/>
+                                    <field name="mapping_id"/>
+                                </group>
+                                <group>
+                                    <field name="queued_at"/>
+                                    <field name="started_at"/>
+                                    <field name="completed_at"/>
+                                    <field name="duration_display"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ═══ Timeline Tab ═══ -->
+                        <page string="Timeline">
+                            <p class="text-muted">
+                                <i class="fa fa-info-circle"/>
+                                Events sourced from audit trail.
+                            </p>
+                            <field name="audit_log_ids" nolabel="1">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="action" widget="badge"/>
+                                    <field name="user_id"/>
+                                    <field name="result" widget="badge"
+                                           decoration-success="result == 'success'"
+                                           decoration-danger="result == 'failure'"/>
+                                    <field name="error_message" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ═══ Errors Tab ═══ -->
+                        <page string="Errors" invisible="state not in ('failed', 'verification_failed')">
+                            <div class="alert alert-danger" role="alert" invisible="not error_message">
+                                <h4><i class="fa fa-exclamation-circle"/> Migration failed</h4>
+                                <p class="mb-0"><field name="error_message" nolabel="1"/></p>
+                            </div>
+                            <div class="alert alert-info" role="alert" invisible="error_message">
+                                <p class="mb-0"><i class="fa fa-check-circle"/> No errors detected.</p>
+                            </div>
+                            <group string="Suggested Actions">
+                                <div class="o_suggested_actions">
+                                    <button name="action_retry" string="Retry" type="object"
+                                            class="btn btn-primary"
+                                            invisible="state != 'failed'"/>
+                                    <button name="action_view_config" string="Check Configuration" type="object"
+                                            class="btn btn-secondary"/>
+                                </div>
+                            </group>
+                        </page>
+
+                        <!-- ═══ Technical Tab ═══ -->
+                        <page string="Technical">
+                            <group>
+                                <group>
+                                    <field name="s3_bucket_related" string="S3 Bucket"/>
+                                    <field name="s3_key_related" string="S3 Key"/>
+                                    <field name="s3_region_related" string="S3 Region"/>
+                                </group>
+                                <group>
+                                    <field name="checksum_related" string="Checksum SHA256"/>
+                                    <field name="error_message" string="Raw Error"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <record id="foxpink_migration_operation_search" model="ir.ui.view">
+    <!-- ── Search View ───────────────────────────────────── -->
+    <record id="attachment_optimizer_migration_operation_search" model="ir.ui.view">
         <field name="name">attachment.migration.operation.search</field>
         <field name="model">attachment.migration.operation</field>
         <field name="arch" type="xml">
@@ -68,7 +134,8 @@
                 <separator/>
                 <filter name="queued" string="Queued" domain="[('state', '=', 'queued')]"/>
                 <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
-                <filter name="finalized" string="Finalized" domain="[('state', '=', 'finalized')]"/>
+                <filter name="finalized" string="Completed" domain="[('state', '=', 'finalized')]"/>
+
                 <group expand="0" string="Group By">
                     <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
                 </group>
@@ -76,7 +143,8 @@
         </field>
     </record>
 
-    <record id="foxpink_migration_operation_action" model="ir.actions.act_window">
+    <!-- ── Actions ────────────────────────────────────────── -->
+    <record id="attachment_optimizer_migration_operation_action" model="ir.actions.act_window">
         <field name="name">Migration Operations</field>
         <field name="res_model">attachment.migration.operation</field>
         <field name="view_mode">list,form</field>
@@ -86,6 +154,7 @@
         </field>
     </record>
 
+    <!-- ── Server Actions ─────────────────────────────────── -->
     <record id="action_analyze_and_queue_server" model="ir.actions.server">
         <field name="name">Create Migration Queue</field>
         <field name="model_id" ref="model_attachment_migration_operation"/>
@@ -96,7 +165,7 @@
     </record>
 
     <record id="action_upload_server" model="ir.actions.server">
-        <field name="name">Upload Selected to S3</field>
+        <field name="name">Start Upload</field>
         <field name="model_id" ref="model_attachment_migration_operation"/>
         <field name="binding_model_id" ref="model_attachment_migration_operation"/>
         <field name="binding_type">action</field>
@@ -110,10 +179,11 @@ else:
 </field>
     </record>
 
-    <menuitem id="foxpink_migration_operation_menu"
+    <!-- ── Menu ───────────────────────────────────────────── -->
+    <menuitem id="attachment_optimizer_migration_operation_menu"
               name="Migration Operations"
               parent="storage_optimization_menu"
-              action="foxpink_migration_operation_action"
+              action="attachment_optimizer_migration_operation_action"
               sequence="20"/>
     </data>
 </odoo>

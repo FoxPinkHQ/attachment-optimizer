@@ -18,7 +18,7 @@ class TestStorageMapping(TransactionCase):
     def _create_mapping(self, attachment=None):
         return self.Mapping.create_mapping(
             attachment_id=attachment or self.attachment.id,
-            s3_bucket='foxpink-test',
+            s3_bucket='test-bucket',
             s3_key='attachments/test_doc.pdf',
             s3_region='us-east-1',
         )
@@ -26,7 +26,7 @@ class TestStorageMapping(TransactionCase):
     def test_01_create_mapping(self):
         mapping = self._create_mapping()
         self.assertEqual(mapping.attachment_id.id, self.attachment.id)
-        self.assertEqual(mapping.s3_bucket, 'foxpink-test')
+        self.assertEqual(mapping.s3_bucket, 'test-bucket')
         self.assertEqual(mapping.s3_key, 'attachments/test_doc.pdf')
         self.assertEqual(mapping.s3_region, 'us-east-1')
         self.assertEqual(mapping.status, 'pending')
@@ -57,7 +57,7 @@ class TestStorageMapping(TransactionCase):
         mapping.action_update_status('verified', checksum='abc123')
         mapping.action_update_status('finalized')
         location = self.Mapping.get_external_location(self.attachment.id)
-        self.assertEqual(location['bucket'], 'foxpink-test')
+        self.assertEqual(location['bucket'], 'test-bucket')
         self.assertEqual(location['key'], 'attachments/test_doc.pdf')
         self.assertEqual(location['region'], 'us-east-1')
         self.assertEqual(location['checksum'], 'abc123')

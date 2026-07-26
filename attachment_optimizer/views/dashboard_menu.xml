@@ -1,72 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    <record id="foxpink_dashboard_kanban" model="ir.ui.view">
-        <field name="name">attachment.storage.mapping.kanban.dashboard</field>
-        <field name="model">attachment.storage.mapping</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="status" class="o_storage_dashboard">
-                <field name="status"/>
-                <field name="attachment_id"/>
-                <field name="s3_bucket"/>
-                <field name="s3_key"/>
-                <field name="checksum_sha256"/>
-                <field name="verification_timestamp"/>
-                <field name="error_message"/>
-                <field name="active"/>
-                <templates>
-                    <t t-name="card">
-                        <div t-attf-class="oe_kanban_global_click o_kanban_color_#{kanban_getcolor(1)}">
-                            <div class="o_kanban_card_header">
-                                <span class="o_kanban_card_title">
-                                    <field name="attachment_id"/>
-                                </span>
-                            </div>
-                            <div class="o_kanban_card_content">
-                                <div class="text-muted o_text_overflow">
-                                    <i class="fa fa-folder-open" title="Bucket"/> <field name="s3_bucket"/>
-                                    <t t-if="record.s3_key.raw_value">
-                                        / <field name="s3_key"/>
-                                    </t>
-                                </div>
-                                <t t-if="record.checksum_sha256.raw_value">
-                                    <div class="text-muted small">
-                                        <i class="fa fa-hash" title="Checksum"/> <field name="checksum_sha256"/>
-                                    </div>
-                                </t>
-                                <t t-if="record.verification_timestamp.raw_value">
-                                    <div class="text-muted small">
-                                        <field name="verification_timestamp"/>
-                                    </div>
-                                </t>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <record id="foxpink_dashboard_action" model="ir.actions.act_window">
+    <!-- Dashboard Client Action (OWL widget) -->
+    <record id="attachment_optimizer_dashboard_action" model="ir.actions.client">
         <field name="name">Dashboard</field>
-        <field name="res_model">attachment.storage.mapping</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="context">{'search_default_pending': True}</field>
+        <field name="tag">attachment_optimizer.dashboard_action</field>
     </record>
 
-    <record id="action_analyze_queue_storage" model="ir.actions.server">
-        <field name="name">Create Migration Queue</field>
-        <field name="model_id" ref="model_attachment_migration_operation"/>
-        <field name="binding_model_id" ref="model_attachment_migration_operation"/>
-        <field name="binding_type">action</field>
-        <field name="state">code</field>
-        <field name="code">action = env['attachment.migration.operation'].action_analyze_and_queue()</field>
-    </record>
-
-    <menuitem id="foxpink_dashboard_menu"
+    <menuitem id="attachment_optimizer_dashboard_menu"
               name="Dashboard"
               parent="storage_optimization_menu"
-              action="foxpink_dashboard_action"
+              action="attachment_optimizer_dashboard_action"
+              groups="group_storage_optimization_manager"
               sequence="5"/>
     </data>
 </odoo>

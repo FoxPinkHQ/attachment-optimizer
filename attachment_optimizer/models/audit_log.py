@@ -8,6 +8,11 @@ class AuditLog(models.Model):
     _order = 'create_date DESC, id DESC'
     _rec_name = 'display_name'
 
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        required=True, default=lambda self: self.env.company,
+        index=True,
+    )
     display_name = fields.Char(compute='_compute_display_name', store=False)
     user_id = fields.Many2one(
         'res.users', string='User', required=True,
@@ -61,6 +66,7 @@ class AuditLog(models.Model):
              mapping_id=None, error_message=None):
         vals = {
             'user_id': self.env.user.id,
+            'company_id': self.env.company.id,
             'action': action,
             'result': result,
             'attachment_id': attachment_id,
@@ -71,6 +77,30 @@ class AuditLog(models.Model):
             'error_message': error_message,
         }
         return self.create(vals)
+
+    def action_view_attachment(self):
+        self.ensure_one()
+        if not self.attachment_id:
+            return
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'ir.attachment',
+            'view_mode': 'form',
+            'res_id': self.attachment_id.id,
+            'target': 'current',
+        }
+
+    def action_view_operation(self):
+        self.ensure_one()
+        if not self.operation_id:
+            return
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'attachment.migration.operation',
+            'view_mode': 'form',
+            'res_id': self.operation_id.id,
+            'target': 'current',
+        }
 
     def write(self, vals):
         raise AccessError(_('Audit log records are read-only'))

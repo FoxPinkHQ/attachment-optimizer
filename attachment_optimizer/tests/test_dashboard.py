@@ -25,10 +25,10 @@ class TestDashboard(TransactionCase):
             'groups_id': [(4, cls.env.ref('base.group_user').id)],
         })
         cls.menu_dashboard = cls.env.ref(
-            'attachment_optimizer.foxpink_dashboard_menu'
+            'attachment_optimizer.attachment_optimizer_dashboard_menu'
         )
         cls.menu_migration = cls.env.ref(
-            'attachment_optimizer.foxpink_migration_operation_menu'
+            'attachment_optimizer.attachment_optimizer_migration_operation_menu'
         )
         cls.menu_mapping = cls.env.ref(
             'attachment_optimizer.attachment_storage_mapping_menu'

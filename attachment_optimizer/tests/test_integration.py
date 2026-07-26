@@ -8,7 +8,7 @@ class TestIntegration(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.test_bucket = 'foxpink-integration-bucket'
+        cls.test_bucket = 'integration-test-bucket'
         cls.test_data = b'integration test content for full pipeline'
         cls.checksum = hashlib.sha256(cls.test_data).hexdigest()
         cls.s3_key = 'objects/%s/%s' % (cls.checksum[:2], cls.checksum)
