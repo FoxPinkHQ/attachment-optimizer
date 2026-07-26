@@ -14,9 +14,10 @@ class MigrationQueueConfirm(models.TransientModel):
 
     def action_confirm(self):
         Operation = self.env['attachment.migration.operation']
-        return Operation.action_analyze_and_queue(
+        Operation.action_analyze_and_queue(
             attachment_ids=self.candidate_ids.ids
         )
+        return {'type': 'ir.actions.act_window_close'}
 
     def action_cancel(self):
         return {'type': 'ir.actions.act_window_close'}

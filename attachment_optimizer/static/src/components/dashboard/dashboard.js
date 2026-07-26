@@ -102,8 +102,12 @@ export class StorageDashboard extends Component {
                     default_estimated_duration: impact.estimated_duration,
                     default_candidate_ids: [[6, 0, impact.candidate_ids]],
                 },
+            }, {
+                onClose: async () => {
+                    this.notification.add("Migration queue created: " + impact.count + " operations", { type: "success" });
+                    await this._loadDashboard();
+                },
             });
-            await this._loadDashboard();
         } catch (err) {
             this.notification.add("Unable to check queue impact.", { type: "danger" });
         }
