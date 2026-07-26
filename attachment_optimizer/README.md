@@ -22,7 +22,9 @@ Dependencies: `base`, `web`. The `boto3` Python package is required at runtime f
 pip install boto3
 ```
 
-Install the module via Apps menu.
+1. Install the module via **Apps** menu
+2. After install, **Storage Optimization** appears in the top menu bar
+3. Assign users to the **Storage Optimization / Storage Optimization Manager** group: **Settings → Users → Access Rights**
 
 ## Configuration
 
