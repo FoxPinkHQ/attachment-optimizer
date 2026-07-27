@@ -6,52 +6,35 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Attachment Optimizer" string="Attachment Optimizer" name="attachment_optimizer">
-                    <div class="row mt16 o_settings_container">
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_right_pane">
-                                <span class="o_form_label">S3 Storage</span>
-                                <div class="text-muted">
-                                    S3-compatible object storage configuration
-                                </div>
-                                <div class="content-group">
-                                    <div>
-                                        <label for="s3_bucket"/>
-                                        <field name="s3_bucket" placeholder="my-bucket"/>
-                                    </div>
-                                    <div>
-                                        <label for="s3_region"/>
-                                        <field name="s3_region" placeholder="us-east-1"/>
-                                    </div>
-                                    <div>
-                                        <label for="s3_endpoint_url"/>
-                                        <field name="s3_endpoint_url" placeholder="http://localhost:9000"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_right_pane">
-                                <span class="o_form_label">Credentials</span>
-                                <div class="text-muted">
-                                    S3 access credentials
-                                </div>
-                                <div class="content-group">
-                                    <div>
-                                        <label for="s3_access_key_id"/>
-                                        <field name="s3_access_key_id" placeholder="minioadmin"/>
-                                    </div>
-                                    <div>
-                                        <label for="s3_secret_access_key"/>
-                                        <field name="s3_secret_access_key" password="true"/>
-                                    </div>
-                                    <button string="Test Connection"
-                                            name="action_test_s3_connection"
-                                            type="object"
-                                            class="btn-link mt8"/>
-                                </div>
-                            </div>
-                        </div>
+                <app data-string="Attachment Optimizer" string="Attachment Optimizer" name="attachment_optimizer" logo="/attachment_optimizer/static/description/icon.png">
+                    <div id="s3_storage">
+                        <block title="S3 Storage" name="s3_storage_setting_container">
+                            <setting id="s3_bucket_setting" string="Bucket" help="S3 bucket name">
+                                <field name="s3_bucket" placeholder="my-bucket"/>
+                            </setting>
+                            <setting id="s3_region_setting" string="Region" help="AWS region or MinIO region">
+                                <field name="s3_region" placeholder="us-east-1"/>
+                            </setting>
+                            <setting id="s3_endpoint_setting" string="Endpoint URL" help="S3 endpoint URL (for MinIO or compatible)">
+                                <field name="s3_endpoint_url" placeholder="http://localhost:9000"/>
+                            </setting>
+                        </block>
+                    </div>
+                    <div id="s3_credentials">
+                        <block title="Credentials" name="s3_credentials_setting_container">
+                            <setting id="s3_access_key_setting" string="Access Key" help="S3 Access Key ID">
+                                <field name="s3_access_key_id" placeholder="minioadmin"/>
+                            </setting>
+                            <setting id="s3_secret_key_setting" string="Secret Key" help="S3 Secret Access Key">
+                                <field name="s3_secret_access_key" password="true"/>
+                            </setting>
+                        </block>
+                        <setting id="s3_test_connection" string="Test Connection" help="Verify S3 connection">
+                            <button string="Test Connection"
+                                    name="action_test_s3_connection"
+                                    type="object"
+                                    class="btn btn-link"/>
+                        </setting>
                     </div>
                 </app>
             </xpath>
