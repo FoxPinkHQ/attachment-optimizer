@@ -3,46 +3,58 @@
     <record id="view_attachment_optimizer_config_settings" model="ir.ui.view">
         <field name="name">attachment.optimizer.config.settings</field>
         <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <form string="Attachment Optimizer">
-                <div class="oe_title">
-                    <h1>Attachment Optimizer</h1>
-                </div>
-                <group string="S3 Storage" name="s3">
-                    <group>
-                        <field name="s3_bucket" placeholder="my-bucket"/>
-                        <field name="s3_region" placeholder="us-east-1"/>
-                        <field name="s3_endpoint_url" placeholder="http://localhost:9000"/>
-                    </group>
-                    <group>
-                        <field name="s3_access_key_id" placeholder="minioadmin"/>
-                        <field name="s3_secret_access_key" password="true"/>
-                    </group>
-                </group>
-                <footer>
-                    <button string="Test Connection"
-                            name="action_test_s3_connection"
-                            type="object"
-                            class="btn-primary"/>
-                    <button string="Save"
-                            special="save"
-                            class="btn-primary"/>
-                </footer>
-            </form>
+            <xpath expr="//form" position="inside">
+                <app data-string="Attachment Optimizer" string="Attachment Optimizer" name="attachment_optimizer">
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">S3 Storage</span>
+                                <div class="text-muted">
+                                    S3-compatible object storage configuration
+                                </div>
+                                <div class="content-group">
+                                    <div>
+                                        <label for="s3_bucket"/>
+                                        <field name="s3_bucket" placeholder="my-bucket"/>
+                                    </div>
+                                    <div>
+                                        <label for="s3_region"/>
+                                        <field name="s3_region" placeholder="us-east-1"/>
+                                    </div>
+                                    <div>
+                                        <label for="s3_endpoint_url"/>
+                                        <field name="s3_endpoint_url" placeholder="http://localhost:9000"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Credentials</span>
+                                <div class="text-muted">
+                                    S3 access credentials
+                                </div>
+                                <div class="content-group">
+                                    <div>
+                                        <label for="s3_access_key_id"/>
+                                        <field name="s3_access_key_id" placeholder="minioadmin"/>
+                                    </div>
+                                    <div>
+                                        <label for="s3_secret_access_key"/>
+                                        <field name="s3_secret_access_key" password="true"/>
+                                    </div>
+                                    <button string="Test Connection"
+                                            name="action_test_s3_connection"
+                                            type="object"
+                                            class="btn-link mt8"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </app>
+            </xpath>
         </field>
     </record>
-
-    <record id="action_attachment_optimizer_config_settings" model="ir.actions.act_window">
-        <field name="name">Attachment Optimizer</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="view_attachment_optimizer_config_settings"/>
-        <field name="target">new</field>
-    </record>
-
-    <menuitem id="menu_attachment_optimizer_settings"
-              name="Attachment Optimizer"
-              parent="base.menu_config"
-              action="action_attachment_optimizer_config_settings"
-              sequence="50"/>
 </odoo>
