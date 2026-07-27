@@ -25,6 +25,16 @@ class ResConfigSettings(models.TransientModel):
         string='Secret Key',
         config_parameter='attachment_storage.s3.secret_access_key',
     )
+    recovery_enabled = fields.Boolean(
+        string='Enable Auto-Recovery',
+        config_parameter='attachment_storage.recovery.enabled',
+        default=True,
+    )
+    recovery_limit = fields.Integer(
+        string='Recovery Batch Limit',
+        config_parameter='attachment_storage.recovery.limit',
+        default=500,
+    )
 
     def action_test_s3_connection(self):
         self.ensure_one()

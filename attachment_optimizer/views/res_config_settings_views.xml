@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Attachment Optimizer" string="Attachment Optimizer" name="attachment_optimizer" logo="/attachment_optimizer/static/description/icon.png">
+                <app data-string="Attachment Optimizer" string="Attachment Optimizer" name="attachment_optimizer">
                     <div id="s3_storage">
                         <block title="S3 Storage" name="s3_storage_setting_container">
                             <setting id="s3_bucket_setting" string="Bucket" help="S3 bucket name">
@@ -27,14 +27,24 @@
                             </setting>
                             <setting id="s3_secret_key_setting" string="Secret Key" help="S3 Secret Access Key">
                                 <field name="s3_secret_access_key" password="true"/>
+                                <div class="content-group mt16">
+                                    <button string="Test Connection"
+                                            name="action_test_s3_connection"
+                                            type="object"
+                                            class="btn btn-secondary"/>
+                                </div>
                             </setting>
                         </block>
-                        <setting id="s3_test_connection" string="Test Connection" help="Verify S3 connection">
-                            <button string="Test Connection"
-                                    name="action_test_s3_connection"
-                                    type="object"
-                                    class="btn btn-link"/>
-                        </setting>
+                    </div>
+                    <div id="s3_recovery">
+                        <block title="Auto-Recovery" name="s3_recovery_setting_container">
+                            <setting id="recovery_enabled_setting" string="Enable Auto-Recovery" help="Automatically recover stuck/failed operations via cron">
+                                <field name="recovery_enabled"/>
+                            </setting>
+                            <setting id="recovery_limit_setting" string="Recovery Batch Limit" help="Max operations to recover per cron run">
+                                <field name="recovery_limit"/>
+                            </setting>
+                        </block>
                     </div>
                 </app>
             </xpath>
