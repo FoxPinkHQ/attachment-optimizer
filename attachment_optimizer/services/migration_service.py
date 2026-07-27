@@ -64,9 +64,6 @@ class MigrationService:
         return candidates
 
     def create_migration_operations(self, attachment_ids):
-        bucket = self._get_default_bucket()
-        if not bucket:
-            raise ValueError(_('Default S3 bucket is not configured'))
         ops = self.env['attachment.migration.operation'].create_queue(
             attachment_ids
         )
