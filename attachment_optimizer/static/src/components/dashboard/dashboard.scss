@@ -218,6 +218,9 @@ html .o_web_client > .o_action_manager {
 /* Empty table state */
 .o_empty_table_cell {
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 0;
+    min-height: 360px;
+    display: table-cell;
+    vertical-align: middle;
     color: #6c757d;
 }
