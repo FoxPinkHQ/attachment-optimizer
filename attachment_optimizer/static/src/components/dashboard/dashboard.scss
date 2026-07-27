@@ -119,6 +119,11 @@
     width: 100%;
 }
 
+.o_recent_scroll {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
 .o_recent_row {
     display: grid;
     grid-template-columns: 2fr 140px 1fr 100px;

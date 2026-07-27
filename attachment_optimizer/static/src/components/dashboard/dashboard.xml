@@ -98,31 +98,33 @@
                                 <span class="o_col_time">Started</span>
                                 <span class="o_col_action">Action</span>
                             </div>
-                            <t t-foreach="state.recentOperations" t-as="op" t-key="op.id">
-                                <div class="o_recent_row" t-att-class="op.state === 'failed' ? 'o_row_failed' : ''">
-                                    <span class="o_col_name">
-                                        <a t-attf-href="/web#model=attachment.migration.operation&amp;id=#{op.id}" target="_blank">
-                                            <t t-esc="op.attachment_name"/>
-                                        </a>
-                                    </span>
-                                    <span class="o_col_state">
-                                        <t t-call="attachment_optimizer.StateBadge"/>
-                                    </span>
-                                    <span class="o_col_time">
-                                        <t t-esc="op.human_started"/>
-                                        <t t-if="op.human_duration">
-                                            <br/><span class="text-muted small"><t t-esc="op.human_duration"/></span>
-                                        </t>
-                                    </span>
-                                    <span class="o_col_action">
-                                        <button class="btn btn-sm btn-link"
-                                                t-if="op.state === 'failed'"
-                                                t-on-click="() => this.onRetry(op)">
-                                            Retry
-                                        </button>
-                                    </span>
-                                </div>
-                            </t>
+                            <div class="o_recent_scroll">
+                                <t t-foreach="state.recentOperations" t-as="op" t-key="op.id">
+                                    <div class="o_recent_row" t-att-class="op.state === 'failed' ? 'o_row_failed' : ''">
+                                        <span class="o_col_name">
+                                            <a t-attf-href="/web#model=attachment.migration.operation&amp;id=#{op.id}" target="_blank">
+                                                <t t-esc="op.attachment_name"/>
+                                            </a>
+                                        </span>
+                                        <span class="o_col_state">
+                                            <t t-call="attachment_optimizer.StateBadge"/>
+                                        </span>
+                                        <span class="o_col_time">
+                                            <t t-esc="op.human_started"/>
+                                            <t t-if="op.human_duration">
+                                                <br/><span class="text-muted small"><t t-esc="op.human_duration"/></span>
+                                            </t>
+                                        </span>
+                                        <span class="o_col_action">
+                                            <button class="btn btn-sm btn-link"
+                                                    t-if="op.state === 'failed'"
+                                                    t-on-click="() => this.onRetry(op)">
+                                                Retry
+                                            </button>
+                                        </span>
+                                    </div>
+                                </t>
+                            </div>
                         </div>
                     </t>
                 </div>

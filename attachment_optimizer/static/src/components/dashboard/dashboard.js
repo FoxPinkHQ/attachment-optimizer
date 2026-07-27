@@ -104,7 +104,6 @@ export class StorageDashboard extends Component {
                 },
             }, {
                 onClose: async () => {
-                    this.notification.add("Migration queue created: " + impact.count + " operations", { type: "success" });
                     await this._loadDashboard();
                 },
             });

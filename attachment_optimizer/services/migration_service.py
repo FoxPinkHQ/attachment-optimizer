@@ -49,8 +49,14 @@ class MigrationService:
             ('status', 'not in', ('failed', 'verification_failed')),
         ])
         mapped_ids = mapped.mapped('attachment_id').ids
+        queued = self.env['attachment.migration.operation'].search([
+            ('attachment_id', 'in', attachments.ids),
+            ('state', 'not in', ('failed', 'finalized')),
+        ])
+        queued_ids = queued.mapped('attachment_id').ids
+        exclude_ids = set(mapped_ids) | set(queued_ids)
         candidates = attachments.filtered(
-            lambda a: a.id not in mapped_ids
+            lambda a: a.id not in exclude_ids
         )
         if size_min_kb > 0:
             candidates = candidates.filtered(
