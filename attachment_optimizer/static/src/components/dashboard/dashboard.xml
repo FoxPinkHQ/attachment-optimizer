@@ -33,7 +33,7 @@
                     <div class="alert alert-warning" role="alert">
                         <i class="fa fa-exclamation-triangle"/>
                         S3 storage is not configured.
-                        <button class="btn btn-link alert-link p-0" t-on-click="onOpenConfig">Go to Configuration</button>
+                        <button class="btn btn-link alert-link p-0" t-on-click="onOpenConfig">Open Settings</button>
                     </div>
                 </t>
                 <div class="o_dashboard_header">

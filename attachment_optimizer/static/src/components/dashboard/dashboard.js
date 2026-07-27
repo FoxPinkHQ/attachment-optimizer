@@ -279,11 +279,11 @@ export class StorageDashboard extends Component {
     onOpenConfig() {
         this.action.doAction({
             type: "ir.actions.act_window",
-            name: "System Parameters",
-            res_model: "ir.config_parameter",
-            view_mode: "list",
-            views: [[false, "list"]],
-            domain: [["key", "=ilike", "attachment_storage%"]],
+            name: "Attachment Optimizer",
+            res_model: "res.config.settings",
+            view_mode: "form",
+            views: [[false, "form"]],
+            target: "new",
         });
     }
 

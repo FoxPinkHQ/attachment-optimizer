@@ -21,6 +21,7 @@
         "security/groups.xml",
         "security/ir.model.access.csv",
         "security/record_rules.xml",
+        "views/res_config_settings_views.xml",
         "views/storage_mapping_views.xml",
         "views/dashboard_menu.xml",
         "views/migration_views.xml",

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_attachment_optimizer_config_settings" model="ir.ui.view">
+        <field name="name">attachment.optimizer.config.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.view_res_config_settings"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='database_storage']" position="inside">
+                <div class="app_settings_block" data-string="Attachment Optimizer" string="Attachment Optimizer" attrs="{'invisible': [('module_attachment_optimizer', '=', False)]}">
+                    <h2>Attachment Optimizer</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">S3 Storage</span>
+                                <div class="text-muted">
+                                    S3-compatible object storage configuration
+                                </div>
+                                <div class="content-group">
+                                    <div>
+                                        <label for="s3_bucket"/>
+                                        <field name="s3_bucket" placeholder="my-bucket"/>
+                                    </div>
+                                    <div>
+                                        <label for="s3_region"/>
+                                        <field name="s3_region" placeholder="us-east-1"/>
+                                    </div>
+                                    <div>
+                                        <label for="s3_endpoint_url"/>
+                                        <field name="s3_endpoint_url" placeholder="http://localhost:9000"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Credentials</span>
+                                <div class="text-muted">
+                                    S3 access credentials
+                                </div>
+                                <div class="content-group">
+                                    <div>
+                                        <label for="s3_access_key_id"/>
+                                        <field name="s3_access_key_id" placeholder="minioadmin"/>
+                                    </div>
+                                    <div>
+                                        <label for="s3_secret_access_key"/>
+                                        <field name="s3_secret_access_key" password="true"/>
+                                    </div>
+                                    <button string="Test Connection"
+                                            name="action_test_s3_connection"
+                                            type="object"
+                                            class="btn btn-link mt8"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
