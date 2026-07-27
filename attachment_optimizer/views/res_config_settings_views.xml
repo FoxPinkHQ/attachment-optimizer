@@ -3,7 +3,7 @@
     <record id="view_attachment_optimizer_config_settings" model="ir.ui.view">
         <field name="name">attachment.optimizer.config.settings</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="base.view_res_config_settings"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='database_storage']" position="inside">
                 <div class="app_settings_block" data-string="Attachment Optimizer" string="Attachment Optimizer" attrs="{'invisible': [('module_attachment_optimizer', '=', False)]}">
