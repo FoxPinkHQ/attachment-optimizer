@@ -159,21 +159,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="state.recentOperations" t-as="op" t-key="op.id">
-                                <td class="o_col_name" t-esc="op.attachment_name"/>
-                                <td>
-                                    <span class="badge rounded-pill" t-att-class="'text-bg-' + (op.state === 'finalized' ? 'success' : (op.state === 'pending' || op.state === 'queued' || op.state === 'draft') ? 'warning' : (op.state === 'failed' || op.state === 'verification_failed') ? 'danger' : 'info')" t-esc="op.state_label"/>
-                                </td>
-                                <td class="text-muted">
-                                    <t t-esc="op.started_at and op.started_at.slice(0, 19).replace('T', ' ') or '—'"/>
-                                </td>
-                                <td class="text-end text-muted">
-                                    <t t-if="op.duration">
-                                        <t t-esc="op.duration &lt; 60 ? op.duration + 's' : Math.floor(op.duration / 60) + 'm ' + (op.duration % 60) + 's'"/>
-                                    </t>
-                                    <t t-else="">—</t>
-                                </td>
-                            </tr>
+                            <t t-if="state.recentOperations.length">
+                                <tr t-foreach="state.recentOperations" t-as="op" t-key="op.id">
+                                    <td class="o_col_name" t-esc="op.attachment_name"/>
+                                    <td>
+                                        <span class="badge rounded-pill" t-att-class="'text-bg-' + (op.state === 'finalized' ? 'success' : (op.state === 'pending' || op.state === 'queued' || op.state === 'draft') ? 'warning' : (op.state === 'failed' || op.state === 'verification_failed') ? 'danger' : 'info')" t-esc="op.state_label"/>
+                                    </td>
+                                    <td class="text-muted">
+                                        <t t-esc="op.started_at and op.started_at.slice(0, 19).replace('T', ' ') or '—'"/>
+                                    </td>
+                                    <td class="text-end text-muted">
+                                        <t t-if="op.duration">
+                                            <t t-esc="op.duration &lt; 60 ? op.duration + 's' : Math.floor(op.duration / 60) + 'm ' + (op.duration % 60) + 's'"/>
+                                        </t>
+                                        <t t-else="">—</t>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="4" class="o_empty_table_cell">
+                                        <i class="fa fa-inbox fa-2x text-muted d-block mb-2"/>
+                                        <span class="text-muted">No migration operations yet.</span>
+                                    </td>
+                                </tr>
+                            </t>
                         </tbody>
                     </table>
                 </div>

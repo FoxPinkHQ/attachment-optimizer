@@ -214,3 +214,10 @@ html .o_web_client > .o_action_manager {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* Empty table state */
+.o_empty_table_cell {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
