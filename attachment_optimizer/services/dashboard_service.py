@@ -8,7 +8,6 @@ class DashboardService:
 
     def get_kpi_data(self):
         Attachment = self.env['ir.attachment']
-        Mapping = self.env['attachment.storage.mapping']
         Operation = self.env['attachment.migration.operation']
 
         total = Attachment.search_count([
@@ -16,13 +15,13 @@ class DashboardService:
             ('store_fname', '!=', False),
         ])
 
-        migrated = Mapping.search_count([('status', '=', 'finalized')])
+        migrated = Operation.search_count([('state', '=', 'finalized')])
 
         self.env.cr.execute("""
             SELECT COALESCE(SUM(a.file_size), 0)
-            FROM attachment_storage_mapping m
-            JOIN ir_attachment a ON a.id = m.attachment_id
-            WHERE m.status = 'finalized'
+            FROM attachment_migration_operation o
+            JOIN ir_attachment a ON a.id = o.attachment_id
+            WHERE o.state = 'finalized'
         """)
         saved_bytes = self.env.cr.fetchone()[0]
 
@@ -60,24 +59,21 @@ class DashboardService:
         }
 
     def get_recent_operations(self, limit=10):
-        Operation = self.env['attachment.migration.operation']
-        ops = Operation.search([], limit=limit, order='create_date DESC')
-        result = []
-        for op in ops:
-            duration = False
-            if op.started_at and op.completed_at:
-                delta = op.completed_at - op.started_at
-                duration = int(delta.total_seconds())
-            result.append({
-                'id': op.id,
-                'attachment_name': op.attachment_id.display_name or op.attachment_id.name,
-                'state': op.state,
-                'started_at': op.started_at.isoformat() if op.started_at else None,
-                'completed_at': op.completed_at.isoformat() if op.completed_at else None,
-                'has_error': bool(op.error_message),
-                'duration': duration,
-            })
-        return result
+        ops = self.env['attachment.migration.operation'].search(
+            [], limit=limit, order='create_date DESC'
+        )
+        state_field = self.env['attachment.migration.operation']._fields['state']
+        state_map = dict(state_field.selection)
+        return [{
+            'id': op.id,
+            'attachment_name': op.attachment_id.display_name or op.attachment_id.name,
+            'state': op.state,
+            'state_label': state_map.get(op.state, op.state),
+            'started_at': op.started_at.isoformat() if op.started_at else None,
+            'completed_at': op.completed_at.isoformat() if op.completed_at else None,
+            'duration': int((op.completed_at - op.started_at).total_seconds())
+                if op.started_at and op.completed_at else None,
+        } for op in ops]
 
     def get_dashboard_data(self):
         ICP = self.env['ir.config_parameter'].sudo()
@@ -88,6 +84,7 @@ class DashboardService:
             **self.get_kpi_data(),
             'active_operation': self.get_active_operation(),
             'recent_operations': self.get_recent_operations(),
+            'recent_total': self.env['attachment.migration.operation'].search_count([]),
             's3_warning': not bucket,
             'last_analysis': last_analysis or False,
         }

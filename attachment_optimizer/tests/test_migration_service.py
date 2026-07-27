@@ -8,6 +8,10 @@ from ..services.s3_bridge import S3Bridge
 
 class TestMigrationService(TransactionCase):
 
+    def setUp(self):
+        super().setUp()
+        self.env['attachment.migration.operation'].search([]).unlink()
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

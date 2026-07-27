@@ -1,17 +1,25 @@
+import logging
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 from ..services.utils import human_size
 
+_logger = logging.getLogger(__name__)
+
 STATE_TRANSITIONS = {
     'draft': ['queued'],
     'queued': ['uploading', 'failed'],
-    'uploading': ['uploaded', 'failed'],
+    'uploading': ['uploaded', 'failed', 'queued'],
     'uploaded': ['verified', 'failed'],
     'verified': ['finalized'],
     'finalized': [],
     'failed': ['queued'],
 }
+
+ACTIVE_STATES = {'draft', 'queued', 'uploading', 'uploaded', 'verified'}
+TERMINAL_STATES = {'finalized', 'failed'}
+CLEAR_OWNERSHIP_STATES = {'finalized', 'failed', 'queued'}
 
 UPLOAD_BATCH_LIMIT = 100
 
@@ -44,6 +52,38 @@ class MigrationOperation(models.Model):
         ('finalized', 'Finalized'),
         ('failed', 'Failed'),
     ], string='State', default='draft', required=True)
+    is_active = fields.Boolean(
+        string='Active', default=True, index=True,
+        help="Controlled by state machine — true for non-terminal states",
+    )
+    processing_token = fields.Char(
+        string='Processing Token', readonly=True, copy=False,
+        help="UUID assigned when a worker claims this operation",
+    )
+    worker_id = fields.Char(
+        string='Worker ID', readonly=True, copy=False,
+        help="Identifier of the worker processing this operation",
+    )
+    claimed_at = fields.Datetime(
+        string='Claimed At', readonly=True, copy=False,
+    )
+    heartbeat_at = fields.Datetime(
+        string='Heartbeat', readonly=True, copy=False,
+    )
+    retry_of = fields.Many2one(
+        'attachment.migration.operation', string='Retry Of',
+        readonly=True, copy=False,
+        help="Previous operation that was retried to create this one",
+    )
+    root_operation_id = fields.Many2one(
+        'attachment.migration.operation', string='Root Operation',
+        readonly=True, copy=False, index=True,
+        help="Earliest operation in the retry chain",
+    )
+    attempt = fields.Integer(
+        string='Attempt', default=1, readonly=True,
+        help="Retry attempt number (1 = original)",
+    )
     error_message = fields.Text(string='Error Message', readonly=True)
     queued_at = fields.Datetime(string='Queued At', readonly=True)
     started_at = fields.Datetime(string='Started At', readonly=True)
@@ -68,6 +108,28 @@ class MigrationOperation(models.Model):
         string='Duration', compute='_compute_duration_display',
         readonly=True,
     )
+
+    _sql_constraints = []
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if 'state' in vals and 'is_active' not in vals:
+                vals['is_active'] = vals['state'] in ACTIVE_STATES
+        return super().create(vals_list)
+
+    def init(self):
+        super().init()
+        self.env.cr.execute("""
+            SELECT 1 FROM pg_class WHERE relname = 'uq_attachment_active_operation'
+        """)
+        if not self.env.cr.fetchone():
+            self.env.cr.execute("""
+                CREATE UNIQUE INDEX uq_attachment_active_operation
+                ON attachment_migration_operation (attachment_id)
+                WHERE is_active = TRUE
+            """)
+            _logger.info('Created partial unique index uq_attachment_active_operation')
 
     @api.depends('started_at', 'completed_at')
     def _compute_duration_display(self):
@@ -95,31 +157,107 @@ class MigrationOperation(models.Model):
                             record.state, vals['state']
                         )
                     )
+        if 'state' in vals:
+            vals['is_active'] = vals['state'] in ACTIVE_STATES
         return super().write(vals)
 
     @api.model
     def create_queue(self, attachment_ids):
-        existing = self.search([
-            ('attachment_id', 'in', attachment_ids),
-            ('state', 'not in', ('finalized', 'failed')),
-        ])
-        existing_ids = existing.mapped('attachment_id').ids
-        to_create = [a for a in attachment_ids if a not in existing_ids]
         now = fields.Datetime.now()
-        attachments = self.env['ir.attachment'].browse(to_create)
+        created = self.browse()
+        atts = self.env['ir.attachment'].browse(attachment_ids)
         company_map = {
             a.id: a.company_id.id if a.company_id else self.env.company.id
-            for a in attachments
+            for a in atts
         }
-        records = []
-        for att_id in to_create:
-            records.append({
+        for att_id in attachment_ids:
+            existing = self.search_count([
+                ('attachment_id', '=', att_id),
+                ('state', 'not in', ('finalized', 'failed')),
+            ])
+            if existing:
+                continue
+            op = self.create({
                 'attachment_id': att_id,
                 'company_id': company_map.get(att_id, self.env.company.id),
                 'state': 'queued',
                 'queued_at': now,
             })
-        return self.create(records)
+            created += op
+        return created
+
+    @api.model
+    def claim_batch(self, limit=10, worker_id=None):
+        import uuid
+        token = str(uuid.uuid4())
+        worker = worker_id or ('worker-%s' % token[:8])
+        self.env.cr.execute("""
+            WITH claimed AS (
+                SELECT id
+                FROM attachment_migration_operation
+                WHERE state = 'queued'
+                ORDER BY id
+                FOR UPDATE SKIP LOCKED
+                LIMIT %s
+            )
+            UPDATE attachment_migration_operation
+            SET
+                state = 'uploading',
+                processing_token = %s,
+                worker_id = %s,
+                claimed_at = NOW(),
+                heartbeat_at = NOW(),
+                started_at = NOW()
+            WHERE id IN (SELECT id FROM claimed)
+            RETURNING id
+        """, (limit, token, worker))
+        ids = [r[0] for r in self.env.cr.fetchall()]
+        claimed = self.browse(ids)
+        claimed.invalidate_recordset()
+        for op in claimed:
+            self.env['attachment.audit.log']._log(
+                'claim', result='success',
+                attachment_id=op.attachment_id.id,
+                operation_id=op.id,
+            )
+        return claimed
+
+    @api.model
+    def heartbeat(self, operation_id, processing_token):
+        self.env.cr.execute("""
+            UPDATE attachment_migration_operation
+            SET heartbeat_at = NOW()
+            WHERE id = %s AND processing_token = %s AND state = 'uploading'
+            RETURNING id
+        """, (operation_id, processing_token))
+        if not self.env.cr.fetchone():
+            raise ValidationError(
+                _('Heartbeat rejected: token mismatch or operation is not uploading')
+            )
+
+    def transition_state(self, target_state, **kwargs):
+        for record in self:
+            allowed = STATE_TRANSITIONS.get(record.state, [])
+            if target_state not in allowed:
+                raise ValidationError(
+                    _('Invalid state transition: %s → %s') % (
+                        record.state, target_state
+                    )
+                )
+            vals = {'state': target_state}
+            if target_state in CLEAR_OWNERSHIP_STATES:
+                vals.update({
+                    'processing_token': False,
+                    'worker_id': False,
+                    'claimed_at': False,
+                    'heartbeat_at': False,
+                })
+            for key in ('error_message', 'started_at', 'completed_at', 'queued_at',
+                        'mapping_id', 'processing_token', 'worker_id', 'claimed_at',
+                        'heartbeat_at'):
+                if key in kwargs:
+                    vals[key] = kwargs[key]
+            record.write(vals)
 
     def action_view_attachment(self):
         self.ensure_one()
@@ -141,26 +279,30 @@ class MigrationOperation(models.Model):
         }
 
     def action_retry(self):
+        created = self.env['attachment.migration.operation']
         for operation in self:
             if operation.mapping_id and operation.mapping_id.status in ('failed', 'verification_failed'):
                 operation.mapping_id.unlink()
-        self.write({
-            'mapping_id': False,
-            'state': 'queued',
-            'error_message': False,
-            'started_at': False,
-            'completed_at': False,
-            'queued_at': fields.Datetime.now(),
-        })
-        for record in self:
+            root_id = operation.root_operation_id.id or operation.id
+            new_op = self.create({
+                'attachment_id': operation.attachment_id.id,
+                'company_id': operation.company_id.id,
+                'state': 'queued',
+                'queued_at': fields.Datetime.now(),
+                'retry_of': operation.id,
+                'root_operation_id': root_id,
+                'attempt': operation.attempt + 1,
+            })
+            created += new_op
             self.env['attachment.audit.log']._log(
                 'retry', result='success',
-                attachment_id=record.attachment_id.id,
-                operation_id=record.id,
+                attachment_id=operation.attachment_id.id,
+                operation_id=new_op.id,
             )
+        return created
 
     def action_cancel(self):
-        self.write({'state': 'draft'})
+        self.transition_state('draft')
         for record in self:
             self.env['attachment.audit.log']._log(
                 'cancel', result='success',
@@ -191,7 +333,8 @@ class MigrationOperation(models.Model):
             'candidate_ids': candidates.ids,
         }
 
-    def action_analyze_and_queue(self, attachment_ids=None, *args):
+    @api.model
+    def action_analyze_and_queue(self, attachment_ids=None):
         from ..services.migration_service import MigrationService
         service = MigrationService(self.env)
         if attachment_ids:
@@ -252,6 +395,21 @@ class MigrationOperation(models.Model):
             },
         }
 
+    @api.model
+    def action_process_queue(self):
+        ops = self.search([('state', '=', 'queued')])
+        if not ops:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Process Queue'),
+                    'message': _('No queued operations to process'),
+                    'sticky': False,
+                },
+            }
+        return ops.action_upload()
+
     def action_retry_all_failed(self):
         failed = self.search([('state', '=', 'failed')])
         if not failed:
@@ -264,13 +422,47 @@ class MigrationOperation(models.Model):
                     'sticky': False,
                 },
             }
-        failed.action_retry()
+        created = failed.action_retry()
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _('Retry'),
-                'message': _('%d operation(s) re-queued') % len(failed),
+                'message': _('%d operation(s) re-queued') % len(created),
                 'sticky': False,
             },
         }
+
+    @api.model
+    def action_recovery(self):
+        """Called by cron — no import needed (safe_eval restriction)."""
+        from ..services.recovery_engine import RecoveryEngine, RecoveryMode
+        ICP = self.env['ir.config_parameter'].sudo()
+        if ICP.get_param('attachment_storage.recovery.enabled', 'True') != 'True':
+            return
+        limit = int(ICP.get_param('attachment_storage.recovery.limit', '500'))
+        engine = RecoveryEngine(self.env)
+        report = engine.recover(mode=RecoveryMode.REPAIR, limit=limit)
+        _logger.info(
+            'Recovery complete: scanned=%d recovered=%d errors=%d duration=%dms',
+            report.scanned, report.recovered,
+            len(report.rule_errors), report.duration_ms,
+        )
+
+    @api.model
+    def check_duplicates_pre_migration(self):
+        """Detect duplicate active operations before applying constraints."""
+        self.env.cr.execute("""
+            SELECT attachment_id, COUNT(*)
+            FROM attachment_migration_operation
+            WHERE state IN ('draft', 'queued', 'uploading', 'uploaded', 'verified')
+            GROUP BY attachment_id
+            HAVING COUNT(*) > 1
+        """)
+        duplicates = self.env.cr.fetchall()
+        if duplicates:
+            _logger.warning(
+                'Found %d attachment(s) with duplicate active operations: %s',
+                len(duplicates), [d[0] for d in duplicates]
+            )
+        return duplicates

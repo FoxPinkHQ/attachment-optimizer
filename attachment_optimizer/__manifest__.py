@@ -26,6 +26,7 @@
         "views/migration_views.xml",
         "views/audit_log_views.xml",
         "wizard/views/migration_confirm_views.xml",
+        "data/recovery_cron.xml",
     ],
     "demo": [
         "demo/attachment_optimizer_demo.xml",

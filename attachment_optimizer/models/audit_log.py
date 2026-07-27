@@ -22,9 +22,13 @@ class AuditLog(models.Model):
         ('analyze', 'Analyze'),
         ('migration_queue_created', 'Migration Queue Created'),
         ('queue', 'Queue'),
+        ('claim', 'Claim'),
+        ('heartbeat', 'Heartbeat'),
+        ('recover', 'Recover'),
         ('upload', 'Upload'),
         ('verify', 'Verify'),
         ('finalize', 'Finalize'),
+        ('verify_finalize', 'Verify & Finalize'),
         ('retry', 'Retry'),
         ('cancel', 'Cancel'),
     ], string='Action', required=True, index=True)
@@ -43,6 +47,22 @@ class AuditLog(models.Model):
         ('success', 'Success'),
         ('failure', 'Failure'),
     ], string='Result', required=True, default='success')
+    reason = fields.Selection([
+        ('heartbeat_timeout', 'Heartbeat Timeout'),
+        ('token_mismatch', 'Token Mismatch'),
+        ('partial_upload', 'Partial Upload'),
+        ('verify_failed', 'Verification Failed'),
+        ('stale_worker', 'Stale Worker'),
+        ('invalid_ownership', 'Invalid Ownership'),
+        ('manual', 'Manual'),
+    ], string='Recovery Reason')
+    rule = fields.Selection([
+        ('heartbeat_timeout', 'Heartbeat Timeout'),
+        ('invalid_ownership', 'Invalid Ownership'),
+        ('partial_upload', 'Partial Upload'),
+        ('verify_mismatch', 'Verify Mismatch'),
+        ('stale_worker', 'Stale Worker'),
+    ], string='Recovery Rule')
     error_message = fields.Text(string='Error Message')
     create_date = fields.Datetime(string='Timestamp', readonly=True)
 
@@ -63,7 +83,7 @@ class AuditLog(models.Model):
     @api.model
     def _log(self, action, result='success', attachment_id=None,
              attachment_name=None, res_model=None, operation_id=None,
-             mapping_id=None, error_message=None):
+             mapping_id=None, error_message=None, reason=None, rule=None):
         vals = {
             'user_id': self.env.user.id,
             'company_id': self.env.company.id,
@@ -75,6 +95,8 @@ class AuditLog(models.Model):
             'operation_id': operation_id,
             'mapping_id': mapping_id,
             'error_message': error_message,
+            'reason': reason,
+            'rule': rule,
         }
         return self.create(vals)
 

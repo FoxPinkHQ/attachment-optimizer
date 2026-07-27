@@ -5,6 +5,10 @@ from odoo.tests import TransactionCase
 
 class TestIntegration(TransactionCase):
 
+    def setUp(self):
+        super().setUp()
+        self.env['attachment.migration.operation'].search([]).unlink()
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -97,8 +101,7 @@ class TestIntegration(TransactionCase):
         actions = logs.mapped('action')
         self.assertIn('queue', actions)
         self.assertIn('upload', actions)
-        self.assertIn('verify', actions)
-        self.assertIn('finalize', actions)
+        self.assertIn('verify_finalize', actions)
         for log in logs:
             self.assertEqual(log.result, 'success',
                              'All steps must be success')

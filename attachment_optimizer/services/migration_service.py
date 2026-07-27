@@ -37,9 +37,6 @@ class MigrationService:
         ]
         if res_model:
             domain.append(('res_model', '=', res_model))
-        # Exclude Odoo web assets (JS/CSS bundles) to avoid FK conflicts.
-        # Bundles are stored as ir.attachment with res_model='ir.ui.view'
-        # and names like 'web.assets_web.min.js'.
         domain.append(('res_model', '!=', 'ir.ui.view'))
         attachments = self.env['ir.attachment'].search(domain)
         mapped = self.env['attachment.storage.mapping'].search([
@@ -84,21 +81,23 @@ class MigrationService:
             )
         return ops
 
-    def process_queue(self, batch_size=10):
-        queue = self.env['attachment.migration.operation'].search([
-            ('state', '=', 'queued'),
-        ], limit=batch_size)
+    def process_queue(self, batch_size=10, worker_id=None):
+        claimed = self.env['attachment.migration.operation'].claim_batch(
+            limit=batch_size, worker_id=worker_id,
+        )
         results = {'success': 0, 'failed': 0}
-        for op in queue:
+        for op in claimed:
             try:
                 self._process_single(op)
                 results['success'] += 1
             except Exception as e:
-                op.write({
-                    'state': 'failed',
-                    'error_message': str(e),
-                    'completed_at': fields.Datetime.now(),
-                })
+                op.transition_state(
+                    'failed',
+                    error_message=str(e),
+                    completed_at=fields.Datetime.now(),
+                )
+                if op.mapping_id:
+                    op.mapping_id.action_update_status('failed', error=str(e))
                 self._log_audit(
                     'upload', result='failure',
                     attachment_id=op.attachment_id.id,
@@ -112,6 +111,8 @@ class MigrationService:
         return results
 
     def _process_single(self, operation):
+        if operation.state == 'queued':
+            operation.transition_state('uploading', started_at=fields.Datetime.now())
         Mapping = self.env['attachment.storage.mapping']
         attachment = operation.attachment_id.sudo()
         bucket = self._get_default_bucket()
@@ -119,8 +120,6 @@ class MigrationService:
             'attachment_storage.s3.region', 'us-east-1'
         )
 
-        # 1. Uploading
-        operation.write({'state': 'uploading', 'started_at': fields.Datetime.now()})
         self._log_audit(
             'upload', result='success',
             attachment_id=attachment.id,
@@ -128,17 +127,16 @@ class MigrationService:
             operation_id=operation.id,
         )
 
-        # 2. Read binary and compute checksum
         binary = self._read_binary(attachment)
         checksum = hashlib.sha256(binary).hexdigest()
-
-        # 3. Build S3 key from content checksum
         s3_key = 'objects/%s/%s' % (checksum[:2], checksum)
 
-        # 4. Upload to S3
-        self._bridge.upload(bucket, s3_key, binary)
+        # HEAD before PUT for idempotent upload
+        if self._bridge.head(bucket, s3_key):
+            _logger.info('S3 object already exists, reusing: %s/%s', bucket, s3_key)
+        else:
+            self._bridge.upload(bucket, s3_key, binary)
 
-        # 5. Create mapping record
         mapping = Mapping.create_mapping(
             attachment_id=attachment.id,
             s3_bucket=bucket,
@@ -147,20 +145,19 @@ class MigrationService:
         )
         mapping.action_update_status('uploading')
         mapping.action_update_status('uploaded')
-        operation.write({'mapping_id': mapping.id, 'state': 'uploaded'})
+        operation.transition_state('uploaded', mapping_id=mapping.id)
 
-        # 6. Verify checksum — S3 object content matches original
         verified = self._bridge.verify(bucket, s3_key, checksum)
         if not verified:
             mapping.action_update_status(
                 'verification_failed',
                 error='Checksum mismatch after upload',
             )
-            operation.write({
-                'state': 'failed',
-                'error_message': 'Checksum mismatch',
-                'completed_at': fields.Datetime.now(),
-            })
+            operation.transition_state(
+                'failed',
+                error_message='Checksum mismatch',
+                completed_at=fields.Datetime.now(),
+            )
             self._log_audit(
                 'verify', result='failure',
                 attachment_id=attachment.id,
@@ -171,27 +168,13 @@ class MigrationService:
             )
             return
 
-        # 7. Mark verified — checksum confirmed, mapping stores verification state
         mapping.action_update_status('verified', checksum=checksum)
-        self._log_audit(
-            'verify', result='success',
-            attachment_id=attachment.id,
-            attachment_name=attachment.name,
-            operation_id=operation.id,
-            mapping_id=mapping.id,
-        )
+        operation.transition_state('verified')
 
-        # 8. Finalize — mapping records final state, attachment remains accessible
-        #    via Odoo default /web/content (store_fname and filestore unchanged).
-        #    Controller extension (FPAO-004) will intercept reads for finalized
-        #    mappings and serve from S3 transparently.
         mapping.action_update_status('finalized')
-        operation.write({
-            'state': 'finalized',
-            'completed_at': fields.Datetime.now(),
-        })
+        operation.transition_state('finalized', completed_at=fields.Datetime.now())
         self._log_audit(
-            'finalize', result='success',
+            'verify_finalize', result='success',
             attachment_id=attachment.id,
             attachment_name=attachment.name,
             operation_id=operation.id,

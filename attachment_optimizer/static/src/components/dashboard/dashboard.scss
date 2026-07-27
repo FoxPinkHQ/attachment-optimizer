@@ -2,8 +2,17 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 24px;
+    min-height: 100%;
+    position: relative;
 }
 
+html .o_web_client > .o_action_manager {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+}
+
+/* Empty state */
 .o_dashboard_empty {
     text-align: center;
     padding: 80px 24px;
@@ -22,6 +31,32 @@
     margin: 0 auto 24px;
 }
 
+/* First-load spinner */
+.o_dashboard_spinner_first {
+    text-align: center;
+    padding: 120px 24px;
+}
+
+.o_dashboard_spinner_first p {
+    margin-top: 16px;
+}
+
+/* Overlay spinner when data already loaded */
+.o_dashboard_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 0;
+}
+
+/* Header */
 .o_dashboard_header {
     display: flex;
     justify-content: space-between;
@@ -83,6 +118,13 @@
     color: #ef4444;
 }
 
+.o_kpi_link {
+    color: inherit !important;
+    font: inherit !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
 /* Progress Section */
 .o_progress_section {
     background: #fff;
@@ -92,8 +134,15 @@
     margin-bottom: 24px;
 }
 
-.o_progress_section h4 {
-    margin: 0 0 12px;
+.o_progress_header_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.o_progress_header_row h4 {
+    margin: 0;
 }
 
 .o_progress_header {
@@ -111,42 +160,57 @@
     padding: 20px;
 }
 
-.o_recent_section h4 {
-    margin: 0 0 12px;
+.o_recent_header_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.o_recent_header_row h4 {
+    margin: 0;
+}
+
+.o_recent_section {
+    margin-top: 16px;
+}
+
+.o_recent_header_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+    }
 }
 
 .o_recent_table {
-    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+
+    th {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #718096;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 8px 10px;
+    }
+
+    td {
+        padding: 8px 10px;
+        font-size: 0.875rem;
+        vertical-align: middle;
+    }
 }
 
-.o_recent_scroll {
-    max-height: 320px;
-    overflow-y: auto;
-}
-
-.o_recent_row {
-    display: grid;
-    grid-template-columns: 2fr 140px 1fr 100px;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 0.875rem;
-}
-
-.o_recent_header {
-    font-weight: 600;
-    color: #718096;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-.o_recent_row:last-child {
-    border-bottom: none;
-}
-
-.o_row_failed {
-    background: #fef2f2;
-}
-
-.o_col_state .badge {
-    font-size: 0.75rem;
+.o_col_name {
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

@@ -8,3 +8,6 @@ from . import test_s3_bridge
 from . import test_integration
 from . import test_uninstall
 from . import test_read_flow_edge_cases
+from . import test_queue
+from . import test_recovery_engine
+from . import test_health_engine

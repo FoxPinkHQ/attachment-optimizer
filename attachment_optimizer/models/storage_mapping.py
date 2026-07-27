@@ -5,6 +5,15 @@ from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
+STATUS_TRANSITIONS = {
+    'pending': ['uploading'],
+    'uploading': ['uploaded', 'failed'],
+    'uploaded': ['verified', 'verification_failed'],
+    'verified': ['finalized'],
+    'failed': ['pending'],
+    'verification_failed': ['pending'],
+}
+
 
 class StorageMapping(models.Model):
     _name = 'attachment.storage.mapping'
@@ -54,6 +63,25 @@ class StorageMapping(models.Model):
             res['s3_region'] = ICP.get_param('attachment_storage.s3.region', 'us-east-1')
         return res
 
+    def transition_status(self, target_status, **kwargs):
+        for record in self:
+            allowed = STATUS_TRANSITIONS.get(record.status, [])
+            if target_status not in allowed:
+                raise ValidationError(
+                    _('Invalid status transition from %(from)s to %(to)s') % {
+                        'from': record.status,
+                        'to': target_status,
+                    }
+                )
+            vals = {'status': target_status}
+            if 'checksum' in kwargs:
+                vals['checksum_sha256'] = kwargs['checksum']
+            if target_status == 'verified':
+                vals['verification_timestamp'] = fields.Datetime.now()
+            if 'error' in kwargs:
+                vals['error_message'] = kwargs['error']
+            record.write(vals)
+
     @api.model
     def create_mapping(self, attachment_id, s3_bucket, s3_key, s3_region, company_id=None):
         existing = self.search([('attachment_id', '=', attachment_id)])
@@ -90,31 +118,12 @@ class StorageMapping(models.Model):
         }
 
     def action_update_status(self, new_status, checksum=None, error=None):
-        valid_transitions = {
-            'pending': ['uploading'],
-            'uploading': ['uploaded', 'failed'],
-            'uploaded': ['verified', 'verification_failed'],
-            'verified': ['finalized'],
-            'failed': ['pending'],
-            'verification_failed': ['pending'],
-        }
-        for record in self:
-            allowed = valid_transitions.get(record.status, [])
-            if new_status not in allowed:
-                raise ValidationError(
-                    _('Invalid status transition from %(from)s to %(to)s') % {
-                        'from': record.status,
-                        'to': new_status,
-                    }
-                )
-            vals = {'status': new_status}
-            if checksum:
-                vals['checksum_sha256'] = checksum
-            if new_status == 'verified':
-                vals['verification_timestamp'] = fields.Datetime.now()
-            if error:
-                vals['error_message'] = error
-            record.write(vals)
+        kwargs = {}
+        if checksum:
+            kwargs['checksum'] = checksum
+        if error:
+            kwargs['error'] = error
+        self.transition_status(new_status, **kwargs)
 
     def action_reset(self):
         self.write({
@@ -163,5 +172,4 @@ class StorageMapping(models.Model):
     @api.model
     def action_get_dashboard_data(self):
         from ..services.dashboard_service import DashboardService
-        service = DashboardService(self.env)
-        return service.get_dashboard_data()
+        return DashboardService(self.env).get_dashboard_data()

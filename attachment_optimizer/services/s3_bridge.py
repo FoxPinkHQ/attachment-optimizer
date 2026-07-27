@@ -80,6 +80,16 @@ class S3Bridge:
             )
         )
 
+    def head(self, bucket, key):
+        def _do_head():
+            client = self._get_client()
+            client.head_object(Bucket=bucket, Key=key)
+            return True
+        try:
+            return self._retry_call(_do_head)
+        except S3BridgeError:
+            return False
+
     def upload(self, bucket, key, data, checksum=None):
         def _do_upload():
             client = self._get_client()

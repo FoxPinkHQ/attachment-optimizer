@@ -8,11 +8,17 @@
             <list>
                 <field name="create_date"/>
                 <field name="user_id"/>
-                <field name="action" widget="badge"/>
+                                    <field name="action" widget="badge"
+                       decoration-success="action in ('verify','finalize','verify_finalize','migration_queue_created')"
+                                            decoration-info="action in ('analyze','queue','claim','heartbeat')"
+                                            decoration-warning="action in ('upload','retry','recover')"
+                                            decoration-danger="action == 'cancel'"/>
                 <field name="attachment_id"/>
                 <field name="result" widget="badge"
                        decoration-success="result == 'success'"
                        decoration-danger="result == 'failure'"/>
+                <field name="reason" optional="show"/>
+                <field name="rule" optional="show"/>
                 <field name="error_message" optional="show"/>
             </list>
         </field>
@@ -46,10 +52,15 @@
                         <page string="Event Details">
                             <group>
                                 <group>
-                                    <field name="action" widget="badge"/>
+                <field name="action" widget="badge"
+                                           decoration-success="action in ('verify','finalize','verify_finalize','migration_queue_created')"
+                       decoration-info="action in ('analyze','queue','claim','heartbeat')"
+                       decoration-warning="action in ('upload','retry','recover')"
+                       decoration-danger="action == 'cancel'"/>
                                     <field name="result" widget="badge"
                                            decoration-success="result == 'success'"
                                            decoration-danger="result == 'failure'"/>
+                                    <field name="reason" invisible="not reason"/>
                                     <field name="create_date" string="Timestamp"/>
                                 </group>
                                 <group>
