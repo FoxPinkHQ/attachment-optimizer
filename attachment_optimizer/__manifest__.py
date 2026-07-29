@@ -8,7 +8,7 @@
         to S3-compatible object storage to reduce filestore footprint.
     """,
     "author": "FoxPink",
-    "website": "https://foxpink.dev",
+    "website": "https://github.com/FoxPinkHQ/attachment-optimizer",
     "license": "LGPL-3",
     "images": [
         "static/description/preview.png",
