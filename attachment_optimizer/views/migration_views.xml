@@ -105,26 +105,6 @@
         </field>
     </record>
 
-    <!-- ── Search View ───────────────────────────────────── -->
-    <record id="attachment_optimizer_migration_operation_search" model="ir.ui.view">
-        <field name="name">attachment.migration.operation.search</field>
-        <field name="model">attachment.migration.operation</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="attachment_id"/>
-                <field name="state"/>
-                <separator/>
-                <filter name="queued" string="Queued" domain="[('state', '=', 'queued')]"/>
-                <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
-                <filter name="finalized" string="Completed" domain="[('state', '=', 'finalized')]"/>
-
-                <group expand="0" string="Group By">
-                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
     <!-- ── Actions ────────────────────────────────────────── -->
     <record id="attachment_optimizer_migration_operation_action" model="ir.actions.act_window">
         <field name="name">Migration Operations</field>

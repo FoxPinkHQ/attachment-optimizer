@@ -64,19 +64,6 @@
         </field>
     </record>
 
-    <!-- ── Search View ───────────────────────────────────── -->
-    <record id="attachment_optimizer_storage_mapping_search" model="ir.ui.view">
-        <field name="name">attachment.storage.mapping.search</field>
-        <field name="model">attachment.storage.mapping</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="attachment_id"/>
-                <field name="s3_bucket"/>
-                <field name="status"/>
-            </search>
-        </field>
-    </record>
-
     <!-- ── Action ─────────────────────────────────────────── -->
     <record id="attachment_optimizer_storage_mapping_action" model="ir.actions.act_window">
         <field name="name">Managed Attachments</field>
