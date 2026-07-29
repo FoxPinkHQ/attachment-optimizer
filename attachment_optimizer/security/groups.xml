@@ -9,7 +9,6 @@
 
         <record id="group_storage_optimization_manager" model="res.groups">
             <field name="name">Storage Optimization Manager</field>
-            <field name="category_id" ref="module_category_storage_optimization"/>
         </record>
     </data>
 </odoo>
