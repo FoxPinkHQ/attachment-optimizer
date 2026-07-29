@@ -119,3 +119,76 @@ class S3Bridge:
             client = self._get_client()
             client.delete_object(Bucket=bucket, Key=key)
         self._retry_call(_do_delete)
+
+    @staticmethod
+    def compute_fingerprint(config):
+        import json
+        canonical = json.dumps(config, sort_keys=True, separators=(',', ':'))
+        return hashlib.sha256(canonical.encode()).hexdigest()
+
+    def get_config_fingerprint(self):
+        ICP = self.env['ir.config_parameter'].sudo()
+        config = {
+            'endpoint_url': ICP.get_param('attachment_storage.s3.endpoint_url', '') or '',
+            'bucket': ICP.get_param('attachment_storage.s3.bucket', '') or '',
+            'region': ICP.get_param('attachment_storage.s3.region', 'us-east-1'),
+            'access_key_id': ICP.get_param('attachment_storage.s3.access_key_id', '') or '',
+        }
+        return self.compute_fingerprint(config)
+
+    def test_connection(self):
+        ICP = self.env['ir.config_parameter'].sudo()
+        bucket = ICP.get_param('attachment_storage.s3.bucket')
+        endpoint = ICP.get_param('attachment_storage.s3.endpoint_url', '')
+
+        if not bucket:
+            return {
+                'status': 'error',
+                'error': 'S3 bucket is not configured.',
+                'latency_ms': 0,
+                'checks': [],
+            }
+
+        start = time.time()
+        checks = []
+
+        try:
+            client = self._get_client()
+
+            try:
+                client.head_bucket(Bucket=bucket)
+                checks.append({'name': 'Bucket Access', 'status': 'ok', 'detail': bucket})
+            except Exception as e:
+                err = str(e)
+                checks.append({'name': 'Bucket Access', 'status': 'error', 'detail': err})
+                return {
+                    'status': 'error',
+                    'error': err,
+                    'latency_ms': int((time.time() - start) * 1000),
+                    'checks': checks,
+                }
+
+            test_key = '.ao_health_check'
+            try:
+                client.put_object(Bucket=bucket, Key=test_key, Body=b'ok')
+                client.delete_object(Bucket=bucket, Key=test_key)
+                checks.append({'name': 'Write Permission', 'status': 'ok', 'detail': ''})
+            except Exception as e:
+                err = str(e)
+                checks.append({'name': 'Write Permission', 'status': 'error', 'detail': err})
+
+            latency = int((time.time() - start) * 1000)
+            all_ok = all(c['status'] == 'ok' for c in checks)
+            return {
+                'status': 'ok' if all_ok else 'warning',
+                'latency_ms': latency,
+                'checks': checks,
+                'error': '' if all_ok else checks[-1].get('detail', 'Unknown error'),
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'latency_ms': int((time.time() - start) * 1000),
+                'checks': checks,
+                'error': str(e),
+            }

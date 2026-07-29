@@ -75,6 +75,36 @@ class DashboardService:
                 if op.started_at and op.completed_at else None,
         } for op in ops]
 
+    def get_setup_progress(self):
+        from .s3_bridge import S3Bridge
+        ICP = self.env['ir.config_parameter'].sudo()
+        bucket = ICP.get_param('attachment_storage.s3.bucket')
+        s3_configured = bool(bucket)
+
+        current_digest = S3Bridge(self.env).get_config_fingerprint() if s3_configured else ''
+        verified_digest = ICP.get_param('attachment_storage.connection_verified_digest', '') or ''
+        analysis_digest = ICP.get_param('attachment_storage.analysis_digest', '') or ''
+
+        connection_verified = s3_configured and current_digest == verified_digest
+        storage_analyzed = s3_configured and current_digest == analysis_digest
+
+        if not s3_configured:
+            setup_step = 1
+        elif not connection_verified:
+            setup_step = 2
+        elif not storage_analyzed:
+            setup_step = 3
+        else:
+            setup_step = None
+
+        return {
+            'setup_step': setup_step,
+            'setup_complete': setup_step is None,
+            's3_configured': s3_configured,
+            'connection_verified': connection_verified,
+            'storage_analyzed': storage_analyzed,
+        }
+
     def get_dashboard_data(self):
         ICP = self.env['ir.config_parameter'].sudo()
         bucket = ICP.get_param('attachment_storage.s3.bucket')
@@ -87,4 +117,5 @@ class DashboardService:
             'recent_total': self.env['attachment.migration.operation'].search_count([]),
             's3_warning': not bucket,
             'last_analysis': last_analysis or False,
+            'setup_progress': self.get_setup_progress(),
         }

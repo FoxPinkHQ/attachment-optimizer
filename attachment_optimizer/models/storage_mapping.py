@@ -170,6 +170,19 @@ class StorageMapping(models.Model):
         })
 
     @api.model
+    def action_test_connection(self):
+        from ..services.s3_bridge import S3Bridge
+        bridge = S3Bridge(self.env)
+        result = bridge.test_connection()
+        if result['status'] == 'ok':
+            ICP = self.env['ir.config_parameter'].sudo()
+            ICP.set_param('attachment_storage.connection_verified_at',
+                          fields.Datetime.now().isoformat())
+            ICP.set_param('attachment_storage.connection_verified_digest',
+                          bridge.get_config_fingerprint())
+        return result
+
+    @api.model
     def action_get_dashboard_data(self):
         from ..services.dashboard_service import DashboardService
         return DashboardService(self.env).get_dashboard_data()

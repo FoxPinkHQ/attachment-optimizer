@@ -299,17 +299,17 @@ class RecoveryEngine:
         errors = []
         counter = defaultdict(int)
 
+        already_fixed = set()
         for rule_enum in _SORTED_RULES:
             if rule_enum not in active_rules or remaining <= 0:
                 continue
             handler = _HANDLERS[rule_enum]
             try:
-                op_ids = list(handler.detect(self.env, remaining, set()))
+                op_ids = list(handler.detect(self.env, remaining, already_fixed))
                 scanned += len(op_ids)
                 if not op_ids:
                     continue
                 if mode == RecoveryMode.REPAIR:
-                    skipped_ids = set()
                     entries = handler.repair(
                         self.env, op_ids,
                         reason=_RULE_REASONS[rule_enum],
@@ -318,8 +318,7 @@ class RecoveryEngine:
                         if e.repaired:
                             counter[rule_enum] += 1
                             remaining -= 1
-                        else:
-                            skipped_ids.add(e.operation_id)
+                            already_fixed.add(e.operation_id)
                     all_entries.extend(entries)
             except Exception as e:
                 _logger.exception('Rule %s failed', rule_enum.value)

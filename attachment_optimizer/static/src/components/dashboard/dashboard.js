@@ -23,7 +23,10 @@ export class StorageDashboard extends Component {
             analyzing: false,
             processingQueue: false,
             refreshing: false,
-            hasData: false,
+            testingConnection: false,
+            setupStep: null,
+            setupComplete: false,
+            connectionResult: null,
             s3Warning: false,
             lastAnalysis: false,
             kpi: {
@@ -57,7 +60,9 @@ export class StorageDashboard extends Component {
                 []
             );
             if (seq !== this._loadSeq) return;
-            this.state.hasData = data.total_attachments > 0;
+            const sp = data.setup_progress;
+            this.state.setupStep = sp.setup_step;
+            this.state.setupComplete = sp.setup_complete;
             this.state.s3Warning = data.s3_warning || false;
             this.state.lastAnalysis = data.last_analysis || false;
             this.state.kpi = {
@@ -135,6 +140,31 @@ export class StorageDashboard extends Component {
         }
         this._pollInFlight = false;
         this.state.pollActive = false;
+    }
+
+    async onTestConnection() {
+        this.state.testingConnection = true;
+        this.state.connectionResult = null;
+        try {
+            const result = await this.orm.call(
+                "attachment.storage.mapping",
+                "action_test_connection",
+                []
+            );
+            this.state.connectionResult = result;
+            if (result.status === 'ok') {
+                await this._loadDashboard();
+            }
+        } catch (err) {
+            this.state.connectionResult = {
+                status: 'error',
+                error: err.message || 'Connection test failed',
+                latency_ms: 0,
+                checks: [],
+            };
+        } finally {
+            this.state.testingConnection = false;
+        }
     }
 
     async onAnalyze() {
@@ -284,6 +314,8 @@ export class StorageDashboard extends Component {
             view_mode: "form",
             views: [[false, "form"]],
             target: "new",
+        }, {
+            onClose: () => this._loadDashboard(),
         });
     }
 

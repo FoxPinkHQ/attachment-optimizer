@@ -6,7 +6,7 @@
         <field name="name">attachment.migration.operation.tree</field>
         <field name="model">attachment.migration.operation</field>
         <field name="arch" type="xml">
-            <list>
+            <list create="false" delete="false">
                 <field name="attachment_id"/>
                 <field name="state" widget="badge"
                        decoration-warning="state == 'queued'"
@@ -30,7 +30,7 @@
                 <header>
                     <button name="action_upload" string="Upload to S3" type="object"
                             class="btn-primary"
-                            invisible="state not in ('queued', 'failed')"/>
+                            invisible="state != 'queued'"/>
                     <button name="action_retry" string="Retry" type="object"
                             invisible="state != 'failed'" class="btn-primary"/>
                 </header>
@@ -47,13 +47,13 @@
                         <page string="Overview">
                             <group>
                                 <group>
-                                    <field name="attachment_id"/>
+                                    <field name="attachment_id" readonly="1"/>
                                     <field name="state" widget="badge"
                                            decoration-warning="state == 'queued'"
                                            decoration-info="state in ('uploading','uploaded')"
                                            decoration-success="state in ('verified','finalized')"
                                            decoration-danger="state == 'failed'"/>
-                                    <field name="mapping_id"/>
+                                    <field name="mapping_id" readonly="1"/>
                                 </group>
                                 <group>
                                     <field name="queued_at"/>
@@ -94,27 +94,9 @@
                             </div>
                             <group string="Suggested Actions">
                                 <div class="o_suggested_actions">
-                                    <button name="action_retry" string="Retry" type="object"
-                                            class="btn btn-primary"
-                                            invisible="state != 'failed'"/>
                                     <button name="action_view_config" string="Check Configuration" type="object"
                                             class="btn btn-secondary"/>
                                 </div>
-                            </group>
-                        </page>
-
-                        <!-- ═══ Technical Tab ═══ -->
-                        <page string="Technical">
-                            <group>
-                                <group>
-                                    <field name="s3_bucket_related" string="S3 Bucket"/>
-                                    <field name="s3_key_related" string="S3 Key"/>
-                                    <field name="s3_region_related" string="S3 Region"/>
-                                </group>
-                                <group>
-                                    <field name="checksum_related" string="Checksum SHA256"/>
-                                    <field name="error_message" string="Raw Error"/>
-                                </group>
                             </group>
                         </page>
                     </notebook>
@@ -148,6 +130,7 @@
         <field name="name">Migration Operations</field>
         <field name="res_model">attachment.migration.operation</field>
         <field name="view_mode">list,form</field>
+        <field name="context">{'create': False, 'import': False}</field>
         <field name="help">
             No migration operations yet. Click the Action button (top-left toolbar) then
             "Create Migration Queue" to scan attachments and build the migration queue.

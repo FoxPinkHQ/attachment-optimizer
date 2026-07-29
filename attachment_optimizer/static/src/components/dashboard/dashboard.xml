@@ -1,194 +1,311 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
     <t t-name="attachment_optimizer.Dashboard">
-        <div class="o_dashboard">
-            <t t-if="!state.hasData">
-                <t t-if="state.loadingDashboard">
-                    <div class="o_dashboard_spinner_first">
-                        <i class="fa fa-spinner fa-spin fa-3x text-muted"/>
-                        <p class="text-muted">Loading dashboard…</p>
+        <t t-if="state.setupStep === null &amp;&amp; state.loadingDashboard">
+            <div class="o_dashboard_spinner_first">
+                <i class="fa fa-spinner fa-spin fa-3x text-muted"/>
+                <p class="text-muted">Loading dashboard…</p>
+            </div>
+        </t>
+        <t t-else="">
+            <div class="o_dashboard">
+                <t t-if="!state.setupComplete">
+                    <div class="o_setup_assistant">
+                        <div class="o_setup_header">
+                            <h2>Welcome to Attachment Optimizer</h2>
+                            <p class="text-muted">Complete the setup to start migrating attachments to S3-compatible storage.</p>
+                        </div>
+                        <div class="o_setup_steps">
+                            <!-- Step 1: Configure S3 -->
+                            <div class="o_setup_step"
+                                 t-att-class="'o_setup_step_' + (state.setupStep > 1 ? 'done' : state.setupStep === 1 ? 'active' : 'pending')">
+                                <div class="o_setup_step_number">
+                                    <t t-if="state.setupStep > 1">
+                                        <span class="o_setup_step_check">✓</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="o_setup_step_digit">1</span>
+                                    </t>
+                                </div>
+                                <div class="o_setup_step_content">
+                                    <div class="o_setup_step_header">
+                                        <h4>Configure S3 Storage</h4>
+                                        <span t-if="state.setupStep > 1" class="text-success small">Done</span>
+                                    </div>
+                                    <t t-if="state.setupStep === 1">
+                                        <div class="o_setup_step_body">
+                                            <p>Set up your S3-compatible bucket. You will need an endpoint URL, access key, and bucket name.</p>
+                                            <button class="btn btn-primary" t-on-click="onOpenConfig">
+                                                <i class="fa fa-cog"/> Configure Storage
+                                            </button>
+                                            <p class="text-muted small mt-2 mb-0">Opens the Settings panel to enter your S3 credentials.</p>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <!-- Step 2: Test Connection -->
+                            <div class="o_setup_step"
+                                 t-att-class="'o_setup_step_' + (state.setupStep > 2 ? 'done' : state.setupStep === 2 ? 'active' : 'pending')">
+                                <div class="o_setup_step_number">
+                                    <t t-if="state.setupStep > 2">
+                                        <span class="o_setup_step_check">✓</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="o_setup_step_digit">2</span>
+                                    </t>
+                                </div>
+                                <div class="o_setup_step_content">
+                                    <div class="o_setup_step_header">
+                                        <h4>Test S3 Connection</h4>
+                                        <span t-if="state.setupStep > 2" class="text-success small">Connected</span>
+                                    </div>
+                                    <t t-if="state.setupStep === 2">
+                                        <div class="o_setup_step_body">
+                                            <t t-if="!state.connectionResult">
+                                                <p>Verify that your S3 credentials and bucket are accessible.</p>
+                                                <button class="btn btn-primary" t-on-click="onTestConnection"
+                                                        t-att-disabled="state.testingConnection">
+                                                    <i t-if="state.testingConnection" class="fa fa-spinner fa-spin"/>
+                                                    <i t-else="" class="fa fa-plug"/>
+                                                    Test Connection
+                                                </button>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="o_setup_connection_result">
+                                                    <div class="o_setup_checks">
+                                                        <div t-foreach="state.connectionResult.checks" t-as="check" t-key="check_index" class="o_setup_check_row">
+                                                            <span t-if="check.status === 'ok'" class="text-success"><i class="fa fa-check-circle"/></span>
+                                                            <span t-else="" class="text-danger"><i class="fa fa-times-circle"/></span>
+                                                            <span t-esc="check.name"/>
+                                                            <t t-if="check.detail">
+                                                                <code class="text-muted small" t-esc="check.detail"/>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                    <p class="text-muted small mt-1 mb-2">
+                                                        Latency: <t t-esc="state.connectionResult.latency_ms"/> ms
+                                                        <t t-if="state.connectionResult.status === 'error'">
+                                                            — <t t-esc="state.connectionResult.error"/>
+                                                        </t>
+                                                    </p>
+                                                    <t t-if="state.connectionResult.status === 'ok'">
+                                                        <button class="btn btn-sm btn-outline-secondary" t-on-click="onTestConnection"
+                                                                t-att-disabled="state.testingConnection">
+                                                            <i t-if="state.testingConnection" class="fa fa-spinner fa-spin"/>
+                                                            <i t-else="" class="fa fa-repeat"/>
+                                                            Test Again
+                                                        </button>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <button class="btn btn-primary" t-on-click="onTestConnection"
+                                                                t-att-disabled="state.testingConnection">
+                                                            <i t-if="state.testingConnection" class="fa fa-spinner fa-spin"/>
+                                                            <i t-else="" class="fa fa-plug"/>
+                                                            Retry
+                                                        </button>
+                                                    </t>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <!-- Step 3: Analyze Storage -->
+                            <div class="o_setup_step"
+                                 t-att-class="'o_setup_step_' + (state.setupStep === 3 ? 'active' : state.setupStep > 3 ? 'done' : 'pending')">
+                                <div class="o_setup_step_number">
+                                    <t t-if="state.setupStep > 3">
+                                        <span class="o_setup_step_check">✓</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span class="o_setup_step_digit">3</span>
+                                    </t>
+                                </div>
+                                <div class="o_setup_step_content">
+                                    <div class="o_setup_step_header">
+                                        <h4>Analyze Storage</h4>
+                                        <span t-if="state.setupStep > 3" class="text-success small">Analyzed</span>
+                                    </div>
+                                    <t t-if="state.setupStep === 3">
+                                        <div class="o_setup_step_body">
+                                            <p>Scan your database attachments to find candidates for migration. This read-only operation does not modify any data.</p>
+                                            <button class="btn btn-primary" t-on-click="onAnalyze"
+                                                    t-att-disabled="state.analyzing">
+                                                <i t-if="state.analyzing" class="fa fa-spinner fa-spin"/>
+                                                <i t-else="" class="fa fa-search"/>
+                                                Analyze Storage
+                                            </button>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </t>
                 <t t-else="">
-                    <div class="o_dashboard_empty">
-                        <div class="o_dashboard_empty_icon">
-                            <i class="fa fa-database fa-4x text-muted"/>
+                    <t t-if="state.s3Warning">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-exclamation-triangle"/>
+                            S3 storage is not configured.
+                            <button class="btn btn-link alert-link p-0" t-on-click="onOpenConfig">Open Settings</button>
                         </div>
-                        <h3>Storage Optimization</h3>
-                        <p class="text-muted">
-                            No data yet. Start by analyzing your attachment storage.
-                            This scan is read-only and will not modify any data.
-                        </p>
-                        <button class="btn btn-primary btn-lg" t-on-click="onAnalyze"
-                                t-att-disabled="state.analyzing">
-                            <i t-if="state.analyzing" class="fa fa-spinner fa-spin"/>
-                            <i t-else="" class="fa fa-search"/>
-                            Analyze Storage
-                        </button>
-                    </div>
-                </t>
-            </t>
-            <t t-if="state.hasData">
-                <t t-if="state.s3Warning">
-                    <div class="alert alert-warning" role="alert">
-                        <i class="fa fa-exclamation-triangle"/>
-                        S3 storage is not configured.
-                        <button class="btn btn-link alert-link p-0" t-on-click="onOpenConfig">Open Settings</button>
-                    </div>
-                </t>
-                <div class="o_dashboard_header">
-                    <div>
-                        <h2>Storage Optimization</h2>
-                        <p class="text-muted d-flex align-items-center gap-2 mb-0">
-                            <span>Last analysis: <t t-esc="state.lastAnalysis or 'N/A'"/></span>
-                            <button class="btn btn-sm btn-link p-0" t-on-click="onRefresh"
-                                    t-att-disabled="state.loadingDashboard">
-                                <i t-att-class="'fa ' + (state.refreshing ? 'fa-spinner fa-spin' : 'fa-refresh')"/>
-                                Refresh
-                            </button>
-                            <t t-if="state.pollActive">
-                                <span class="badge rounded-pill text-bg-info">Live</span>
-                            </t>
-                        </p>
-                    </div>
-                    <div class="o_dashboard_actions">
-                        <button class="btn btn-primary" t-on-click="onAnalyze"
-                                t-att-disabled="state.analyzing">
-                            <i t-if="state.analyzing" class="fa fa-spinner fa-spin"/>
-                            <i t-else="" class="fa fa-search"/>
-                            Analyze Storage
-                        </button>
-                        <button class="btn btn-secondary" t-on-click="onCreateQueue"
-                                t-att-disabled="state.analyzing">
-                            <i class="fa fa-play"/> Create Migration Queue
-                        </button>
-                        <button class="btn btn-success" t-on-click="onProcessQueue"
-                                t-att-disabled="state.processingQueue">
-                            <i t-if="state.processingQueue" class="fa fa-spinner fa-spin"/>
-                            <i t-else="" class="fa fa-upload"/>
-                            Process Queue
-                        </button>
-                    </div>
-                </div>
-                <div class="o_dashboard_overlay" t-if="state.loadingDashboard">
-                    <i class="fa fa-spinner fa-spin fa-2x"/>
-                </div>
-                <div class="o_kpi_row">
-                    <div class="o_kpi_card">
-                        <div class="o_kpi_value"><t t-esc="state.kpi.total_attachments.toLocaleString()"/></div>
-                        <div class="o_kpi_label">Total Attachments</div>
-                    </div>
-                    <div class="o_kpi_card o_kpi_success">
-                        <div class="o_kpi_value"><t t-esc="state.kpi.migrated.toLocaleString()"/></div>
-                        <div class="o_kpi_label">Migrated</div>
-                    </div>
-                    <div class="o_kpi_card o_kpi_info">
-                        <div class="o_kpi_value"><t t-esc="state.kpi.saved_display"/></div>
-                        <div class="o_kpi_label">Storage Saved</div>
-                    </div>
-                    <div class="o_kpi_card" t-att-class="state.kpi.failed > 0 ? 'o_kpi_danger' : ''">
-                        <div class="o_kpi_value">
-                            <t t-if="state.kpi.failed > 0">
-                                <span class="o_kpi_link" t-on-click="onViewFailed"><t t-esc="state.kpi.failed.toLocaleString()"/></span>
-                            </t>
-                            <t t-else="">
-                                <t t-esc="state.kpi.failed.toLocaleString()"/>
-                            </t>
-                        </div>
-                        <div class="o_kpi_label">Failed
-                            <t t-if="state.kpi.failed > 0">
-                                <button class="btn btn-sm btn-link p-0 ms-1" t-on-click="onRetryAllFailed"
-                                        title="Retry all failed operations">
-                                    <i class="fa fa-repeat"/> Retry All
+                    </t>
+                    <div class="o_dashboard_header">
+                        <div>
+                            <h2>Storage Optimization</h2>
+                            <p class="text-muted d-flex align-items-center gap-2 mb-0">
+                                <span>Last analysis: <t t-esc="state.lastAnalysis or 'N/A'"/></span>
+                                <button class="btn btn-sm btn-link p-0" t-on-click="onRefresh"
+                                        t-att-disabled="state.loadingDashboard">
+                                    <i t-att-class="'fa ' + (state.refreshing ? 'fa-spinner fa-spin' : 'fa-refresh')"/>
+                                    Refresh
                                 </button>
-                            </t>
-                            <t t-else="">
-                                <span class="text-muted small ms-1" title="No failed operations">Retry All</span>
-                            </t>
-                        </div>
-                    </div>
-                </div>
-                <t t-if="state.activeOperation">
-                    <div class="o_progress_section">
-                        <div class="o_progress_header_row">
-                            <h4>Migration In Progress</h4>
-                            <span class="badge rounded-pill text-bg-info">
-                                <i class="fa fa-spinner fa-spin"/> Processing
-                            </span>
-                        </div>
-                        <div class="o_progress_header">
-                            <span>Operation #<t t-esc="state.activeOperation.id"/></span>
-                            <span><t t-esc="state.activeOperation.progress"/>%</span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
-                                 role="progressbar"
-                                 t-att-style="'width: ' + state.activeOperation.progress + '%'"
-                                 t-att-aria-valuenow="state.activeOperation.progress"
-                                 aria-valuemin="0" aria-valuemax="100"/>
-                        </div>
-                        <p class="text-muted small">
-                            <t t-esc="state.activeOperation.processed.toLocaleString()"/> / <t t-esc="state.activeOperation.total.toLocaleString()"/> attachments
-                        </p>
-                    </div>
-                </t>
-                <div class="o_recent_section">
-                    <div class="o_recent_header_row">
-                        <h4 class="mb-0">Migration Operations</h4>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted">
-                                <t t-esc="state.opTotal"/> operations —
-                                <t t-esc="state.kpi.migrated"/> finalized,
-                                <t t-if="state.kpi.failed > 0">
-                                    <a class="o_kpi_link" t-on-click="onViewFailed"><t t-esc="state.kpi.failed"/> failed</a>
+                                <t t-if="state.pollActive">
+                                    <span class="badge rounded-pill text-bg-info">Live</span>
                                 </t>
-                                <t t-else="">0 failed</t>
-                            </span>
-                            <button class="btn btn-sm btn-link" t-on-click="onViewAllOperations">
-                                View All <i class="fa fa-arrow-right"/>
+                            </p>
+                        </div>
+                        <div class="o_dashboard_actions">
+                            <button class="btn btn-primary" t-on-click="onAnalyze"
+                                    t-att-disabled="state.analyzing">
+                                <i t-if="state.analyzing" class="fa fa-spinner fa-spin"/>
+                                <i t-else="" class="fa fa-search"/>
+                                Analyze Storage
+                            </button>
+                            <button class="btn btn-secondary" t-on-click="onCreateQueue"
+                                    t-att-disabled="state.analyzing">
+                                <i class="fa fa-play"/> Create Migration Queue
+                            </button>
+                            <button class="btn btn-success" t-on-click="onProcessQueue"
+                                    t-att-disabled="state.processingQueue">
+                                <i t-if="state.processingQueue" class="fa fa-spinner fa-spin"/>
+                                <i t-else="" class="fa fa-upload"/>
+                                Process Queue
                             </button>
                         </div>
                     </div>
-                    <table class="o_recent_table table table-sm table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>Attachment</th>
-                                <th>Status</th>
-                                <th>Started</th>
-                                <th class="text-end">Duration</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-if="state.recentOperations.length">
-                                <tr t-foreach="state.recentOperations" t-as="op" t-key="op.id">
-                                    <td class="o_col_name" t-esc="op.attachment_name"/>
-                                    <td>
-                                        <span class="badge rounded-pill" t-att-class="'text-bg-' + (op.state === 'finalized' ? 'success' : (op.state === 'pending' || op.state === 'queued' || op.state === 'draft') ? 'warning' : (op.state === 'failed' || op.state === 'verification_failed') ? 'danger' : 'info')" t-esc="op.state_label"/>
-                                    </td>
-                                    <td class="text-muted">
-                                        <t t-esc="op.started_at and op.started_at.slice(0, 19).replace('T', ' ') or '—'"/>
-                                    </td>
-                                    <td class="text-end text-muted">
-                                        <t t-if="op.duration">
-                                            <t t-esc="op.duration &lt; 60 ? op.duration + 's' : Math.floor(op.duration / 60) + 'm ' + (op.duration % 60) + 's'"/>
-                                        </t>
-                                        <t t-else="">—</t>
-                                    </td>
-                                </tr>
-                            </t>
-                            <t t-else="">
+                    <div class="o_kpi_row">
+                        <div class="o_kpi_card">
+                            <div class="o_kpi_value"><t t-esc="state.kpi.total_attachments.toLocaleString()"/></div>
+                            <div class="o_kpi_label">Total Attachments</div>
+                        </div>
+                        <div class="o_kpi_card o_kpi_success">
+                            <div class="o_kpi_value"><t t-esc="state.kpi.migrated.toLocaleString()"/></div>
+                            <div class="o_kpi_label">Migrated</div>
+                        </div>
+                        <div class="o_kpi_card o_kpi_info">
+                            <div class="o_kpi_value"><t t-esc="state.kpi.saved_display"/></div>
+                            <div class="o_kpi_label">Storage Saved</div>
+                        </div>
+                        <div class="o_kpi_card" t-att-class="state.kpi.failed > 0 ? 'o_kpi_danger' : ''">
+                            <div class="o_kpi_value">
+                                <t t-if="state.kpi.failed > 0">
+                                    <span class="o_kpi_link" t-on-click="onViewFailed"><t t-esc="state.kpi.failed.toLocaleString()"/></span>
+                                </t>
+                                <t t-else="">
+                                    <t t-esc="state.kpi.failed.toLocaleString()"/>
+                                </t>
+                            </div>
+                            <div class="o_kpi_label">
+                                <span>Failed</span>
+                                <t t-if="state.kpi.failed > 0">
+                                    <button class="btn btn-sm btn-link p-0" t-on-click="onRetryAllFailed"
+                                            title="Retry all failed operations">
+                                        <i class="fa fa-repeat"/> Retry All
+                                    </button>
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted small" title="No failed operations">Retry All</span>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <t t-if="state.activeOperation">
+                        <div class="o_progress_section">
+                            <div class="o_progress_header_row">
+                                <h4>Migration In Progress</h4>
+                                <span class="badge rounded-pill text-bg-info">
+                                    <i class="fa fa-spinner fa-spin"/> Processing
+                                </span>
+                            </div>
+                            <div class="o_progress_header">
+                                <span>Operation #<t t-esc="state.activeOperation.id"/></span>
+                                <span><t t-esc="state.activeOperation.progress"/>%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                                     role="progressbar"
+                                     t-att-style="'width: ' + state.activeOperation.progress + '%'"
+                                     t-att-aria-valuenow="state.activeOperation.progress"
+                                     aria-valuemin="0" aria-valuemax="100"/>
+                            </div>
+                            <p class="text-muted small">
+                                <t t-esc="state.activeOperation.processed.toLocaleString()"/> / <t t-esc="state.activeOperation.total.toLocaleString()"/> attachments
+                            </p>
+                        </div>
+                    </t>
+                    <div class="o_recent_section">
+                        <div class="o_recent_header_row">
+                            <h4 class="mb-0">Migration Operations</h4>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-muted">
+                                    <t t-esc="state.opTotal"/> operations —
+                                    <t t-esc="state.kpi.migrated"/> finalized,
+                                    <t t-if="state.kpi.failed > 0">
+                                        <a class="o_kpi_link" t-on-click="onViewFailed"><t t-esc="state.kpi.failed"/> failed</a>
+                                    </t>
+                                    <t t-else="">0 failed</t>
+                                </span>
+                                <button class="btn btn-sm btn-link" t-on-click="onViewAllOperations">
+                                    View All <i class="fa fa-arrow-right"/>
+                                </button>
+                            </div>
+                        </div>
+                        <table class="o_recent_table table table-sm table-hover mb-0">
+                            <thead>
                                 <tr>
-                                    <td colspan="4" class="o_empty_table_cell">
-                                        <i class="fa fa-inbox fa-2x text-muted d-block mb-2"/>
-                                        <span class="text-muted">No migration operations yet.</span>
-                                    </td>
+                                    <th>Attachment</th>
+                                    <th>Status</th>
+                                    <th>Started</th>
+                                    <th class="text-end">Duration</th>
                                 </tr>
-                            </t>
-                        </tbody>
-                    </table>
-                </div>
-            </t>
-        </div>
+                            </thead>
+                            <tbody>
+                                <t t-if="state.recentOperations.length">
+                                    <tr t-foreach="state.recentOperations" t-as="op" t-key="op.id">
+                                        <td class="o_col_name" t-esc="op.attachment_name"/>
+                                        <td>
+                                            <span class="badge rounded-pill" t-att-class="'text-bg-' + (op.state === 'finalized' ? 'success' : (op.state === 'pending' || op.state === 'queued' || op.state === 'draft') ? 'warning' : (op.state === 'failed' || op.state === 'verification_failed') ? 'danger' : 'info')" t-esc="op.state_label"/>
+                                        </td>
+                                        <td class="text-muted">
+                                            <t t-esc="op.started_at and op.started_at.slice(0, 19).replace('T', ' ') or '—'"/>
+                                        </td>
+                                        <td class="text-end text-muted">
+                                            <t t-if="op.duration">
+                                                <t t-esc="op.duration &lt; 60 ? op.duration + 's' : Math.floor(op.duration / 60) + 'm ' + (op.duration % 60) + 's'"/>
+                                            </t>
+                                            <t t-else="">—</t>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="4" class="o_empty_table_cell">
+                                            <i class="fa fa-inbox fa-2x text-muted d-block mb-2"/>
+                                            <span class="text-muted">No migration operations yet.</span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-if="state.loadingDashboard">
+                    <div class="o_dashboard_overlay">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                    </div>
+                </t>
+            </div>
+        </t>
     </t>
-
 </templates>

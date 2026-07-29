@@ -272,15 +272,27 @@ class MigrationOperation(models.Model):
     def action_view_config(self):
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'ir.config_parameter',
-            'view_mode': 'list',
-            'domain': [('key', '=ilike', 'attachment_storage%')],
-            'name': 'S3 Configuration',
+            'res_model': 'res.config.settings',
+            'view_mode': 'form',
+            'views': [[False, 'form']],
+            'target': 'new',
+            'name': 'Attachment Optimizer Settings',
         }
 
     def action_retry(self):
         created = self.env['attachment.migration.operation']
+        active_attachment_ids = set(
+            self.env.cr.execute("""
+                SELECT DISTINCT attachment_id FROM attachment_migration_operation
+                WHERE is_active = TRUE
+            """) or self.env.cr.fetchall()
+        )
+        active_attachments = {r[0] for r in active_attachment_ids} if active_attachment_ids else set()
         for operation in self:
+            if operation.attachment_id.id in active_attachments:
+                _logger.info('Retry skipped for attachment %s: already active',
+                             operation.attachment_id.id)
+                continue
             if operation.mapping_id and operation.mapping_id.status in ('failed', 'verification_failed'):
                 operation.mapping_id.unlink()
             root_id = operation.root_operation_id.id or operation.id
@@ -336,12 +348,18 @@ class MigrationOperation(models.Model):
     @api.model
     def action_analyze_and_queue(self, attachment_ids=None):
         from ..services.migration_service import MigrationService
+        from ..services.s3_bridge import S3Bridge
         service = MigrationService(self.env)
         if attachment_ids:
             candidates = self.env['ir.attachment'].browse(attachment_ids).exists()
         else:
             candidates = service.analyze_candidates()
         ops = service.create_migration_operations(candidates.ids)
+        ICP = self.env['ir.config_parameter'].sudo()
+        ICP.set_param('attachment_storage.last_analysis',
+                      fields.Datetime.now().isoformat())
+        ICP.set_param('attachment_storage.analysis_digest',
+                      S3Bridge(self.env).get_config_fingerprint())
         self.env['attachment.audit.log']._log(
             'migration_queue_created', result='success',
             attachment_name='%d operations queued' % len(ops),
@@ -446,7 +464,7 @@ class MigrationOperation(models.Model):
         _logger.info(
             'Recovery complete: scanned=%d recovered=%d errors=%d duration=%dms',
             report.scanned, report.recovered,
-            len(report.rule_errors), report.duration_ms,
+            len(report.errors), report.duration_ms,
         )
 
     @api.model

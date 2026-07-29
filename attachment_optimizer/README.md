@@ -28,7 +28,8 @@ pip install boto3
 
 ## Configuration
 
-Set the following system parameters (Settings → System Parameters):
+Open **Settings → General Settings → Attachment Optimizer** to configure S3 credentials via the dedicated form.
+Alternatively, set the following system parameters (Settings → System Parameters):
 
 | Key | Description |
 |-----|-------------|

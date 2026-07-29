@@ -11,7 +11,6 @@
               name="Dashboard"
               parent="storage_optimization_menu"
               action="attachment_optimizer_dashboard_action"
-              groups="group_storage_optimization_manager"
               sequence="5"/>
     </data>
 </odoo>

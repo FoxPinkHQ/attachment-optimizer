@@ -51,6 +51,9 @@ class ResConfigSettings(models.TransientModel):
             from ..services.s3_bridge import S3Bridge
             bridge = S3Bridge(self.env)
             bridge.head(bucket, '__health_check__')
+            ICP = self.env['ir.config_parameter'].sudo()
+            ICP.set_param('attachment_storage.connection_verified_at', fields.Datetime.now().isoformat())
+            ICP.set_param('attachment_storage.connection_verified_digest', bridge.get_config_fingerprint())
         except Exception as e:
             msg = str(e)
             if 'NoSuchBucket' in msg:

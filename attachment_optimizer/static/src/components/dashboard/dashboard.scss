@@ -99,6 +99,11 @@ html .o_web_client > .o_action_manager {
 .o_kpi_label {
     font-size: 0.875rem;
     color: #718096;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
 }
 
 .o_kpi_success .o_kpi_value {
@@ -223,4 +228,168 @@ html .o_web_client > .o_action_manager {
     display: table-cell;
     vertical-align: middle;
     color: #6c757d;
+}
+
+/* Setup Assistant */
+.o_setup_assistant {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 0;
+}
+
+.o_setup_header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.o_setup_header h2 {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.o_setup_header p {
+    font-size: 1rem;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.o_setup_steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.o_setup_step {
+    display: flex;
+    gap: 20px;
+    padding: 24px 28px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    background: #fff;
+    align-items: flex-start;
+}
+
+.o_setup_step_active {
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.12);
+    border-color: #93c5fd;
+}
+
+.o_setup_step_done {
+    background: #fafbfc;
+    align-items: center;
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.o_setup_step_pending {
+    opacity: 0.55;
+    align-items: center;
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.o_setup_step_number {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.o_setup_step_active .o_setup_step_number {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 2px solid #2563eb;
+}
+
+.o_setup_step_done .o_setup_step_number {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 2px solid #bbf7d0;
+}
+
+.o_setup_step_pending .o_setup_step_number {
+    background: #f1f5f9;
+    color: #94a3b8;
+    border: 2px solid #e2e8f0;
+}
+
+.o_setup_step_check {
+    font-size: 1.1rem;
+}
+
+.o_setup_step_digit {
+    font-size: 0.95rem;
+}
+
+.o_setup_step_content {
+    flex: 1;
+    min-width: 0;
+}
+
+.o_setup_step_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.o_setup_step_header h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.o_setup_step_body {
+    margin-top: 12px;
+}
+
+.o_setup_step_body p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    max-width: 520px;
+}
+
+/* Connection test result */
+.o_setup_connection_result {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 8px;
+}
+
+.o_setup_checks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.o_setup_check_row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.o_setup_check_row code {
+    font-size: 0.8rem;
+    background: #f1f5f9;
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.o_setup_check_row .fa-check-circle {
+    font-size: 1.1rem;
+}
+
+.o_setup_check_row .fa-times-circle {
+    font-size: 1.1rem;
 }
