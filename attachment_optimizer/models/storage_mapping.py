@@ -186,3 +186,23 @@ class StorageMapping(models.Model):
     def action_get_dashboard_data(self):
         from ..services.dashboard_service import DashboardService
         return DashboardService(self.env).get_dashboard_data()
+
+    @api.model
+    def action_run_health_check(self):
+        from ..services.health_engine import HealthEngine
+        engine = HealthEngine(self.env)
+        report = engine.check()
+        return {
+            'status': report.status.value,
+            'duration_ms': report.duration_ms,
+            'checks': report.checks,
+            'passed': report.passed,
+            'findings': [{
+                'domain': f.domain.value,
+                'severity': f.severity.value,
+                'code': f.code,
+                'message': f.message,
+                'recommendation': f.recommendation,
+                'reference': f.reference,
+            } for f in report.findings],
+        }

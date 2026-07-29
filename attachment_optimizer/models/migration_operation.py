@@ -109,8 +109,6 @@ class MigrationOperation(models.Model):
         readonly=True,
     )
 
-    _sql_constraints = []
-
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -467,20 +465,4 @@ class MigrationOperation(models.Model):
             len(report.errors), report.duration_ms,
         )
 
-    @api.model
-    def check_duplicates_pre_migration(self):
-        """Detect duplicate active operations before applying constraints."""
-        self.env.cr.execute("""
-            SELECT attachment_id, COUNT(*)
-            FROM attachment_migration_operation
-            WHERE state IN ('draft', 'queued', 'uploading', 'uploaded', 'verified')
-            GROUP BY attachment_id
-            HAVING COUNT(*) > 1
-        """)
-        duplicates = self.env.cr.fetchall()
-        if duplicates:
-            _logger.warning(
-                'Found %d attachment(s) with duplicate active operations: %s',
-                len(duplicates), [d[0] for d in duplicates]
-            )
-        return duplicates
+
