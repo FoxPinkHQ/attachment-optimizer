@@ -94,7 +94,7 @@
                 <separator/>
                 <filter name="success" string="Success" domain="[('result', '=', 'success')]"/>
                 <filter name="failure" string="Failure" domain="[('result', '=', 'failure')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_action" string="Action" context="{'group_by': 'action'}"/>
                     <filter name="group_by_result" string="Result" context="{'group_by': 'result'}"/>
                     <filter name="group_by_user" string="User" context="{'group_by': 'user_id'}"/>

@@ -118,7 +118,7 @@
                 <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
                 <filter name="finalized" string="Completed" domain="[('state', '=', 'finalized')]"/>
 
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
                 </group>
             </search>

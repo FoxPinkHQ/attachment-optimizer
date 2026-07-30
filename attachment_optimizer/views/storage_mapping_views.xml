@@ -79,7 +79,7 @@
                 <filter name="pending" string="Waiting" domain="[('status', '=', 'pending')]"/>
                 <filter name="finalized" string="Completed" domain="[('status', '=', 'finalized')]"/>
                 <filter name="verification_failed" string="Needs Attention" domain="[('status', '=', 'verification_failed')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
                     <filter name="group_by_bucket" string="Bucket" context="{'group_by': 's3_bucket'}"/>
                 </group>
