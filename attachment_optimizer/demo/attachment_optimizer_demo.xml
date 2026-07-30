@@ -303,6 +303,9 @@
             <field name="queued_at" eval="datetime.now()"/>
         </record>
 
+    </data>
+    <data noupdate="1">
+
         <!-- Audit Logs -->
         <record id="demo_audit_01" model="attachment.audit.log">
             <field name="action">migration_queue_created</field>
