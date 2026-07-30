@@ -1,6 +1,6 @@
 ﻿# Attachment Optimizer
 
-> **Reduce Odoo filestore growth by moving attachments to S3-compatible storage while keeping full rollback safety.**
+> **Reduce Odoo filestore size by up to 95% while keeping full rollback safety.**
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
@@ -191,3 +191,4 @@ Every supported Odoo version has its own dedicated branch and release package.
 ## License
 
 **LGPL-3** — see [LICENSE](LICENSE).
+
