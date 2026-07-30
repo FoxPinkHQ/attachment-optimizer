@@ -35,7 +35,7 @@
 **Option 2 - Git:**
 
 ```bash
-git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> Update Apps List**, search for "Attachment Optimizer", and install.
@@ -55,7 +55,7 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 
 | Odoo Version | Status |
 |---|---|
-| 18.0 | ✅ This branch |
+| 19.0 | ✅ This branch |
 
 Each series has its own git branch and validated release ZIP. Install the build matching your Odoo version.
 
