@@ -7,7 +7,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'PDF invoice for order 1042 - Demo Company')"/>
+            <field name="raw">UERGIGludm9pY2UgZm9yIG9yZGVyIDEwNDIgLSBEZW1vIENvbXBhbnk=</field>
         </record>
 
         <record id="demo_attachment_02" model="ir.attachment">
@@ -15,7 +15,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'PDF invoice for order 1043 - Demo Company')"/>
+            <field name="raw">UERGIGludm9pY2UgZm9yIG9yZGVyIDEwNDMgLSBEZW1vIENvbXBhbnk=</field>
         </record>
 
         <record id="demo_attachment_03" model="ir.attachment">
@@ -23,7 +23,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'DOCX contract for VIP partner A - Demo')"/>
+            <field name="raw">RE9DWCBjb250cmFjdCBmb3IgVklQIHBhcnRuZXIgQSAtIERlbW8=</field>
         </record>
 
         <record id="demo_attachment_04" model="ir.attachment">
@@ -31,7 +31,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'DOCX contract for VIP partner B - Demo')"/>
+            <field name="raw">RE9DWCBjb250cmFjdCBmb3IgVklQIHBhcnRuZXIgQiAtIERlbW8=</field>
         </record>
 
         <record id="demo_attachment_05" model="ir.attachment">
@@ -39,7 +39,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'XLSX product catalog 2026')"/>
+            <field name="raw">WExTWCBwcm9kdWN0IGNhdGFsb2cgMjAyNg==</field>
         </record>
 
         <record id="demo_attachment_06" model="ir.attachment">
@@ -47,7 +47,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'PDF receipt payment receipt May 2026')"/>
+            <field name="raw">UERGIHJlY2VpcHQgcGF5bWVudCByZWNlaXB0IE1heSAyMDI2</field>
         </record>
 
         <record id="demo_attachment_07" model="ir.attachment">
@@ -55,7 +55,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'PDF shipping label 1042')"/>
+            <field name="raw">UERGIHNoaXBwaW5nIGxhYmVsIDEwNDI=</field>
         </record>
 
         <record id="demo_attachment_08" model="ir.attachment">
@@ -63,7 +63,7 @@
             <field name="type">binary</field>
             <field name="mimetype">image/jpeg</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'\xff\xd8\xff\xe0\x00\x10JFIF')"/>
+            <field name="raw">/9j/4AAQSkZJRg==</field>
         </record>
 
         <record id="demo_attachment_09" model="ir.attachment">
@@ -71,7 +71,7 @@
             <field name="type">binary</field>
             <field name="mimetype">image/jpeg</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'\xff\xd8\xff\xe0\x00\x10JFIF')"/>
+            <field name="raw">/9j/4AAQSkZJRg==</field>
         </record>
 
         <record id="demo_attachment_10" model="ir.attachment">
@@ -79,7 +79,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'PDF tax declaration Q1 2026')"/>
+            <field name="raw">UERGIHRheCBkZWNsYXJhdGlvbiBRMSAyMDI2</field>
         </record>
 
         <record id="demo_attachment_11" model="ir.attachment">
@@ -87,7 +87,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'PDF bank statement January 2026')"/>
+            <field name="raw">UERGIGJhbmsgc3RhdGVtZW50IEphbnVhcnkgMjAyNg==</field>
         </record>
 
         <record id="demo_attachment_12" model="ir.attachment">
@@ -95,7 +95,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw" eval="base64.b64encode(b'DOCX contract template')"/>
+            <field name="raw">RE9DWCBjb250cmFjdCB0ZW1wbGF0ZQ==</field>
         </record>
 
         <!-- Storage Mappings with various statuses for screenshot -->
