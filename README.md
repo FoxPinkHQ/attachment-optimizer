@@ -1,10 +1,10 @@
 # Attachment Optimizer
 
-> S3 storage migration and optimization for Odoo attachments — **Odoo 19.0** Community Edition.
+> S3 storage migration and optimization for **Odoo 18.0** Community Edition.
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 18.0.2.1.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ## Features
 
@@ -35,14 +35,14 @@
 **Option 2 - Git:**
 
 ```bash
-git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> Update Apps List**, search for "Attachment Optimizer", and install.
 
 ## Configuration
 
-1. **S3 Credentials:** Settings -> General Settings -> Attachment Optimizer -- enter endpoint URL, region, access key, secret key and bucket name
+1. **S3 Credentials:** Settings -> Attachment Optimizer -- enter endpoint URL, region, access key, secret key and bucket name
 2. **Test Connection:** click "Test Connection" to verify S3 reachability
 3. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
 
@@ -55,8 +55,8 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 
 | Odoo Version | Status |
 |---|---|
-| 19.0 | ✅ This branch |
-| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
+| 19.0 | [Branch 19.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/19.0) |
+| 18.0 | ✅ This branch |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
