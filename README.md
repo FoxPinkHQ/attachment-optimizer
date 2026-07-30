@@ -8,12 +8,11 @@
 
 ## Why use Attachment Optimizer?
 
-- **Reduce local storage usage** — move attachments to S3-compatible storage
-- **Keep existing Odoo workflows unchanged** — transparent serving from S3
-- **Migrate gradually with full visibility** — queue-based, visible progress
-- **Retry failed uploads safely** — idempotent, no duplicates prevented duplicates prevented
-- **Verify every migrated object** — SHA-256 checksum on every file
-- **Preserve rollback capability** — original filestore never deleted
+- **Reduce backup time** — from hours to minutes
+- **Reduce VPS storage cost** — S3 0.02$/GB vs local SSD 0.10$/GB
+- **Move attachments safely** — copy, verify, serve; original never deleted
+- **Zero downtime** — attachments stay accessible during migration
+- **Rollback anytime** — original filestore preserved, no data deleted
 
 ## Features
 
@@ -70,7 +69,7 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 
 1. **S3 Credentials:** Settings → Attachment Optimizer — enter endpoint URL, region, access key, secret key, bucket name
 2. **Test Connection:** click "Test Connection" to verify S3 reachability
-4. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
+3. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
 
 > **Recommended:** Use the Settings page instead of editing System Parameters manually.
 
