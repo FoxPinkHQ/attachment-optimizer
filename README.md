@@ -2,7 +2,7 @@
 
 > S3 storage migration and optimization for **Odoo 19.0** Community Edition.
 
-![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
+![Attachment Optimizer](attachment_optimizer/static/description/banner.png)
 
 **Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
@@ -45,10 +45,13 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 1. **S3 Credentials:** Settings -> General Settings -> Attachment Optimizer -- enter endpoint URL, region, access key, secret key and bucket name
 2. **Test Connection:** click "Test Connection" to verify S3 reachability
 3. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
+4. **Dashboard access:** grant users the "Storage Optimization Manager" group to access the dashboard
 
 ## Dependencies
 
 - `base` (always)
+- `mail` (email notifications)
+- `portal` (customer access)
 - `web` (dashboard OWL components)
 
 ## Compatibility
@@ -56,8 +59,29 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 | Odoo Version | Status |
 |---|---|
 | 19.0 | ✅ This branch |
+| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
+| 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
+| 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
+| 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
+| 14.0 | [Branch 14.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/14.0) |
 
 Each series has its own git branch and validated release ZIP. Install the build matching your Odoo version.
+
+## Community vs Pro
+
+| Feature | Community | Pro |
+|---|---|---|
+| Migration pipeline | Yes | Yes |
+| Checksum verification | Yes | Yes |
+| Dashboard & KPI | Yes | Yes |
+| S3 bridge | Yes | Yes |
+| Audit trail | Yes | Yes |
+| Retry & resume | Yes | Yes |
+| Recovery engine | Yes | Yes |
+| Health engine | Yes | Yes |
+| Advanced analytics | -- | Yes |
+| Multi-bucket support | -- | Yes |
+| Scheduled migrations | -- | Yes |
 
 ## Support
 
