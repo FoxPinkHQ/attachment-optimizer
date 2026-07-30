@@ -4,13 +4,11 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 — **License:** LGPL-3 — **Publisher:** FoxPink — **Validated release available for every Odoo series from 14.0 to 19.0.**
+**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- **Validated release available for every Odoo series from 14.0 to 19.0.**
 
 ---
 
 ## Why use Attachment Optimizer?
-
-Attachment Optimizer helps organizations keep Odoo storage under control by moving binary attachments to S3-compatible object storage without changing existing business workflows. The migration is verifiable, auditable, and fully reversible because original filestore data is preserved.
 
 | Problem | Solution |
 |--------|----------|
@@ -107,14 +105,14 @@ Migration Service      Health Engine
 
 ## Screenshots
 
-![01 Dashboard](attachment_optimizer/static/description/screenshot_01_dashboard.png)
-![02 Settings](attachment_optimizer/static/description/screenshot_02_settings.png)
-![03 Storage Mapping List](attachment_optimizer/static/description/screenshot_03_storage_mapping_list.png)
-![04 Storage Mapping Form](attachment_optimizer/static/description/screenshot_04_storage_mapping_form.png)
-![05 Migration Queue](attachment_optimizer/static/description/screenshot_05_migration_operation_list.png)
-![06 Migration Operation Form](attachment_optimizer/static/description/screenshot_06_migration_operation_form.png)
-![07 Audit Logs](attachment_optimizer/static/description/screenshot_07_audit_log_list.png)
-![08 Access Rights](attachment_optimizer/static/description/screenshot_08_access_rights.png)
+![Storage Mappings List](attachment_optimizer/static/description/screenshot_01_storage_mapping_list.png)
+![Storage Mapping Form](attachment_optimizer/static/description/screenshot_02_storage_mapping_form.png)
+![Migration Operations List](attachment_optimizer/static/description/screenshot_03_migration_operation_list.png)
+![Migration Operation Form](attachment_optimizer/static/description/screenshot_04_migration_operation_form.png)
+![Audit Log List](attachment_optimizer/static/description/screenshot_05_audit_log_list.png)
+![Storage Mappings Search](attachment_optimizer/static/description/screenshot_06_storage_mapping_search.png)
+![Settings](attachment_optimizer/static/description/screenshot_07_settings.png)
+![Access Rights / Groups](attachment_optimizer/static/description/screenshot_08_access_rights.png)
 
 ---
 
