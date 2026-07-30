@@ -19,13 +19,16 @@
 
 ## Screenshots
 
-![Dashboard](attachment_optimizer/static/description/screenshot_01_dashboard.png)
-![Settings](attachment_optimizer/static/description/screenshot_02_settings.png)
-![Managed Attachments](attachment_optimizer/static/description/screenshot_03_managed_attachments.png)
-![Storage Mapping Form](attachment_optimizer/static/description/screenshot_04_storage_mapping_form.png)
-![Migration Operations](attachment_optimizer/static/description/screenshot_05_migration_operations.png)
-![Migration Operation Form](attachment_optimizer/static/description/screenshot_06_migration_form.png)
-![Audit Log](attachment_optimizer/static/description/screenshot_07_audit_logs.png)
+| | |
+|---|---|
+| ![Storage Mappings List](attachment_optimizer/static/description/screenshot_01_storage_mapping_list.png) | ![Storage Mapping Form](attachment_optimizer/static/description/screenshot_02_storage_mapping_form.png) |
+| **Storage Mappings List** | **Storage Mapping Form** |
+| ![Migration Operations List](attachment_optimizer/static/description/screenshot_03_migration_operation_list.png) | ![Migration Operation Form](attachment_optimizer/static/description/screenshot_04_migration_operation_form.png) |
+| **Migration Operations List** | **Migration Operation Form** |
+| ![Audit Log List](attachment_optimizer/static/description/screenshot_05_audit_log_list.png) | ![Storage Mappings Search](attachment_optimizer/static/description/screenshot_06_storage_mapping_search.png) |
+| **Audit Log List** | **Storage Mappings Search** |
+| ![Settings (System)](attachment_optimizer/static/description/screenshot_07_settings.png) | ![Access Rights / Groups](attachment_optimizer/static/description/screenshot_08_access_rights.png) |
+| **Settings — Attachment Optimizer tab** | **Access Rights / Groups** |
 
 ## Installation
 
@@ -41,7 +44,7 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 
 ## Configuration
 
-1. **S3 Credentials:** Settings -> General Settings -> Attachment Optimizer -- enter endpoint URL, region, access key, secret key and bucket name
+1. **S3 Credentials:** Settings → General Settings → Attachment Optimizer — enter endpoint URL, region, access key, secret key and bucket name
 2. **Test Connection:** click "Test Connection" to verify S3 reachability
 3. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
 
