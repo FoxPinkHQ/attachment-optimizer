@@ -1,10 +1,10 @@
 # Attachment Optimizer
 
-> S3 storage migration and optimization for Odoo attachments — **Odoo 19.0** Community Edition.
+> S3 storage migration and optimization for Odoo attachments — **Odoo 18.0** Community Edition.
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- **Odoo 19.0** (one validated build per series)
+**Version:** 18.0.2.1.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ## Features
 
@@ -19,16 +19,14 @@
 
 ## Screenshots
 
-| | |
-|---|---|
-| ![Storage Mappings List](attachment_optimizer/static/description/screenshot_01_storage_mapping_list.png) | ![Storage Mapping Form](attachment_optimizer/static/description/screenshot_02_storage_mapping_form.png) |
-| **Storage Mappings List** | **Storage Mapping Form** |
-| ![Migration Operations List](attachment_optimizer/static/description/screenshot_03_migration_operation_list.png) | ![Migration Operation Form](attachment_optimizer/static/description/screenshot_04_migration_operation_form.png) |
-| **Migration Operations List** | **Migration Operation Form** |
-| ![Audit Log List](attachment_optimizer/static/description/screenshot_05_audit_log_list.png) | ![Storage Mappings Search](attachment_optimizer/static/description/screenshot_06_storage_mapping_search.png) |
-| **Audit Log List** | **Storage Mappings Search** |
-| ![Settings (System)](attachment_optimizer/static/description/screenshot_07_settings.png) | ![Access Rights / Groups](attachment_optimizer/static/description/screenshot_08_access_rights.png) |
-| **Settings — Attachment Optimizer tab** | **Access Rights / Groups** |
+![Storage Mappings List](attachment_optimizer/static/description/screenshot_01_storage_mapping_list.png)
+![Storage Mapping Form](attachment_optimizer/static/description/screenshot_02_storage_mapping_form.png)
+![Migration Operations List](attachment_optimizer/static/description/screenshot_03_migration_operation_list.png)
+![Migration Operation Form](attachment_optimizer/static/description/screenshot_04_migration_operation_form.png)
+![Audit Log List](attachment_optimizer/static/description/screenshot_05_audit_log_list.png)
+![Storage Mappings Search](attachment_optimizer/static/description/screenshot_06_storage_mapping_search.png)
+![Settings](attachment_optimizer/static/description/screenshot_07_settings.png)
+![Access Rights / Groups](attachment_optimizer/static/description/screenshot_08_access_rights.png)
 
 ## Installation
 
@@ -37,14 +35,14 @@
 **Option 2 - Git:**
 
 ```bash
-git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> Update Apps List**, search for "Attachment Optimizer", and install.
 
 ## Configuration
 
-1. **S3 Credentials:** Settings → General Settings → Attachment Optimizer — enter endpoint URL, region, access key, secret key and bucket name
+1. **S3 Credentials:** Settings -> General Settings -> Attachment Optimizer -- enter endpoint URL, region, access key, secret key and bucket name
 2. **Test Connection:** click "Test Connection" to verify S3 reachability
 3. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
 
@@ -57,7 +55,7 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 
 | Odoo Version | Status |
 |---|---|
-| 19.0 | ✅ This branch |
+| 18.0 | ✅ This branch |
 
 Each series has its own git branch and validated release ZIP. Install the build matching your Odoo version.
 
