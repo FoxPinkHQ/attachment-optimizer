@@ -1,8 +1,8 @@
 # Attachment Optimizer
 
-> S3 storage migration and optimization for **Odoo 19.0** Community Edition.
+> S3 storage migration and optimization for Odoo attachments — **Odoo 19.0** Community Edition.
 
-![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
+![Attachment Optimizer](attachment_optimizer/static/description/banner.png)
 
 **Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
@@ -50,8 +50,6 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 ## Dependencies
 
 - `base` (always)
-- `mail` (email notifications)
-- `portal` (customer access)
 - `web` (dashboard OWL components)
 
 ## Compatibility
@@ -66,22 +64,6 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 | 14.0 | [Branch 14.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/14.0) |
 
 Each series has its own git branch and validated release ZIP. Install the build matching your Odoo version.
-
-## Community vs Pro
-
-| Feature | Community | Pro |
-|---|---|---|
-| Migration pipeline | Yes | Yes |
-| Checksum verification | Yes | Yes |
-| Dashboard & KPI | Yes | Yes |
-| S3 bridge | Yes | Yes |
-| Audit trail | Yes | Yes |
-| Retry & resume | Yes | Yes |
-| Recovery engine | Yes | Yes |
-| Health engine | Yes | Yes |
-| Advanced analytics | -- | Yes |
-| Multi-bucket support | -- | Yes |
-| Scheduled migrations | -- | Yes |
 
 ## Support
 
