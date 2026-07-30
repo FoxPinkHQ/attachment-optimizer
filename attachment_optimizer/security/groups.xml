@@ -9,6 +9,10 @@
 
         <record id="group_storage_optimization_manager" model="res.groups">
             <field name="name">Storage Optimization Manager</field>
+            <field name="category_id" ref="module_category_storage_optimization"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Full access to storage analysis and migration operations.</field>
         </record>
     </data>
 </odoo>

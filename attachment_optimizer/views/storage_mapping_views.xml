@@ -64,6 +64,29 @@
         </field>
     </record>
 
+    <!-- ── Search View ───────────────────────────────────── -->
+    <record id="attachment_optimizer_storage_mapping_search" model="ir.ui.view">
+        <field name="name">attachment.storage.mapping.search</field>
+        <field name="model">attachment.storage.mapping</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="attachment_id"/>
+                <field name="s3_bucket"/>
+                <field name="s3_key"/>
+                <field name="status"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="pending" string="Waiting" domain="[('status', '=', 'pending')]"/>
+                <filter name="finalized" string="Completed" domain="[('status', '=', 'finalized')]"/>
+                <filter name="verification_failed" string="Needs Attention" domain="[('status', '=', 'verification_failed')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_by_bucket" string="Bucket" context="{'group_by': 's3_bucket'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <!-- ── Action ─────────────────────────────────────────── -->
     <record id="attachment_optimizer_storage_mapping_action" model="ir.actions.act_window">
         <field name="name">Managed Attachments</field>

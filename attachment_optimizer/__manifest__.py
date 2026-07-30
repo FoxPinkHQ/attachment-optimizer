@@ -1,6 +1,6 @@
 {
     "name": "Attachment Optimizer",
-    "version": "19.0.1.0.0",
+    "version": "18.0.2.1.0",
     "category": "Storage",
     "summary": "Analyze attachment storage and migrate files to S3-compatible object storage.",
     "description": """
@@ -42,5 +42,4 @@
     "installable": True,
     "application": True,
     "auto_install": False,
-    "post_init_hook": "_post_init_hook",
 }
