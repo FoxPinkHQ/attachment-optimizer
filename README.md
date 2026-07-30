@@ -199,7 +199,7 @@ Every supported Odoo version has its own dedicated branch and release package.
 | Odoo Version | Status |
 |---|---|
 | 19.0 | ✅ This branch |
-| 18.0 | ✅ Branch 18.0 |
+| 18.0 | Branch 18.0 |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
@@ -225,6 +225,7 @@ Every supported Odoo version has its own dedicated branch and release package.
 ## License
 
 **LGPL-3** — see [LICENSE](LICENSE).
+
 
 
 
