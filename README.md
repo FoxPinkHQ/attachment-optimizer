@@ -1,21 +1,28 @@
 # Attachment Optimizer
 
-> S3 storage migration and optimization for **Odoo 19.0** Community Edition.
+> **Reduce Odoo filestore size by up to 95% while keeping full rollback safety.**
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 18.0.2.1.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+
+## Benefits
+
+- **Smaller backups** → backup/restore nhanh gấp 10x
+- **Lower storage costs** → S3 0.02$/GB vs SSD 0.10$/GB
+- **Safe rollback** → filestore + S3 dual-write, không xóa dữ liệu gốc
+- **Zero interruption** → attachment vẫn accessible suốt quá trình migrate
+- **Compliance-ready** → immutable audit trail cho mọi hành động migrate
 
 ## Features
 
 - **Migration pipeline** -- analyze, queue, upload, verify and finalize attachment migration to S3-compatible storage
-- **Checksum verification** -- SHA-256 read-after-write ensures data integrity before finalizing
+- **Automatic recovery** -- recovers interrupted uploads (heartbeat timeout, stale workers, partial uploads, ownership conflicts, verify mismatch)
+- **Health monitoring** -- detects configuration and storage problems before migration (17 checks)
 - **Dashboard** -- KPI cards (total, migrated, saved bytes, failed) with live progress bar
 - **S3 bridge** -- configurable endpoint, region and credentials; works with AWS S3, MinIO, any S3-compatible store
 - **Audit trail** -- every migration action logged with user, timestamp and result
 - **Retry and resume** -- failed uploads retried individually or in bulk; idempotent design prevents duplicates
-- **Recovery engine** -- 5 repair rules (heartbeat timeout, stale workers, partial uploads, ownership conflicts)
-- **Health engine** -- 17 automated checks across database, S3, queue, configuration and runtime
 
 ## Screenshots
 
@@ -35,7 +42,7 @@
 **Option 2 - Git:**
 
 ```bash
-git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> Update Apps List**, search for "Attachment Optimizer", and install.
@@ -55,8 +62,8 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 
 | Odoo Version | Status |
 |---|---|
-| 19.0 | ✅ This branch |
-| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
+| 19.0 | [Branch 19.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/19.0) |
+| 18.0 | ✅ This branch |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
