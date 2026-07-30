@@ -178,15 +178,18 @@ class PartialUploadRule(RecoveryRuleHandler):
                     continue
                 raw_data = self.s3.get_object(bucket, key)
                 actual_checksum = sha256(raw_data).hexdigest()
-                if expected_checksum and actual_checksum != expected_checksum:
+                if not expected_checksum or actual_checksum != expected_checksum:
                     entries.append(RecoveryEntry(
                         operation_id=op_id, rule=self.rule,
                         reason=RecoveryReason.VERIFY_FAILED, repaired=False,
                     ))
                     continue
-                op.transition_state('finalized', completed_at=fields.Datetime.now())
+                # A failed operation cannot transition directly to finalized.
+                # Re-queue it and remove the stale mapping; the normal path
+                # re-verifies the existing immutable S3 object.
+                op.transition_state('queued', queued_at=fields.Datetime.now())
                 if op.mapping_id:
-                    op.mapping_id.transition_status('finalized')
+                    op.mapping_id.unlink()
                 self._audit(env, op, RecoveryReason.PARTIAL_UPLOAD)
                 entries.append(RecoveryEntry(
                     operation_id=op_id, rule=self.rule,

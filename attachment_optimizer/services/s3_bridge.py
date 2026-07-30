@@ -136,10 +136,10 @@ class S3Bridge:
         }
         return self.compute_fingerprint(config)
 
-    def test_connection(self):
+    def test_connection(self, config=None, bucket=None):
         ICP = self.env['ir.config_parameter'].sudo()
-        bucket = ICP.get_param('attachment_storage.s3.bucket')
-        endpoint = ICP.get_param('attachment_storage.s3.endpoint_url', '')
+        cfg = config or self._get_config()
+        bucket = bucket or ICP.get_param('attachment_storage.s3.bucket')
 
         if not bucket:
             return {
@@ -153,7 +153,7 @@ class S3Bridge:
         checks = []
 
         try:
-            client = self._get_client()
+            client = self._get_client(cfg)
 
             try:
                 client.head_bucket(Bucket=bucket)

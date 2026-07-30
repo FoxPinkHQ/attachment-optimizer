@@ -78,9 +78,9 @@ class MigrationService:
             )
         return ops
 
-    def process_queue(self, batch_size=10, worker_id=None):
+    def process_queue(self, batch_size=10, worker_id=None, operation_ids=None):
         claimed = self.env['attachment.migration.operation'].claim_batch(
-            limit=batch_size, worker_id=worker_id,
+            limit=batch_size, worker_id=worker_id, operation_ids=operation_ids,
         )
         results = {'success': 0, 'failed': 0}
         for op in claimed:

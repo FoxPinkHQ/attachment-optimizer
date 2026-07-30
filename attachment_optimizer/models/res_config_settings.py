@@ -39,9 +39,12 @@ class ResConfigSettings(models.TransientModel):
     def action_test_s3_connection(self):
         self.ensure_one()
         bucket = self.s3_bucket
-        endpoint = self.s3_endpoint_url or ''
-        access_key = self.s3_access_key_id or ''
-        secret_key = self.s3_secret_access_key or ''
+        config = {
+            'endpoint_url': self.s3_endpoint_url or '',
+            'region': self.s3_region or 'us-east-1',
+            'access_key_id': self.s3_access_key_id or '',
+            'secret_access_key': self.s3_secret_access_key or '',
+        }
 
         ICP = self.env['ir.config_parameter'].sudo()
         if not bucket:
@@ -50,7 +53,9 @@ class ResConfigSettings(models.TransientModel):
         try:
             from ..services.s3_bridge import S3Bridge
             bridge = S3Bridge(self.env)
-            bridge.head(bucket, '__health_check__')
+            result = bridge.test_connection(config=config, bucket=bucket)
+            if result['status'] != 'ok':
+                raise UserError(result['error'] or 'S3 connection check failed.')
             ICP = self.env['ir.config_parameter'].sudo()
             ICP.set_param('attachment_storage.connection_verified_at', fields.Datetime.now().isoformat())
             ICP.set_param('attachment_storage.connection_verified_digest', bridge.get_config_fingerprint())
@@ -69,7 +74,9 @@ class ResConfigSettings(models.TransientModel):
             'tag': 'display_notification',
             'params': {
                 'title': 'S3 Connection OK',
-                'message': 'Connected to bucket "%s" at %s' % (bucket, endpoint or 'default endpoint'),
+                'message': 'Connected to bucket "%s" at %s' % (
+                    bucket, config['endpoint_url'] or 'default endpoint'
+                ),
                 'sticky': False,
                 'type': 'success',
             },

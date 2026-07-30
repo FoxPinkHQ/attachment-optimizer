@@ -185,15 +185,18 @@ class MigrationOperation(models.Model):
         return created
 
     @api.model
-    def claim_batch(self, limit=10, worker_id=None):
+    def claim_batch(self, limit=10, worker_id=None, operation_ids=None):
         import uuid
         token = str(uuid.uuid4())
         worker = worker_id or ('worker-%s' % token[:8])
-        self.env.cr.execute("""
+        operation_ids = list(operation_ids or [])
+        selection_clause = 'AND id = ANY(%s)' if operation_ids else ''
+        query = f"""
             WITH claimed AS (
                 SELECT id
                 FROM attachment_migration_operation
                 WHERE state = 'queued'
+                {selection_clause}
                 ORDER BY id
                 FOR UPDATE SKIP LOCKED
                 LIMIT %s
@@ -208,7 +211,8 @@ class MigrationOperation(models.Model):
                 started_at = NOW()
             WHERE id IN (SELECT id FROM claimed)
             RETURNING id
-        """, (limit, token, worker))
+        """
+        self.env.cr.execute(query, ([operation_ids] if operation_ids else []) + [limit, token, worker])
         ids = [r[0] for r in self.env.cr.fetchall()]
         claimed = self.browse(ids)
         claimed.invalidate_recordset()
@@ -391,7 +395,7 @@ class MigrationOperation(models.Model):
                 },
             }
         batch = to_process[:UPLOAD_BATCH_LIMIT]
-        results = service.process_queue(len(batch))
+        results = service.process_queue(len(batch), operation_ids=batch.ids)
         total = len(to_process)
         done = len(batch)
         remaining = total - done

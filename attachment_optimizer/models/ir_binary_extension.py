@@ -42,10 +42,14 @@ class IrBinaryExtension(models.AbstractModel):
                         'attachment=%s bucket=%s key=%s: %s',
                         record.id, mapping.s3_bucket, mapping.s3_key, e,
                     )
-                    raise MissingExternalObjectError(
-                        'Finalized mapping points to missing S3 object: '
-                        'attachment=%s key=%s' % (record.id, mapping.s3_key)
-                    ) from e
+                    # The original filestore data is retained. Fall back to
+                    # it on S3 failures so a transient outage is not an
+                    # attachment outage.
+                    return super()._get_stream_from(
+                        record, field_name=field_name, filename=filename,
+                        filename_field=filename_field, mimetype=mimetype,
+                        default_mimetype=default_mimetype,
+                    )
                 return Stream(
                     data=content,
                     mimetype=record.mimetype or default_mimetype,
