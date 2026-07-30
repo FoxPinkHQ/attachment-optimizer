@@ -1,18 +1,52 @@
 # Attachment Optimizer
 
-> **Reduce Odoo filestore size by up to 95% while keeping full rollback safety.**
+> **Reduce Odoo filestore growth by moving attachments to S3-compatible storage while keeping full rollback safety.**
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 18.0.2.1.0 — **License:** LGPL-3 — **Publisher:** FoxPink — Validated release available for every Odoo series from 14.0 to 19.0.
+
+---
 
 ## Why use Attachment Optimizer?
 
+Attachment Optimizer helps organizations keep Odoo storage under control by moving binary attachments to S3-compatible object storage without changing existing business workflows. The migration is verifiable, auditable, and fully reversible because original filestore data is preserved.
+
 - **Reduce backup time** — from hours to minutes
-- **Reduce VPS storage cost** — S3 0.02$/GB vs local SSD 0.10$/GB
-- **Move attachments safely** — copy, verify, serve; original never deleted
+- **Reduce infrastructure costs** — move cold attachments to low-cost object storage
+- **Move attachments safely** — copy → verify → serve; original never deleted
 - **Zero downtime** — attachments stay accessible during migration
-- **Rollback anytime** — original filestore preserved, no data deleted
+- **Rollback anytime** — original filestore remains untouched
+
+---
+
+## How It Works
+
+```
+Analyze → Queue → Claim → Upload → Verify → Finalize
+                      ↑_________↓
+                      Retry (idempotent)
+```
+
+---
+
+## Architecture
+
+```
+Dashboard
+     │
+Migration Service
+     │
+Queue Engine
+     │
+Recovery Engine
+     │
+S3 Bridge
+     │
+Amazon S3 / MinIO / Compatible
+```
+
+---
 
 ## Features
 
@@ -42,7 +76,7 @@
 
 ```
 ✓ Original filestore never deleted — dual-write for rollback safety
-✓ Rollback always possible — finalized attachments served from S3 via presigned URL
+✓ Rollback always possible — original filestore remains untouched
 ✓ SHA-256 verification — integrity guaranteed on every file
 ✓ Immutable audit trail — every action logged with user, timestamp, result
 ✓ Retry is idempotent — retries never create duplicates
@@ -70,7 +104,7 @@
 **Option 2 — Git:**
 
 ```bash
-git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 After adding the module, restart Odoo, activate Developer Mode, go to **Apps → Update Apps List**, search for **Attachment Optimizer**, and install.
@@ -83,8 +117,8 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 2. **Test Connection** — verify S3 reachability
 3. **Analyze Storage** — Dashboard → Analyze → find migration candidates
 4. **Create Queue** — review candidates → Create Migration Queue
-2. **Process Queue** — click Process Queue → monitor live progress
-3. **Verify Dashboard** — confirm migrated count, saved bytes, failed count
+5. **Process Queue** — click Process Queue → monitor live progress
+6. **Monitor Dashboard** — confirm migrated count, saved bytes, failed count
 
 ---
 
@@ -98,15 +132,11 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 
 ---
 
-## Safety
+## Security
 
-```
-✓ Original filestore never deleted — dual-write for rollback safety
-✓ Rollback always possible — finalized attachments served from S3 via presigned URL
-✓ SHA-256 verification — integrity guaranteed on every file
-✓ Immutable audit trail — every action logged with user, timestamp, result
-✓ Retry is idempotent — retries never create duplicates
-```
+- **Role-based access** — Storage Optimization Manager group controls dashboard/settings
+- **Multi-company isolation** — record rules enforce data isolation
+- **Immutable audit log** — every action logged with user, timestamp, result
 
 ---
 
@@ -114,7 +144,7 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 
 - Single S3 bucket per installation
 - No automatic filestore cleanup after finalization
-- Queue processing is manual (cron planned)
+- Migration queue is started manually
 - Single worker per request (horizontal scaling planned)
 
 ---
@@ -132,18 +162,16 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 ## Compatibility
 
 Validated release available for every Odoo series from 14.0 to 19.0.  
-Each version is maintained in its own branch.
+Every supported Odoo version has its own dedicated branch and release package.
 
 | Odoo Version | Status |
 |---|---|
-| 19.0 | ✅ This branch |
-| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
+| 19.0 | [Branch 19.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/19.0) |
+| 18.0 | ✅ This branch |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
 | 14.0 | [Branch 14.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/14.0) |
-
-Each series has its own git branch and validated release ZIP. Install the build matching your Odoo version.
 
 ---
 
