@@ -1,10 +1,10 @@
 # Attachment Optimizer
 
-> S3 storage migration and optimization for Odoo attachments — **Odoo 18.0** Community Edition.
+> S3 storage migration and optimization for Odoo attachments — **Odoo 19.0** Community Edition.
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 18.0.2.1.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ## Features
 
