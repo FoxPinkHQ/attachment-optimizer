@@ -4,31 +4,15 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 18.0.2.1.0 — **License:** LGPL-3 — **Publisher:** FoxPink — Maintained for **Odoo 14.0-19.0** (one validated build per series)
-
----
+**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ## Why use Attachment Optimizer?
 
-> **Attachment Optimizer helps companies keep Odoo storage under control by moving binary attachments to S3-compatible object storage without changing existing business workflows. It preserves rollback safety, verifies every migrated object, and provides full auditability throughout the migration process.**
-
 - **Reduce backup time** — from hours to minutes
 - **Reduce VPS storage cost** — S3 0.02$/GB vs local SSD 0.10$/GB
-- **Move attachments safely** — copy → verify → serve; original never deleted
+- **Move attachments safely** — copy, verify, serve; original never deleted
 - **Zero downtime** — attachments stay accessible during migration
 - **Rollback anytime** — original filestore preserved, no data deleted
-
----
-
-## How It Works
-
-```
-Analyze → Create Queue → Claim → Upload → Verify → Finalize
-                                    ↑_________↓
-                                    Retry (idempotent)
-```
-
----
 
 ## Features
 
@@ -86,7 +70,7 @@ Analyze → Create Queue → Claim → Upload → Verify → Finalize
 **Option 2 — Git:**
 
 ```bash
-git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 After adding the module, restart Odoo, activate Developer Mode, go to **Apps → Update Apps List**, search for **Attachment Optimizer**, and install.
@@ -99,8 +83,8 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 2. **Test Connection** — verify S3 reachability
 3. **Analyze Storage** — Dashboard → Analyze → find migration candidates
 4. **Create Queue** — review candidates → Create Migration Queue
-5. **Process Queue** — click Process Queue → monitor live progress
-6. **Verify Dashboard** — confirm migrated count, saved bytes, failed count
+2. **Process Queue** — click Process Queue → monitor live progress
+3. **Verify Dashboard** — confirm migrated count, saved bytes, failed count
 
 ---
 
@@ -116,11 +100,13 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 
 ## Safety
 
-- **Original attachments remain in the Odoo filestore.** No data is deleted during migration.
-- **Finalized attachments are transparently served from S3** via presigned URLs.
-- **SHA-256 checksum verification** guarantees integrity on every file.
-- **Queue processing is idempotent** — retries never create duplicates.
-- **Multi-company isolation** via record rules — users only see their company's data.
+```
+✓ Original filestore never deleted — dual-write for rollback safety
+✓ Rollback always possible — finalized attachments served from S3 via presigned URL
+✓ SHA-256 verification — integrity guaranteed on every file
+✓ Immutable audit trail — every action logged with user, timestamp, result
+✓ Retry is idempotent — retries never create duplicates
+```
 
 ---
 
@@ -150,8 +136,8 @@ Each version is maintained in its own branch.
 
 | Odoo Version | Status |
 |---|---|
-| 19.0 | [Branch 19.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/19.0) |
-| 18.0 | ✅ This branch |
+| 19.0 | ✅ This branch |
+| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
