@@ -14,12 +14,12 @@ class TestAuditLog(TransactionCase):
         cls.manager = cls.env['res.users'].create({
             'name': 'Audit Mgr',
             'login': 'audit_manager',
-            'groups_id': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
+            'group_ids': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
         })
         cls.non_manager = cls.env['res.users'].create({
             'name': 'Audit Emp',
             'login': 'audit_employee',
-            'groups_id': [(4, cls.env.ref('base.group_user').id)],
+            'group_ids': [(4, cls.env.ref('base.group_user').id)],
         })
         cls.attachment = cls.env['ir.attachment'].create({
             'name': 'audit_test.txt',

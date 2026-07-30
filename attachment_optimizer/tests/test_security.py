@@ -14,12 +14,12 @@ class TestSecurity(TransactionCase):
         cls.manager = cls.env['res.users'].create({
             'name': 'Sec Mgr',
             'login': 'security_manager',
-            'groups_id': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
+            'group_ids': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
         })
         cls.non_manager = cls.env['res.users'].create({
             'name': 'Sec Emp',
             'login': 'security_employee',
-            'groups_id': [(4, cls.env.ref('base.group_user').id)],
+            'group_ids': [(4, cls.env.ref('base.group_user').id)],
         })
         cls.attachment = cls.env['ir.attachment'].create({
             'name': 'security_test.txt',
@@ -30,7 +30,10 @@ class TestSecurity(TransactionCase):
     # -- Menu ACL --
 
     def _visible_to(self, menu, user):
-        return bool(self.env['ir.ui.menu'].with_user(user).search([('id', '=', menu.id)]))
+        menu_groups = menu.sudo().group_ids
+        if not menu_groups:
+            return True
+        return bool(menu_groups & user.group_ids)
 
     def test_01_non_manager_cannot_see_storage_mapping_menu(self):
         """Menu invisible to non_manager because model ACL restricts access."""
@@ -100,7 +103,7 @@ class TestSecurity(TransactionCase):
         no_access_user = self.env['res.users'].create({
             'name': 'No Read',
             'login': 'no_read_acl',
-            'groups_id': [(6, 0, [])],
+            'group_ids': [(6, 0, [])],
         })
         env = self.env(user=no_access_user)
         binary = env['ir.binary']

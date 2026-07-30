@@ -130,8 +130,12 @@ class TestRecoveryContract(TransactionCase):
     def test_d8_recover_uses_transition_state(self):
         """Recovery transitions raise ValidationError for invalid state changes."""
         ops = self._make_uploading_stale(2)
-        # Manually set an invalid state to force transition_state to fail
-        ops.write({'state': 'verified'})
+        # Manually set an invalid state via SQL to bypass write() validation
+        self.env.cr.execute(
+            "UPDATE attachment_migration_operation SET state = 'verified' WHERE id = ANY(%s)",
+            (ops.ids,),
+        )
+        ops.invalidate_recordset()
 
         report = self.engine.recover(
             rules=[RecoveryRule.HEARTBEAT_TIMEOUT],
@@ -227,22 +231,25 @@ class TestRecoveryRules(TransactionCase):
     def test_r5_verify_mismatch_requeues(self):
         Mapping = self.env['attachment.storage.mapping']
         ops = self._make_queued(2)
-        att = self.Attachment.create({
-            'name': 'vm.txt', 'raw': b'x', 'type': 'binary',
-        })
-        # Simulate op failed with a verification_failed mapping
         for i in range(2):
+            via = self.Attachment.create({
+                'name': 'via_%d.txt' % i, 'raw': b'x', 'type': 'binary',
+            })
             mapping = Mapping.create({
-                'attachment_id': att.id,
+                'attachment_id': via.id,
                 's3_bucket': 'test',
                 's3_key': 'test/key_%d' % i,
                 's3_region': 'us-east-1',
                 'status': 'verification_failed',
             })
-            ops[i].write({
-                'state': 'failed',
-                'mapping_id': mapping.id,
-            })
+            self.env.cr.execute(
+                "UPDATE attachment_migration_operation SET state = 'failed', mapping_id = %s WHERE id = %s",
+                [mapping.id, ops[i].id],
+            )
+            ops[i].invalidate_recordset()
+
+        ops = self.Operation.browse(ops.ids)
+        self.assertEqual(ops.mapped('state'), ['failed', 'failed'])
 
         report = self.engine.recover(
             rules=[RecoveryRule.VERIFY_MISMATCH],

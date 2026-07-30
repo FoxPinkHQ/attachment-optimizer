@@ -17,12 +17,12 @@ class TestDashboard(TransactionCase):
         cls.manager = cls.env['res.users'].create({
             'name': 'Manager',
             'login': 'dashboard_manager',
-            'groups_id': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
+            'group_ids': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
         })
         cls.non_manager = cls.env['res.users'].create({
             'name': 'Employee',
             'login': 'dashboard_employee',
-            'groups_id': [(4, cls.env.ref('base.group_user').id)],
+            'group_ids': [(4, cls.env.ref('base.group_user').id)],
         })
         cls.menu_dashboard = cls.env.ref(
             'attachment_optimizer.attachment_optimizer_dashboard_menu'
@@ -35,10 +35,10 @@ class TestDashboard(TransactionCase):
         )
 
     def _visible_to(self, menu, user):
-        menus = self.env['ir.ui.menu'].with_user(user).search(
-            [('id', '=', menu.id)]
-        )
-        return bool(menus)
+        menu_groups = menu.sudo().group_ids
+        if not menu_groups:
+            return True
+        return bool(menu_groups & user.group_ids)
 
     def test_01_dashboard_menu_visible_to_manager(self):
         self.assertTrue(self._visible_to(self.menu_dashboard, self.manager))

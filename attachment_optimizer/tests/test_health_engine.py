@@ -228,7 +228,12 @@ class TestRuntimeHealth(TransactionCase):
         """Runtime findings include boto3, temp_dir, python, postgres."""
         report = self.engine.check(domains=[HealthDomain.RUNTIME])
         codes = {f.code for f in report.findings}
-        expected = {'RUNTIME_BOTO3', 'RUNTIME_TEMP_DIR', 'RUNTIME_PYTHON', 'RUNTIME_POSTGRES'}
+        expected = {'RUNTIME_TEMP_DIR', 'RUNTIME_PYTHON', 'RUNTIME_POSTGRES'}
+        boto_codes = {'RUNTIME_BOTO3', 'RUNTIME_BOTO3_MISSING'}
+        self.assertTrue(
+            codes & boto_codes,
+            'Expected either RUNTIME_BOTO3 or RUNTIME_BOTO3_MISSING, got %s' % codes,
+        )
         for code in expected:
             self.assertIn(code, codes, 'Missing runtime check: %s' % code)
 

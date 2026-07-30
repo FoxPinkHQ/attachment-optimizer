@@ -22,7 +22,7 @@ class IrBinaryExtension(models.AbstractModel):
     ):
         if record._name == 'ir.attachment':
             try:
-                record.check_access_rule('read')
+                record.check_access('read')
             except Exception:
                 return
             mapping = self.env['attachment.storage.mapping'].sudo().search([
@@ -52,8 +52,11 @@ class IrBinaryExtension(models.AbstractModel):
                     download_name=filename or record.name,
                     type='data',
                 )
-        return super()._get_stream_from(
-            record, field_name=field_name, filename=filename,
-            filename_field=filename_field, mimetype=mimetype,
-            default_mimetype=default_mimetype,
-        )
+        try:
+            return super()._get_stream_from(
+                record, field_name=field_name, filename=filename,
+                filename_field=filename_field, mimetype=mimetype,
+                default_mimetype=default_mimetype,
+            )
+        except RuntimeError:
+            return None

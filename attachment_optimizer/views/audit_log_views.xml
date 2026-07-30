@@ -121,5 +121,6 @@
               name="Audit Logs"
               parent="storage_optimization_menu"
               action="attachment_optimizer_audit_log_action"
+              groups="attachment_optimizer.group_storage_optimization_manager"
               sequence="30"/>
 </odoo>

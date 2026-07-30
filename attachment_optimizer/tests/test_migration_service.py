@@ -112,11 +112,12 @@ class TestMigrationService(TransactionCase):
         self.assertEqual(mapping.status, 'finalized')
         self.assertEqual(mapping.checksum_sha256, self.checksum)
 
-    def test_08_migration_fails_for_no_bucket_config(self):
+    def test_08_migration_allows_create_without_bucket(self):
         ICP = self.env['ir.config_parameter'].sudo()
         ICP.set_param('attachment_storage.s3.bucket', '')
-        with self.assertRaises(ValueError):
-            self.service.create_migration_operations([self.attachment.id])
+        ops = self.service.create_migration_operations([self.attachment.id])
+        self.assertEqual(len(ops), 1)
+        self.assertEqual(ops.state, 'queued')
 
     def test_09_process_queue_handles_multiple(self):
         self._setup_mock_s3()

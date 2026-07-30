@@ -20,10 +20,10 @@ class StorageMapping(models.Model):
     _description = 'Attachment Storage Mapping'
     _rec_name = 'attachment_id'
     _order = 'create_date DESC'
-    _sql_constraints = [
-        ('unique_attachment', 'UNIQUE(attachment_id)',
-         'Each attachment can have only one storage mapping.'),
-    ]
+    _unique_attachment = models.Constraint(
+        'UNIQUE(attachment_id)',
+        'Each attachment can have only one storage mapping.',
+    )
 
     company_id = fields.Many2one(
         'res.company', string='Company',
