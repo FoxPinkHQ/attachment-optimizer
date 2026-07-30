@@ -4,11 +4,13 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- **Validated release available for every Odoo series from 14.0 to 19.0.**
+**Version:** 19.0.1.0.0 — **License:** LGPL-3 — **Publisher:** FoxPink — **Validated release available for every Odoo series from 14.0 to 19.0.**
 
 ---
 
 ## Why use Attachment Optimizer?
+
+Attachment Optimizer helps organizations keep Odoo storage under control by moving binary attachments to S3-compatible object storage without changing existing business workflows. The migration is verifiable, auditable, and fully reversible because original filestore data is preserved.
 
 | Problem | Solution |
 |--------|----------|
@@ -23,6 +25,15 @@
 - **Move attachments safely** — copy → verify → serve; original never deleted
 - **Zero downtime** — attachments stay accessible during migration
 - **Rollback anytime** — original filestore remains untouched
+
+### Typical use cases
+
+- ERP with millions of attachments
+- Manufacturing systems storing PDFs
+- Accounting databases with invoices
+- Document-heavy Odoo deployments
+
+> **Keep Odoo fast while externalizing binary storage. Scale Odoo storage without changing business workflows.**
 
 ---
 
@@ -156,6 +167,7 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 - **Role-based access** — Storage Optimization Manager group controls dashboard/settings
 - **Multi-company isolation** — record rules enforce data isolation
 - **Immutable audit log** — every action logged with user, timestamp, result
+- **No credential is stored in audit logs**
 
 ---
 
@@ -164,7 +176,7 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps →
 - Single S3 bucket per installation
 - No automatic filestore cleanup after finalization
 - Migration queue is started manually
-- Single worker per request (horizontal scaling planned)
+- Horizontal worker scaling is not currently supported
 
 ---
 
@@ -187,7 +199,7 @@ Every supported Odoo version has its own dedicated branch and release package.
 | Odoo Version | Status |
 |---|---|
 | 19.0 | ✅ This branch |
-| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
+| 18.0 | ✅ Branch 18.0 |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
@@ -199,6 +211,7 @@ Every supported Odoo version has its own dedicated branch and release package.
 
 - `base` (always)
 - `web` (dashboard OWL components)
+- **Python:** `boto3`
 
 ---
 
