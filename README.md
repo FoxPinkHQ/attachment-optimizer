@@ -1,10 +1,10 @@
 ﻿# Attachment Optimizer
 
-> **Reduce Odoo filestore size by up to 95% while keeping full rollback safety.**
+> **Reduce Odoo filestore growth while keeping full rollback safety.**
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- **Validated release available for every Odoo series from 14.0 to 19.0.**
+**Version:** 19.0.1.0.0 — **License:** LGPL-3 — **Publisher:** FoxPink — **Validated release available for every Odoo series from 14.0 to 19.0.**
 
 ---
 
@@ -12,9 +12,17 @@
 
 Attachment Optimizer helps organizations keep Odoo storage under control by moving binary attachments to S3-compatible object storage without changing existing business workflows. The migration is verifiable, auditable, and fully reversible because original filestore data is preserved.
 
+| Problem | Solution |
+|--------|----------|
+| Large filestore | Move attachments to S3 |
+| Slow backups | Keep binaries outside server |
+| Expensive SSD | Store cold data on object storage |
+| Migration risk | SHA-256 verification |
+| Rollback concern | Original filestore preserved |
+
 - **Reduce backup time** — from hours to minutes
 - **Reduce infrastructure costs** — move cold attachments to low-cost object storage
-- **Move attachments safely** — copy -> verify -> serve; original never deleted
+- **Move attachments safely** — copy → verify → serve; original never deleted
 - **Zero downtime** — attachments stay accessible during migration
 - **Rollback anytime** — original filestore remains untouched
 
@@ -23,27 +31,40 @@ Attachment Optimizer helps organizations keep Odoo storage under control by movi
 ## How It Works
 
 ```
-Analyze -> Queue -> Claim -> Upload -> Verify -> Finalize
-                      ^_________↓
-                      Retry (idempotent)
+Analyze
+    │
+Queue
+    │
+Claim
+    │
+Upload
+    │
+Verify
+    │
+Finalize
+     ▲
+     │
+Retry (idempotent)
 ```
 
 ---
 
 ## Architecture
 
-```
-Dashboard
-     |
-Migration Service
-     |
-Queue Engine
-     |
-Recovery Engine
-     |
-S3 Bridge
-     |
-Amazon S3 / MinIO / Compatible
+```text
+               Dashboard
+                   │
+        ┌──────────┴──────────┐
+        │                     │
+Migration Service      Health Engine
+        │
+   Queue Engine
+        │
+   Recovery Engine
+        │
+     S3 Bridge
+        │
+ Amazon S3 / MinIO / Compatible
 ```
 
 ---
@@ -56,7 +77,7 @@ Amazon S3 / MinIO / Compatible
 - **Reduce filestore growth** — move cold data to S3, keep hot data local
 
 ### Migration
-- **Queue-based migration** — analyze -> queue -> claim -> upload -> verify -> finalize
+- **Queue-based migration** — analyze → queue → claim → upload → verify → finalize
 - **SHA-256 verification** — every file checksummed after upload
 - **Retry failed uploads safely** — idempotent, no duplicates
 
@@ -86,14 +107,14 @@ Amazon S3 / MinIO / Compatible
 
 ## Screenshots
 
-![Storage Mappings List](attachment_optimizer/static/description/screenshot_01_storage_mapping_list.png)
-![Storage Mapping Form](attachment_optimizer/static/description/screenshot_02_storage_mapping_form.png)
-![Migration Operations List](attachment_optimizer/static/description/screenshot_03_migration_operation_list.png)
-![Migration Operation Form](attachment_optimizer/static/description/screenshot_04_migration_operation_form.png)
-![Audit Log List](attachment_optimizer/static/description/screenshot_05_audit_log_list.png)
-![Storage Mappings Search](attachment_optimizer/static/description/screenshot_06_storage_mapping_search.png)
-![Settings](attachment_optimizer/static/description/screenshot_07_settings.png)
-![Access Rights / Groups](attachment_optimizer/static/description/screenshot_08_access_rights.png)
+![01 Dashboard](attachment_optimizer/static/description/screenshot_01_dashboard.png)
+![02 Settings](attachment_optimizer/static/description/screenshot_02_settings.png)
+![03 Storage Mapping List](attachment_optimizer/static/description/screenshot_03_storage_mapping_list.png)
+![04 Storage Mapping Form](attachment_optimizer/static/description/screenshot_04_storage_mapping_form.png)
+![05 Migration Queue](attachment_optimizer/static/description/screenshot_05_migration_operation_list.png)
+![06 Migration Operation Form](attachment_optimizer/static/description/screenshot_06_migration_operation_form.png)
+![07 Audit Logs](attachment_optimizer/static/description/screenshot_07_audit_log_list.png)
+![08 Access Rights](attachment_optimizer/static/description/screenshot_08_access_rights.png)
 
 ---
 
@@ -107,24 +128,24 @@ Amazon S3 / MinIO / Compatible
 git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
-After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> Update Apps List**, search for **Attachment Optimizer**, and install.
+After adding the module, restart Odoo, activate Developer Mode, go to **Apps → Update Apps List**, search for **Attachment Optimizer**, and install.
 
 ---
 
 ## Getting Started
 
-1. **Configure S3** — Settings -> Attachment Optimizer: endpoint, region, access key, secret key, bucket
+1. **Configure S3** — Settings → Attachment Optimizer: endpoint, region, access key, secret key, bucket
 2. **Test Connection** — verify S3 reachability
-3. **Analyze Storage** — Dashboard -> Analyze -> find migration candidates
-4. **Create Queue** — review candidates -> Create Migration Queue
-5. **Process Queue** — click Process Queue -> monitor live progress
+3. **Analyze Storage** — Dashboard → Analyze → find migration candidates
+4. **Create Queue** — review candidates → Create Migration Queue
+5. **Process Queue** — click Process Queue → monitor live progress
 6. **Monitor Dashboard** — confirm migrated count, saved bytes, failed count
 
 ---
 
 ## Configuration
 
-1. **S3 Credentials:** Settings -> Attachment Optimizer: enter endpoint URL, region, access key, secret key, bucket name
+1. **S3 Credentials:** Settings → Attachment Optimizer — enter endpoint URL, region, access key, secret key, bucket name
 2. **Test Connection** — click "Test Connection" to verify S3 reachability
 3. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
 
@@ -155,6 +176,8 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 - **Finalized attachments served from S3** via presigned URL stream
 - **SHA-256 checksum verification** guarantees integrity on every file
 - **Queue processing is idempotent** — retries never create duplicates
+- **No monkey-patching of core Odoo models**
+- **No modification of existing business workflows**
 
 ---
 
@@ -165,8 +188,8 @@ Every supported Odoo version has its own dedicated branch and release package.
 
 | Odoo Version | Status |
 |---|---|
-| 19.0 | [Branch 19.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/19.0) |
 | 19.0 | ✅ This branch |
+| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |
@@ -191,5 +214,3 @@ Every supported Odoo version has its own dedicated branch and release package.
 ## License
 
 **LGPL-3** — see [LICENSE](LICENSE).
-
-
