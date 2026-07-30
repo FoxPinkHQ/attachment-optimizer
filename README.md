@@ -225,3 +225,4 @@ Every supported Odoo version has its own dedicated branch and release package.
 ## License
 
 **LGPL-3** — see [LICENSE](LICENSE).
+
