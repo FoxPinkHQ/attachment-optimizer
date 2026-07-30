@@ -2,7 +2,7 @@
 
 > S3 storage migration and optimization for Odoo attachments — **Odoo 19.0** Community Edition.
 
-![Attachment Optimizer](attachment_optimizer/static/description/banner.png)
+![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
 **Version:** 19.0.1.0.0 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
@@ -45,7 +45,6 @@ After adding the module, restart Odoo, activate Developer Mode, go to **Apps -> 
 1. **S3 Credentials:** Settings -> General Settings -> Attachment Optimizer -- enter endpoint URL, region, access key, secret key and bucket name
 2. **Test Connection:** click "Test Connection" to verify S3 reachability
 3. **Auto-Recovery:** optionally enable auto-recovery in the same settings section
-4. **Dashboard access:** grant users the "Storage Optimization Manager" group to access the dashboard
 
 ## Dependencies
 
