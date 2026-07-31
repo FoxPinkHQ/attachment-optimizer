@@ -1,12 +1,12 @@
 import hashlib
 
-from odoo.tests import TransactionCase
+from odoo.tests import SavepointCase
 
 from ..services.migration_service import MigrationService
 from ..services.s3_bridge import S3Bridge
 
 
-class TestMigrationService(TransactionCase):
+class TestMigrationService(SavepointCase):
 
     def setUp(self):
         super().setUp()
@@ -105,7 +105,7 @@ class TestMigrationService(TransactionCase):
         results = self.service.process_queue(batch_size=10)
         self.assertEqual(results['success'], 1)
         self.assertEqual(results['failed'], 0)
-        op.invalidate_recordset()
+        op.invalidate_cache()
         self.assertEqual(op.state, 'finalized')
         mapping = op.mapping_id
         self.assertTrue(mapping)
@@ -156,13 +156,13 @@ class TestMigrationService(TransactionCase):
 
     def test_11_finalize_does_not_modify_ir_attachment(self):
         self._setup_mock_s3()
-        self.attachment.invalidate_recordset()
+        self.attachment.invalidate_cache()
         orig_store_fname = self.attachment.store_fname
         op = self.service.create_migration_operations([self.attachment.id])
         self.service.process_queue()
-        op.invalidate_recordset()
+        op.invalidate_cache()
         self.assertEqual(op.state, 'finalized')
-        self.attachment.invalidate_recordset()
+        self.attachment.invalidate_cache()
         self.assertEqual(self.attachment.store_fname, orig_store_fname)
         self.assertTrue(orig_store_fname)
 
@@ -171,9 +171,9 @@ class TestMigrationService(TransactionCase):
         self.attachment.write({'store_fname': 'tests/test_store'})
         op = self.service.create_migration_operations([self.attachment.id])
         self.service.process_queue()
-        op.invalidate_recordset()
+        op.invalidate_cache()
         self.assertEqual(op.state, 'finalized')
-        self.attachment.invalidate_recordset()
+        self.attachment.invalidate_cache()
         self.assertTrue(self.attachment.datas)
 
     def test_13_s3_key_is_checksum_based(self):
@@ -181,7 +181,7 @@ class TestMigrationService(TransactionCase):
         self.attachment.write({'store_fname': 'tests/test_store'})
         op = self.service.create_migration_operations([self.attachment.id])
         self.service.process_queue()
-        op.invalidate_recordset()
+        op.invalidate_cache()
         expected_key = 'objects/%s/%s' % (self.checksum[:2], self.checksum)
         self.assertEqual(op.mapping_id.s3_key, expected_key)
 

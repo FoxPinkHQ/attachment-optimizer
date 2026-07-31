@@ -5,7 +5,7 @@
         <field name="name">attachment.storage.mapping.tree</field>
         <field name="model">attachment.storage.mapping</field>
         <field name="arch" type="xml">
-            <list create="false" edit="true" delete="false">
+            <tree create="false" edit="true" delete="false">
                 <field name="attachment_id"/>
                 <field name="status" widget="badge"
                        decoration-success="status in ('verified','finalized')"
@@ -15,7 +15,7 @@
                 <field name="s3_bucket" optional="show"/>
                 <field name="verification_timestamp" optional="show"/>
                 <field name="create_date"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -29,11 +29,17 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_attachment" type="object"
                                 class="oe_stat_button" icon="fa-file">
-                            View Attachment
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Attachment</span>
+                            </div>
                         </button>
                         <button name="action_view_audit" type="object"
                                 class="oe_stat_button" icon="fa-history">
-                            View Audit
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Audit</span>
+                            </div>
                         </button>
                     </div>
 
@@ -57,7 +63,7 @@
                     <group string="Metadata">
                         <field name="create_date" string="Created" readonly="1"/>
                         <field name="write_date" string="Last Updated" readonly="1"/>
-                        <field name="error_message" readonly="1" invisible="not error_message"/>
+                        <field name="error_message" readonly="1" attrs="{'invisible': [('error_message', '=', False)]}"/>
                     </group>
                 </sheet>
             </form>
@@ -91,7 +97,7 @@
     <record id="attachment_optimizer_storage_mapping_action" model="ir.actions.act_window">
         <field name="name">Managed Attachments</field>
         <field name="res_model">attachment.storage.mapping</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="help">
             Manage attachment storage mapping records.
         </field>

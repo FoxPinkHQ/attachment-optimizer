@@ -1,18 +1,20 @@
-/** @odoo-module **/
+odoo.define("attachment_optimizer.dashboard", function (require) {
+"use strict";
 
-import { Component, useState, onWillStart, onWillUnmount } from "@odoo/owl";
-import { registry } from "@web/core/registry";
-import { useService } from "@web/core/utils/hooks";
-import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+const AbstractAction = require("web.AbstractAction");
+const core = require("web.core");
+const Dialog = require("web.Dialog");
+const ConfirmationDialog = null;
+const { ComponentWrapper, WidgetAdapterMixin } = require("web.OwlCompatibility");
+const { Component } = owl;
+const { useState, onWillStart, onWillUnmount } = owl.hooks;
 
-export class StorageDashboard extends Component {
-    static template = "attachment_optimizer.Dashboard";
-
+class StorageDashboard extends Component {
     setup() {
-        this.orm = useService("orm");
-        this.action = useService("action");
-        this.notification = useService("notification");
-        this.dialog = useService("dialog");
+        this.orm = { call: this.props.rpc };
+        this.action = { doAction: this.props.doAction };
+        this.notification = { add: this.props.notify };
+        this.dialog = { add: (_DialogClass, props) => this.props.confirm(props) };
 
         this._pollTimer = null;
         this._pollInFlight = false;
@@ -296,7 +298,7 @@ export class StorageDashboard extends Component {
             type: "ir.actions.act_window",
             name: "Failed Operations",
             res_model: "attachment.migration.operation",
-            view_mode: "list,form",
+            view_mode: "tree,form",
             views: [[false, "list"], [false, "form"]],
             domain: [["state", "=", "failed"]],
         });
@@ -307,7 +309,7 @@ export class StorageDashboard extends Component {
             type: "ir.actions.act_window",
             name: "Migration Operations",
             res_model: "attachment.migration.operation",
-            view_mode: "list,form",
+            view_mode: "tree,form",
             views: [[false, "list"], [false, "form"]],
         });
     }
@@ -325,7 +327,8 @@ export class StorageDashboard extends Component {
             res_model: "res.config.settings",
             view_mode: "form",
             views: [[false, "form"]],
-            target: "new",
+            target: "current",
+            context: { module: "attachment_optimizer" },
         }, {
             onClose: () => this._loadDashboard(),
         });
@@ -333,6 +336,29 @@ export class StorageDashboard extends Component {
 
 }
 
-registry
-    .category("actions")
-    .add("attachment_optimizer.dashboard_action", StorageDashboard);
+StorageDashboard.template = "attachment_optimizer.Dashboard";
+
+const DashboardAction = AbstractAction.extend(WidgetAdapterMixin, {
+    start() {
+        this.component = new ComponentWrapper(this, StorageDashboard, {
+            rpc: (model, method, args, kwargs) => this._rpc({
+                model, method, args, kwargs: kwargs || {},
+            }),
+            doAction: (action, options) => this.do_action(action, options || {}),
+            notify: (message, options) => this.displayNotification({
+                message,
+                type: (options && options.type) || "info",
+            }),
+            confirm: (props) => Dialog.confirm(this, props.body || props.title || "Confirm", {
+                title: props.title || "Confirm",
+                confirm_callback: props.confirm,
+                cancel_callback: props.cancel,
+            }),
+        });
+        return this.component.mount(this.el);
+    },
+});
+
+core.action_registry.add("attachment_optimizer.dashboard_action", DashboardAction);
+return DashboardAction;
+});

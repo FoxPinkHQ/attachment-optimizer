@@ -1,12 +1,12 @@
-﻿import hashlib
+import hashlib
 
-from odoo.tests import TransactionCase
+from odoo.tests import SavepointCase
 from odoo.exceptions import UserError
 
 from ..services.s3_bridge import S3Bridge, S3BridgeError
 
 
-class TestS3Bridge(TransactionCase):
+class TestS3Bridge(SavepointCase):
 
     @classmethod
     def setUpClass(cls):

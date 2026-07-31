@@ -6,7 +6,7 @@
         <field name="name">attachment.migration.operation.tree</field>
         <field name="model">attachment.migration.operation</field>
         <field name="arch" type="xml">
-            <list create="false" delete="false">
+            <tree create="false" delete="false">
                 <field name="attachment_id"/>
                 <field name="state" widget="badge"
                        decoration-warning="state == 'queued'"
@@ -18,7 +18,7 @@
                 <field name="completed_at"/>
                 <field name="duration_display"/>
                 <field name="mapping_id" optional="show"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -27,16 +27,16 @@
         <field name="name">attachment.migration.operation.form</field>
         <field name="model">attachment.migration.operation</field>
         <field name="arch" type="xml">
-            <form>
+            <form edit="false" create="false" delete="false">
                 <header>
                     <button name="action_upload" string="Upload to S3" type="object"
                             class="btn-primary"
-                            invisible="state != 'queued'"/>
+                            attrs="{'invisible': [('state', '!=', 'queued')]}"/>
                     <button name="action_retry" string="Retry" type="object"
-                            invisible="state not in ('failed', 'cancelled')"
+                            attrs="{'invisible': [('state', 'not in', ('failed', 'cancelled'))]}"
                             class="btn-primary"/>
                     <button name="action_cancel" string="Cancel" type="object"
-                            invisible="state != 'queued'"
+                            attrs="{'invisible': [('state', '!=', 'queued')]}"
                             class="btn-secondary"
                             confirm="Cancel this queued migration operation?"/>
                 </header>
@@ -44,7 +44,10 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_attachment" type="object"
                                 class="oe_stat_button" icon="fa-file">
-                            View Attachment
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Attachment</span>
+                            </div>
                         </button>
                     </div>
 
@@ -78,7 +81,7 @@
                                 Events sourced from audit trail.
                             </p>
                             <field name="audit_log_ids" nolabel="1">
-                                <list>
+                                <tree>
                                     <field name="create_date"/>
                                     <field name="action" widget="badge"/>
                                     <field name="user_id"/>
@@ -86,17 +89,17 @@
                                            decoration-success="result == 'success'"
                                            decoration-danger="result == 'failure'"/>
                                     <field name="error_message" optional="hide"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
 
                         <!-- ═══ Errors Tab ═══ -->
-                        <page string="Errors" invisible="state not in ('failed', 'verification_failed')">
-                            <div class="alert alert-danger" role="alert" invisible="not error_message">
+                        <page string="Errors" attrs="{'invisible': [('state', 'not in', ('failed', 'verification_failed'))]}">
+                            <div class="alert alert-danger" role="alert" attrs="{'invisible': [('error_message', '=', False)]}">
                                 <h4><i class="fa fa-exclamation-circle"/> Migration failed</h4>
                                 <p class="mb-0"><field name="error_message" nolabel="1"/></p>
                             </div>
-                            <div class="alert alert-info" role="alert" invisible="error_message">
+                            <div class="alert alert-info" role="alert" attrs="{'invisible': [('error_message', '!=', False)]}">
                                 <p class="mb-0"><i class="fa fa-check-circle"/> No errors detected.</p>
                             </div>
                             <group string="Suggested Actions">
@@ -136,7 +139,7 @@
     <record id="attachment_optimizer_migration_operation_action" model="ir.actions.act_window">
         <field name="name">Migration Operations</field>
         <field name="res_model">attachment.migration.operation</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="context">{'create': False, 'import': False}</field>
         <field name="help">
             No migration operations yet. Click the Action button (top-left toolbar) then
@@ -150,6 +153,7 @@
         <field name="model_id" ref="model_attachment_migration_operation"/>
         <field name="binding_model_id" ref="model_attachment_migration_operation"/>
         <field name="binding_type">action</field>
+        <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">action = env['attachment.migration.operation'].action_analyze_and_queue()</field>
     </record>
@@ -159,6 +163,7 @@
         <field name="model_id" ref="model_attachment_migration_operation"/>
         <field name="binding_model_id" ref="model_attachment_migration_operation"/>
         <field name="binding_type">action</field>
+        <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">
 records = env['attachment.migration.operation'].browse(env.context.get('active_ids', []))

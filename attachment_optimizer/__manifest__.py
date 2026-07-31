@@ -1,6 +1,6 @@
 {
     "name": "Attachment Optimizer",
-    "version": "19.0.1.0.1",
+    "version": "14.0.1.0.1",
     "category": "Storage",
     "summary": "Safely replicate and serve Odoo attachments from S3-compatible storage.",
     "description": """
@@ -23,6 +23,7 @@
         "python": ["boto3"],
     },
     "data": [
+        "views/assets.xml",
         "security/groups.xml",
         "security/ir.model.access.csv",
         "security/record_rules.xml",
@@ -37,13 +38,9 @@
     "demo": [
         "demo/attachment_optimizer_demo.xml",
     ],
-    "assets": {
-        "web.assets_backend": [
-            "attachment_optimizer/static/src/components/dashboard/dashboard.js",
-            "attachment_optimizer/static/src/components/dashboard/dashboard.xml",
-            "attachment_optimizer/static/src/components/dashboard/dashboard.scss",
-        ],
-    },
+    "qweb": [
+        "static/src/components/dashboard/dashboard.xml",
+    ],
     "installable": True,
     "application": True,
     "auto_install": False,

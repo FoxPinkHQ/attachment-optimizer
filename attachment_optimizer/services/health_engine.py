@@ -449,7 +449,7 @@ class RuntimeHealth(HealthCheckHandler):
             findings.append(self.ok('RUNTIME_PYTHON', 'Python %s' % pyver))
         else:
             findings.append(self.warning(
-                'RUNTIME_PYTHON_OLD',
+                'RUNTIME_PYTHON',
                 'Python %s is below recommended 3.10+' % pyver,
                 'Upgrade Python to 3.10 or later',
             ))

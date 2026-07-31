@@ -5,7 +5,7 @@
         <field name="name">attachment.audit.log.tree</field>
         <field name="model">attachment.audit.log</field>
         <field name="arch" type="xml">
-            <list create="false" delete="false">
+            <tree create="false" delete="false">
                 <field name="create_date"/>
                 <field name="user_id"/>
                                     <field name="action" widget="badge"
@@ -20,7 +20,7 @@
                 <field name="reason" optional="show"/>
                 <field name="rule" optional="show"/>
                 <field name="error_message" optional="show"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -37,16 +37,23 @@
                         <strong>READ ONLY</strong>
                         — This record is part of the immutable audit trail and cannot be modified or deleted.
                     </div>
+                    <field name="operation_id" invisible="1"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_attachment" type="object"
                                 class="oe_stat_button" icon="fa-file"
-                                invisible="not attachment_id">
-                            View Attachment
+                                attrs="{'invisible': [('attachment_id', '=', False)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Attachment</span>
+                            </div>
                         </button>
                         <button name="action_view_operation" type="object"
                                 class="oe_stat_button" icon="fa-tasks"
-                                invisible="not operation_id">
-                            View Operation
+                                attrs="{'invisible': [('operation_id', '=', False)]}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Operation</span>
+                            </div>
                         </button>
                     </div>
                     <notebook>
@@ -61,7 +68,7 @@
                                     <field name="result" widget="badge"
                                            decoration-success="result == 'success'"
                                            decoration-danger="result == 'failure'"/>
-                                    <field name="reason" invisible="not reason"/>
+                                    <field name="reason" attrs="{'invisible': [('reason', '=', False)]}"/>
                                     <field name="create_date" string="Timestamp"/>
                                 </group>
                                 <group>
@@ -72,7 +79,7 @@
                             </group>
                         </page>
                         <page string="Error Context"
-                              invisible="not error_message">
+                              attrs="{'invisible': [('error_message', '=', False)]}">
                             <field name="error_message" nolabel="1"
                                    class="font-monospace bg-light p-3 rounded"/>
                         </page>
@@ -109,7 +116,7 @@
     <record id="attachment_optimizer_audit_log_action" model="ir.actions.act_window">
         <field name="name">Audit Logs</field>
         <field name="res_model">attachment.audit.log</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="context">{'create': False, 'import': False}</field>
         <field name="help">
             Audit trail of all storage migration actions.

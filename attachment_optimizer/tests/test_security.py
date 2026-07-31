@@ -1,9 +1,9 @@
-﻿from odoo.tests import TransactionCase
+from odoo.tests import SavepointCase
 from odoo.exceptions import AccessError
 from odoo.tools import mute_logger
 
 
-class TestSecurity(TransactionCase):
+class TestSecurity(SavepointCase):
 
     @classmethod
     def setUpClass(cls):
@@ -14,12 +14,12 @@ class TestSecurity(TransactionCase):
         cls.manager = cls.env['res.users'].create({
             'name': 'Sec Mgr',
             'login': 'security_manager',
-            'group_ids': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
+            'groups_id': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
         })
         cls.non_manager = cls.env['res.users'].create({
             'name': 'Sec Emp',
             'login': 'security_employee',
-            'group_ids': [(4, cls.env.ref('base.group_user').id)],
+            'groups_id': [(4, cls.env.ref('base.group_user').id)],
         })
         cls.attachment = cls.env['ir.attachment'].create({
             'name': 'security_test.txt',
@@ -30,10 +30,10 @@ class TestSecurity(TransactionCase):
     # -- Menu ACL --
 
     def _visible_to(self, menu, user):
-        menu_groups = menu.sudo().group_ids
+        menu_groups = menu.sudo().groups_id
         if not menu_groups:
             return True
-        return bool(menu_groups & user.group_ids)
+        return bool(menu_groups & user.groups_id)
 
     def test_01_non_manager_cannot_see_storage_mapping_menu(self):
         """Menu invisible to non_manager because model ACL restricts access."""
@@ -103,7 +103,7 @@ class TestSecurity(TransactionCase):
         no_access_user = self.env['res.users'].create({
             'name': 'No Read',
             'login': 'no_read_acl',
-            'group_ids': [(6, 0, [])],
+            'groups_id': [(6, 0, [])],
         })
         env = self.env(user=no_access_user)
         binary = env['ir.binary']
@@ -111,13 +111,7 @@ class TestSecurity(TransactionCase):
         stream = binary._get_stream_from(record, 'datas')
         self.assertIsNone(stream)
 
-    def test_10_manager_group_is_exposed_as_odoo_privilege(self):
-        group = self.env.ref(
-            'attachment_optimizer.group_storage_optimization_manager'
-        )
-        privilege = self.env.ref(
-            'attachment_optimizer.privilege_storage_optimization'
-        )
+    def test_10_manager_group_uses_storage_category(self):
+        group = self.env.ref('attachment_optimizer.group_storage_optimization_manager')
 
-        self.assertEqual(group.privilege_id, privilege)
-        self.assertEqual(privilege.category_id.name, 'Storage Optimization')
+        self.assertEqual(group.category_id.name, 'Storage Optimization')

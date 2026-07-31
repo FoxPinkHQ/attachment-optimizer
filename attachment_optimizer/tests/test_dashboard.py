@@ -1,7 +1,7 @@
-from odoo.tests import TransactionCase
+from odoo.tests import SavepointCase
 
 
-class TestDashboard(TransactionCase):
+class TestDashboard(SavepointCase):
 
     @classmethod
     def setUpClass(cls):
@@ -17,12 +17,12 @@ class TestDashboard(TransactionCase):
         cls.manager = cls.env['res.users'].create({
             'name': 'Manager',
             'login': 'dashboard_manager',
-            'group_ids': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
+            'groups_id': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
         })
         cls.non_manager = cls.env['res.users'].create({
             'name': 'Employee',
             'login': 'dashboard_employee',
-            'group_ids': [(4, cls.env.ref('base.group_user').id)],
+            'groups_id': [(4, cls.env.ref('base.group_user').id)],
         })
         cls.menu_dashboard = cls.env.ref(
             'attachment_optimizer.attachment_optimizer_dashboard_menu'
@@ -35,10 +35,10 @@ class TestDashboard(TransactionCase):
         )
 
     def _visible_to(self, menu, user):
-        menu_groups = menu.sudo().group_ids
+        menu_groups = menu.sudo().groups_id
         if not menu_groups:
             return True
-        return bool(menu_groups & user.group_ids)
+        return bool(menu_groups & user.groups_id)
 
     def test_01_dashboard_menu_visible_to_manager(self):
         self.assertTrue(self._visible_to(self.menu_dashboard, self.manager))

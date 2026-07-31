@@ -1,9 +1,9 @@
-﻿from odoo.tests import TransactionCase
+from odoo.tests import SavepointCase
 from odoo.exceptions import AccessError
 from odoo.tools import mute_logger
 
 
-class TestAuditLog(TransactionCase):
+class TestAuditLog(SavepointCase):
 
     @classmethod
     def setUpClass(cls):
@@ -14,12 +14,12 @@ class TestAuditLog(TransactionCase):
         cls.manager = cls.env['res.users'].create({
             'name': 'Audit Mgr',
             'login': 'audit_manager',
-            'group_ids': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
+            'groups_id': [(4, cls.env.ref('base.group_user').id), (4, group.id)],
         })
         cls.non_manager = cls.env['res.users'].create({
             'name': 'Audit Emp',
             'login': 'audit_employee',
-            'group_ids': [(4, cls.env.ref('base.group_user').id)],
+            'groups_id': [(4, cls.env.ref('base.group_user').id)],
         })
         cls.attachment = cls.env['ir.attachment'].create({
             'name': 'audit_test.txt',

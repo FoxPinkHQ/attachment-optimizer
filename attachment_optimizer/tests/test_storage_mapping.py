@@ -1,8 +1,8 @@
-﻿from odoo.tests import TransactionCase
+from odoo.tests import SavepointCase
 from odoo.exceptions import ValidationError
 
 
-class TestStorageMapping(TransactionCase):
+class TestStorageMapping(SavepointCase):
 
     @classmethod
     def setUpClass(cls):

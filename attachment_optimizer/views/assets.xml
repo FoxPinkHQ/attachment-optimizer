@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" inherit_id="web.assets_backend" name="Attachment Optimizer Assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/attachment_optimizer/static/src/components/dashboard/dashboard.js"/>
+            <link rel="stylesheet" type="text/scss" href="/attachment_optimizer/static/src/components/dashboard/dashboard.scss"/>
+        </xpath>
+    </template>
+</odoo>

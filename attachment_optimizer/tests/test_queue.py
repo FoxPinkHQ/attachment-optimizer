@@ -123,7 +123,7 @@ class TestQueueConcurrency(TransactionCase):
         self.assertEqual(report.recovered, 3)
 
         for op in claimed:
-            op.invalidate_recordset()
+            op.invalidate_cache()
             self.assertEqual(op.state, 'queued')
             self.assertFalse(op.processing_token)
             self.assertFalse(op.worker_id)
