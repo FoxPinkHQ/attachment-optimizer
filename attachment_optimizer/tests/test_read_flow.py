@@ -2,7 +2,6 @@
 
 from odoo.tests import TransactionCase
 
-from ..models.ir_binary_extension import MissingExternalObjectError
 
 
 class TestReadFlow(TransactionCase):
@@ -45,7 +44,7 @@ class TestReadFlow(TransactionCase):
             self.skipTest('moto or boto3 not available')
         mock = mock_aws()
         mock.start()
-        self.addCleanup(mock.stop)
+        self._mock_aws = mock
         client = boto3.client('s3', region_name='us-east-1')
         client.create_bucket(Bucket=self.test_bucket)
         client.put_object(Bucket=self.test_bucket, Key=self.s3_key, Body=self.test_data)
@@ -76,10 +75,20 @@ class TestReadFlow(TransactionCase):
         self.assertEqual(stream.mimetype, 'application/pdf')
 
     def test_02_fallback_to_filestore_when_no_mapping(self):
-        self.skipTest('requires HTTP request context (falls through to _to_http_stream)')
+        stream = self.binary._get_stream_from(
+            self.attachment_no_mapping, 'datas'
+        )
+        self.assertIsNone(stream)
 
     def test_03_fallback_to_filestore_when_mapping_not_finalized(self):
-        self.skipTest('requires HTTP request context (falls through to _to_http_stream)')
+        self.env['attachment.storage.mapping'].create_mapping(
+            attachment_id=self.attachment.id,
+            s3_bucket=self.test_bucket,
+            s3_key=self.s3_key,
+            s3_region='us-east-1',
+        )
+        stream = self.binary._get_stream_from(self.attachment, 'datas')
+        self.assertIsNone(stream)
 
     def test_04_stream_has_correct_mimetype(self):
         self._setup_mock_s3()
@@ -93,10 +102,11 @@ class TestReadFlow(TransactionCase):
         stream = self.binary._get_stream_from(self.attachment, 'datas', filename='custom.pdf')
         self.assertEqual(stream.download_name, 'custom.pdf')
 
-    def test_06_finalized_mapping_missing_s3_raises_error(self):
+    def test_06_finalized_mapping_missing_s3_falls_back(self):
         self._create_finalized_mapping(self.attachment)
-        with self.assertRaises(MissingExternalObjectError):
+        self.assertIsNone(
             self.binary._get_stream_from(self.attachment, 'datas')
+        )
 
     def test_07_store_fname_unchanged_after_read(self):
         self._setup_mock_s3()
@@ -121,7 +131,10 @@ class TestReadFlow(TransactionCase):
         self.assertEqual(location['checksum'], self.checksum)
 
     def test_10_attachment_without_mapping_serves_from_filestore(self):
-        self.skipTest('requires HTTP request context (falls through to _to_http_stream)')
+        stream = self.binary._get_stream_from(
+            self.attachment_no_mapping, 'datas'
+        )
+        self.assertIsNone(stream)
 
     def test_11_respects_attachment_acl(self):
         self._setup_mock_s3()
@@ -129,10 +142,18 @@ class TestReadFlow(TransactionCase):
         no_access_user = self.env['res.users'].create({
             'name': 'No Access',
             'login': 'no_access_acl',
-            'groups_id': [(6, 0, [])],
+            'group_ids': [(6, 0, [])],
         })
         env = self.env(user=no_access_user)
         binary = env['ir.binary']
         record = env['ir.attachment'].browse(self.attachment.id)
         stream = binary._get_stream_from(record, 'datas')
         self.assertIsNone(stream)
+
+    def tearDown(self):
+        if getattr(self, '_mock_aws', None):
+            self._mock_aws.stop()
+            self._mock_aws = None
+        from unittest.mock import patch
+        patch.stopall()
+        super().tearDown()

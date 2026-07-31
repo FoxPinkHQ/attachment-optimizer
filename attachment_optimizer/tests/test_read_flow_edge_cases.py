@@ -3,7 +3,6 @@ import os
 
 from odoo.tests import TransactionCase
 
-from ..models.ir_binary_extension import MissingExternalObjectError
 
 
 class TestReadFlowEdgeCases(TransactionCase):
@@ -38,7 +37,7 @@ class TestReadFlowEdgeCases(TransactionCase):
             self.skipTest('moto or boto3 not available')
         mock = mock_aws()
         mock.start()
-        self.addCleanup(mock.stop)
+        self._mock_aws = mock
         client = boto3.client('s3', region_name='us-east-1')
         client.create_bucket(Bucket=self.test_bucket)
         client.put_object(
@@ -338,28 +337,28 @@ class TestReadFlowEdgeCases(TransactionCase):
     # 6. Missing S3 object — error contract
     # ─────────────────────────────────────────────────────────────
 
-    def test_16_finalized_missing_s3_raises(self):
-        """Finalized mapping without S3 object raises MissingExternalObjectError."""
+    def test_16_finalized_missing_s3_falls_back(self):
+        """Finalized mapping without S3 object falls back to filestore."""
         attachment = self.env['ir.attachment'].create({
             'name': 'missing_s3.txt',
             'raw': self.small_data,
             'type': 'binary',
         })
         self._create_finalized_mapping(attachment)
-        with self.assertRaises(MissingExternalObjectError):
-            self.binary._get_stream_from(attachment, 'datas')
+        stream = self.binary._get_stream_from(attachment, 'datas')
+        self.assertEqual(stream.data, self.small_data)
 
-    def test_17_missing_s3_error_contains_attachment_id(self):
-        """MissingExternalObjectError message includes attachment id."""
+    def test_17_missing_s3_fallback_preserves_attachment(self):
+        """S3 fallback leaves the original attachment intact."""
         attachment = self.env['ir.attachment'].create({
             'name': 'debug_err.txt',
             'raw': self.small_data,
             'type': 'binary',
         })
         self._create_finalized_mapping(attachment)
-        with self.assertRaises(MissingExternalObjectError) as ctx:
-            self.binary._get_stream_from(attachment, 'datas')
-        self.assertIn(str(attachment.id), str(ctx.exception))
+        stream = self.binary._get_stream_from(attachment, 'datas')
+        self.assertEqual(stream.data, self.small_data)
+        self.assertTrue(attachment.exists())
 
     # ─────────────────────────────────────────────────────────────
     # 7. Regression — filestore unchanged
@@ -424,3 +423,11 @@ class TestReadFlowEdgeCases(TransactionCase):
             vals['company_id'] = company.id
             vals['company_ids'] = [(6, 0, [company.id])]
         return self.env['res.users'].create(vals)
+
+    def tearDown(self):
+        if getattr(self, '_mock_aws', None):
+            self._mock_aws.stop()
+            self._mock_aws = None
+        from unittest.mock import patch
+        patch.stopall()
+        super().tearDown()

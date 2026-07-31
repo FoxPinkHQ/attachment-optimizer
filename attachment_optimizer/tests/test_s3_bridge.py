@@ -32,7 +32,7 @@ class TestS3Bridge(TransactionCase):
             self.skipTest('moto or boto3 not available')
         mock = mock_aws()
         mock.start()
-        self.addCleanup(mock.stop)
+        self._mock_aws = mock
         client = boto3.client('s3', region_name='us-east-1')
         client.create_bucket(Bucket=self.test_bucket)
 
@@ -108,3 +108,11 @@ class TestS3Bridge(TransactionCase):
         self._setup_mock_s3()
         result = self.bridge.upload(self.test_bucket, 'empty_file', b'')
         self.assertTrue(result)
+
+    def tearDown(self):
+        if getattr(self, '_mock_aws', None):
+            self._mock_aws.stop()
+            self._mock_aws = None
+        from unittest.mock import patch
+        patch.stopall()
+        super().tearDown()

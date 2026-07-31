@@ -40,7 +40,7 @@ class TestIntegration(TransactionCase):
             self.skipTest('moto or boto3 not available')
         mock = mock_aws()
         mock.start()
-        self.addCleanup(mock.stop)
+        self._mock_aws = mock
         client = boto3.client('s3', region_name='us-east-1')
         client.create_bucket(Bucket=self.test_bucket)
         ICP = self.env['ir.config_parameter'].sudo()
@@ -105,3 +105,11 @@ class TestIntegration(TransactionCase):
         for log in logs:
             self.assertEqual(log.result, 'success',
                              'All steps must be success')
+
+    def tearDown(self):
+        if getattr(self, '_mock_aws', None):
+            self._mock_aws.stop()
+            self._mock_aws = None
+        from unittest.mock import patch
+        patch.stopall()
+        super().tearDown()
