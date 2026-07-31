@@ -161,7 +161,7 @@
                                     Refresh
                                 </button>
                                 <t t-if="state.pollActive">
-                                    <span class="badge rounded-pill text-bg-info">Live</span>
+                                    <span class="badge badge-pill badge-info">Live</span>
                                 </t>
                             </p>
                         </div>
@@ -227,7 +227,7 @@
                         <div class="o_progress_section">
                             <div class="o_progress_header_row">
                                 <h4>Migration In Progress</h4>
-                                <span class="badge rounded-pill text-bg-info">
+                                <span class="badge badge-pill badge-info">
                                     <i class="fa fa-spinner fa-spin"/> Processing
                                 </span>
                             </div>
@@ -278,7 +278,7 @@
                                     <tr t-foreach="state.recentOperations" t-as="op" t-key="op.id">
                                         <td class="o_col_name" t-esc="op.attachment_name"/>
                                         <td>
-                                            <span class="badge rounded-pill" t-att-class="'text-bg-' + (op.state === 'finalized' ? 'success' : (op.state === 'pending' || op.state === 'queued' || op.state === 'draft') ? 'warning' : (op.state === 'failed' || op.state === 'verification_failed') ? 'danger' : 'info')" t-esc="op.state_label"/>
+                                            <span class="badge badge-pill" t-att-class="'badge-' + (op.state === 'finalized' ? 'success' : (op.state === 'pending' || op.state === 'queued' || op.state === 'draft') ? 'warning' : (op.state === 'failed' || op.state === 'verification_failed') ? 'danger' : 'info')" t-esc="op.state_label"/>
                                         </td>
                                         <td class="text-muted">
                                             <t t-esc="op.started_at and op.started_at.slice(0, 19).replace('T', ' ') or '—'"/>
