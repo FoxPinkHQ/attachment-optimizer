@@ -6,3 +6,5 @@
 
 __pycache__/
 *.pyc
+/attachment_optimizer/README.md
+/attachment_optimizer/LICENSE
