@@ -98,7 +98,11 @@ class AuditLog(models.Model):
             'reason': reason,
             'rule': rule,
         }
-        return self.create(vals)
+        # Audit records may only be created through this private server-side
+        # helper. Managers have read-only ACL access, so they cannot forge an
+        # audit event through RPC/import while normal business actions can
+        # still append events under the original user's identity.
+        return self.sudo().create(vals)
 
     def action_view_attachment(self):
         self.ensure_one()
