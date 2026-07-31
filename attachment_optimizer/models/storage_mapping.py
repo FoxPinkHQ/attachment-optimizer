@@ -151,7 +151,7 @@ class StorageMapping(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'attachment.migration.operation',
-            'view_mode': 'list,form',
+            'view_mode': 'tree,form',
             'domain': [('mapping_id', '=', self.id)],
             'name': 'Migration Operations',
         }
@@ -161,7 +161,7 @@ class StorageMapping(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'attachment.audit.log',
-            'view_mode': 'list,form',
+            'view_mode': 'tree,form',
             'domain': [('mapping_id', '=', self.id)],
             'name': 'Audit Logs',
         }
