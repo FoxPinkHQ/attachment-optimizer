@@ -42,12 +42,18 @@
                         <button name="action_view_attachment" type="object"
                                 class="oe_stat_button" icon="fa-file"
                                 attrs="{'invisible': [('attachment_id', '=', False)]}">
-                            View Attachment
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Attachment</span>
+                            </div>
                         </button>
                         <button name="action_view_operation" type="object"
                                 class="oe_stat_button" icon="fa-tasks"
                                 attrs="{'invisible': [('operation_id', '=', False)]}">
-                            View Operation
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Operation</span>
+                            </div>
                         </button>
                     </div>
                     <notebook>

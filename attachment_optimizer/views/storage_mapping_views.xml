@@ -29,11 +29,17 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_attachment" type="object"
                                 class="oe_stat_button" icon="fa-file">
-                            View Attachment
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Attachment</span>
+                            </div>
                         </button>
                         <button name="action_view_audit" type="object"
                                 class="oe_stat_button" icon="fa-history">
-                            View Audit
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">View</span>
+                                <span class="o_stat_text">Audit</span>
+                            </div>
                         </button>
                     </div>
 
