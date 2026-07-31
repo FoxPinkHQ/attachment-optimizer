@@ -27,19 +27,19 @@
             </div>
         </div>
 
-        <!-- STATS ROW -->
+        <!-- VALUE SUMMARY -->
         <div class="fd-row" style="margin:32px 0; text-align:center;">
             <div style="display:inline-block; width:31%; vertical-align:top; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin:4px;">
-                <div style="font-size:28px; font-weight:800; color:#4f46e5; line-height:1; letter-spacing:-1px;">3</div>
-                <div style="font-size:12px; color:#64748b; font-weight:600; margin-top:6px; text-transform:uppercase; letter-spacing:0.3px;">Core models</div>
+                <div style="font-size:17px; font-weight:800; color:#4f46e5; line-height:1.2;">Safe Migration</div>
+                <div style="font-size:12px; color:#64748b; font-weight:600; margin-top:6px;">Upload and verify before activation</div>
             </div>
             <div style="display:inline-block; width:31%; vertical-align:top; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin:4px;">
-                <div style="font-size:28px; font-weight:800; color:#4f46e5; line-height:1; letter-spacing:-1px;">166</div>
-                <div style="font-size:12px; color:#64748b; font-weight:600; margin-top:6px; text-transform:uppercase; letter-spacing:0.3px;">Automated tests</div>
+                <div style="font-size:17px; font-weight:800; color:#4f46e5; line-height:1.2;">Access Continuity</div>
+                <div style="font-size:12px; color:#64748b; font-weight:600; margin-top:6px;">Automatic fallback to the filestore</div>
             </div>
             <div style="display:inline-block; width:31%; vertical-align:top; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin:4px;">
-                <div style="font-size:28px; font-weight:800; color:#4f46e5; line-height:1; letter-spacing:-1px;">100%</div>
-                <div style="font-size:12px; color:#64748b; font-weight:600; margin-top:6px; text-transform:uppercase; letter-spacing:0.3px;">Open source</div>
+                <div style="font-size:17px; font-weight:800; color:#4f46e5; line-height:1.2;">No Trial Limits</div>
+                <div style="font-size:12px; color:#64748b; font-weight:600; margin-top:6px;">Useful Free Edition under LGPL-3</div>
             </div>
         </div>
 
@@ -68,19 +68,19 @@
         <div class="fd-row" style="display:flex; margin:0 0 8px;">
             <div style="display:inline-block; width:23%; vertical-align:top; border:1px solid #e2e8f0; border-top:3px solid #7c3aed; border-radius:12px; padding:20px; margin:4px; margin-left:auto; text-align:left;">
                 <h3 style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 4px;">Transparent serving</h3>
-                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Finalized attachments are served directly from S3 via Odoo's binary controller &mdash; seamless to end users.</p>
+                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Finalized attachments are served from S3 through Odoo, with automatic filestore fallback if storage is unavailable.</p>
             </div>
             <div style="display:inline-block; width:23%; vertical-align:top; border:1px solid #e2e8f0; border-top:3px solid #0891b2; border-radius:12px; padding:20px; margin:4px; text-align:left;">
                 <h3 style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 4px;">Audit log</h3>
-                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Every migration action is logged with timestamps. Complete audit trail for compliance and troubleshooting.</p>
+                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Migration actions are recorded with users, timestamps and results for operational traceability and troubleshooting.</p>
             </div>
             <div style="display:inline-block; width:23%; vertical-align:top; border:1px solid #e2e8f0; border-top:3px solid #ea580c; border-radius:12px; padding:20px; margin:4px; text-align:left;">
                 <h3 style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 4px;">Retry & resume</h3>
-                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Failed uploads can be retried individually or in bulk. Idempotent design prevents duplicate mappings.</p>
+                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Failed uploads can be retried individually or in bulk without creating duplicate storage mappings.</p>
             </div>
             <div style="display:inline-block; width:23%; vertical-align:top; border:1px solid #e2e8f0; border-top:3px solid #4f46e5; border-radius:12px; padding:20px; margin:4px; margin-right:auto; text-align:left;">
                 <h3 style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 4px;">Access control</h3>
-                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Role-based access for managers. ACL-enforced security &mdash; menus visible but data protected by model permissions.</p>
+                <p style="font-size:13px; color:#64748b; margin:0; line-height:1.5;">Configuration, migration tools and records are restricted to users with the Storage Optimization Manager permission.</p>
             </div>
         </div>
 
@@ -97,8 +97,8 @@
                     <p style="font-size:13px; color:#64748b; margin:0; line-height:1.6;">Attachments remain accessible via Odoo during and after migration. Transparent S3 serving with automatic fallback to filestore.</p>
                 </div>
                 <div style="display:inline-block; width:30%; vertical-align:top; border:1px solid #e2e8f0; border-radius:12px; padding:20px 16px; margin:4px; margin-right:auto; text-align:left;">
-                    <div style="font-size:18px; font-weight:700; color:#4f46e5; margin:0 0 6px;">Tested Safeguards</div>
-                    <p style="font-size:13px; color:#64748b; margin:0; line-height:1.6;">170+ automated tests cover checksum verification, retry logic, access control, recovery, and audit logging.</p>
+                    <div style="font-size:18px; font-weight:700; color:#4f46e5; margin:0 0 6px;">Operational Visibility</div>
+                    <p style="font-size:13px; color:#64748b; margin:0; line-height:1.6;">Monitor eligible attachments, migrated volume, failures and queue progress from one dashboard.</p>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
                     &#10003; SHA-256 upload verification<br/>
                     &#10003; Dashboard, retry and recovery<br/>
                     &#10003; Filestore fallback and rollback safety<br/>
-                    &#10003; Access control and immutable audit trail
+                    &#10003; Access control and append-only audit trail
                 </p>
             </div>
             <div style="display:inline-block; width:47%; vertical-align:top; border:2px solid #059669; border-radius:12px; padding:22px; margin:4px; margin-right:auto; text-align:left;">
@@ -129,7 +129,7 @@
                     &#9675; Automatic routing for new attachments<br/>
                     &#9675; One-click restore to filestore<br/>
                     &#9675; Lifecycle policies and scheduled processing<br/>
-                    &#9675; Multi-bucket and multi-company rules<br/>
+                    &#9675; Multi-bucket routing policies<br/>
                     &#9675; Cost analytics, alerts and scale controls
                 </p>
             </div>
@@ -188,7 +188,7 @@
                     <div style="width:28px; height:28px; border-radius:8px; border:1px solid #eef2ff; line-height:28px; text-align:center; font-size:14px; color:#4f46e5; font-weight:700; margin-right:12px; flex-shrink:0;">?</div>
                     <div>
                         <div style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 4px;">Is this module really free?</div>
-                        <p style="font-size:13px; color:#64748b; margin:0; line-height:1.6;">Yes. Licensed under LGPL-3, the same permissive license as Odoo Community itself. No paywalls, no premium features, no subscription required.</p>
+                        <p style="font-size:13px; color:#64748b; margin:0; line-height:1.6;">Yes. The Free Edition is licensed under LGPL-3 and includes every feature listed on this page outside the clearly marked Pro Roadmap, with no trial period or subscription required.</p>
                     </div>
                 </div>
             </div>
@@ -206,7 +206,7 @@
                     <div style="width:28px; height:28px; border-radius:8px; border:1px solid #eef2ff; line-height:28px; text-align:center; font-size:14px; color:#4f46e5; font-weight:700; margin-right:12px; flex-shrink:0;">?</div>
                     <div>
                         <div style="font-size:14px; font-weight:700; color:#1e293b; margin:0 0 4px;">Are original attachments deleted from the filestore?</div>
-                        <p style="font-size:13px; color:#64748b; margin:0; line-height:1.6;">No. The module creates a storage mapping pointing to S3 while the original attachment remains in Odoo's filestore. You can safely revert at any time.</p>
+                        <p style="font-size:13px; color:#64748b; margin:0; line-height:1.6;">No. The module keeps the original attachment in Odoo's filestore and uses it automatically if the S3 copy cannot be read.</p>
                     </div>
                 </div>
             </div>
@@ -250,7 +250,7 @@
                     <span style="font-size:13px; font-weight:600; color:#166534;">19.0</span>
                 </div>
             </div>
-            <p style="font-size:12px; color:#94a3b8; margin:16px 0 0; text-align:center;">Community & Enterprise &middot; S3-compatible storage &middot; Depends on base, web</p>
+            <p style="font-size:12px; color:#94a3b8; margin:16px 0 0; text-align:center;">Community & Enterprise &middot; Amazon S3 and MinIO &middot; Odoo.sh and on-premise deployments</p>
         </div>
 
         <!-- INSTALLATION -->
@@ -285,7 +285,7 @@
         <div style="border:1px solid #e2e8f0; border-radius:16px; padding:32px 24px; margin:40px 0 16px; text-align:center;">
             <div style="font-size:14px; font-weight:700; color:#1e293b; text-transform:uppercase; letter-spacing:1px; margin:0 0 12px;">Attachment Optimizer</div>
             <p style="font-size:13px; color:#64748b; margin:0 auto 16px; line-height:1.6; max-width:480px;">
-                Open-source S3 storage migration and optimization for Odoo attachments.
+                Open-source, verified S3 replication and serving for Odoo attachments.
                 Licensed under LGPL-3 &mdash; free to use, modify and distribute.
             </p>
             <div style="font-size:13px; color:#64748b; margin:0 0 4px;">Support &amp; source code</div>
