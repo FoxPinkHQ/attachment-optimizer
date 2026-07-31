@@ -7,7 +7,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">UERGIGludm9pY2UgZm9yIG9yZGVyIDEwNDIgLSBEZW1vIENvbXBhbnk=</field>
+            <field name="datas">UERGIGludm9pY2UgZm9yIG9yZGVyIDEwNDIgLSBEZW1vIENvbXBhbnk=</field>
         </record>
 
         <record id="demo_attachment_02" model="ir.attachment">
@@ -15,7 +15,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">UERGIGludm9pY2UgZm9yIG9yZGVyIDEwNDMgLSBEZW1vIENvbXBhbnk=</field>
+            <field name="datas">UERGIGludm9pY2UgZm9yIG9yZGVyIDEwNDMgLSBEZW1vIENvbXBhbnk=</field>
         </record>
 
         <record id="demo_attachment_03" model="ir.attachment">
@@ -23,7 +23,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">RE9DWCBjb250cmFjdCBmb3IgVklQIHBhcnRuZXIgQSAtIERlbW8=</field>
+            <field name="datas">RE9DWCBjb250cmFjdCBmb3IgVklQIHBhcnRuZXIgQSAtIERlbW8=</field>
         </record>
 
         <record id="demo_attachment_04" model="ir.attachment">
@@ -31,7 +31,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">RE9DWCBjb250cmFjdCBmb3IgVklQIHBhcnRuZXIgQiAtIERlbW8=</field>
+            <field name="datas">RE9DWCBjb250cmFjdCBmb3IgVklQIHBhcnRuZXIgQiAtIERlbW8=</field>
         </record>
 
         <record id="demo_attachment_05" model="ir.attachment">
@@ -39,7 +39,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">WExTWCBwcm9kdWN0IGNhdGFsb2cgMjAyNg==</field>
+            <field name="datas">WExTWCBwcm9kdWN0IGNhdGFsb2cgMjAyNg==</field>
         </record>
 
         <record id="demo_attachment_06" model="ir.attachment">
@@ -47,7 +47,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">UERGIHJlY2VpcHQgcGF5bWVudCByZWNlaXB0IE1heSAyMDI2</field>
+            <field name="datas">UERGIHJlY2VpcHQgcGF5bWVudCByZWNlaXB0IE1heSAyMDI2</field>
         </record>
 
         <record id="demo_attachment_07" model="ir.attachment">
@@ -55,7 +55,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">UERGIHNoaXBwaW5nIGxhYmVsIDEwNDI=</field>
+            <field name="datas">UERGIHNoaXBwaW5nIGxhYmVsIDEwNDI=</field>
         </record>
 
         <record id="demo_attachment_08" model="ir.attachment">
@@ -63,7 +63,7 @@
             <field name="type">binary</field>
             <field name="mimetype">image/jpeg</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">/9j/4AAQSkZJRg==</field>
+            <field name="datas">/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDIooor68+VP//Z</field>
         </record>
 
         <record id="demo_attachment_09" model="ir.attachment">
@@ -71,7 +71,7 @@
             <field name="type">binary</field>
             <field name="mimetype">image/jpeg</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">/9j/4AAQSkZJRg==</field>
+            <field name="datas">/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDIooor68+VP//Z</field>
         </record>
 
         <record id="demo_attachment_10" model="ir.attachment">
@@ -79,7 +79,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">UERGIHRheCBkZWNsYXJhdGlvbiBRMSAyMDI2</field>
+            <field name="datas">UERGIHRheCBkZWNsYXJhdGlvbiBRMSAyMDI2</field>
         </record>
 
         <record id="demo_attachment_11" model="ir.attachment">
@@ -87,7 +87,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/pdf</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">UERGIGJhbmsgc3RhdGVtZW50IEphbnVhcnkgMjAyNg==</field>
+            <field name="datas">UERGIGJhbmsgc3RhdGVtZW50IEphbnVhcnkgMjAyNg==</field>
         </record>
 
         <record id="demo_attachment_12" model="ir.attachment">
@@ -95,7 +95,7 @@
             <field name="type">binary</field>
             <field name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</field>
             <field name="res_model">ir.attachment</field>
-            <field name="raw">RE9DWCBjb250cmFjdCB0ZW1wbGF0ZQ==</field>
+            <field name="datas">RE9DWCBjb250cmFjdCB0ZW1wbGF0ZQ==</field>
         </record>
 
         <!-- Storage Mappings with various statuses for screenshot -->
