@@ -248,7 +248,6 @@ Every supported Odoo version has its own dedicated branch and release package.
 ## Support
 
 - **Issues:** [GitHub Issues](https://github.com/FoxPinkHQ/attachment-optimizer/issues)
-- **Email:** aduy000@gmail.com
 
 ---
 
