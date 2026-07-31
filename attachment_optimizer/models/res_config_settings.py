@@ -107,7 +107,10 @@ class ResConfigSettings(models.TransientModel):
                 raise UserError(result['error'] or 'S3 connection check failed.')
             ICP = self.env['ir.config_parameter'].sudo()
             ICP.set_param('attachment_storage.connection_verified_at', fields.Datetime.now().isoformat())
-            ICP.set_param('attachment_storage.connection_verified_digest', bridge.get_config_fingerprint())
+            ICP.set_param(
+                'attachment_storage.connection_verified_digest',
+                bridge.get_config_fingerprint(config=config, bucket=bucket),
+            )
         except Exception as e:
             raise UserError(self._format_s3_connection_error(e, bucket))
 

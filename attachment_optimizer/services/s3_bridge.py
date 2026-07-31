@@ -135,15 +135,31 @@ class S3Bridge:
         canonical = json.dumps(config, sort_keys=True, separators=(',', ':'))
         return hashlib.sha256(canonical.encode()).hexdigest()
 
-    def get_config_fingerprint(self):
+    def get_config_fingerprint(self, config=None, bucket=None):
+        """Fingerprint the exact connection settings that were verified.
+
+        The secret is represented only by its SHA-256 digest. This makes a
+        credential rotation invalidate the verified state without putting the
+        plaintext secret in the fingerprint payload.
+        """
         ICP = self.env['ir.config_parameter'].sudo()
-        config = {
-            'endpoint_url': ICP.get_param('attachment_storage.s3.endpoint_url', '') or '',
-            'bucket': ICP.get_param('attachment_storage.s3.bucket', '') or '',
-            'region': ICP.get_param('attachment_storage.s3.region', 'us-east-1'),
-            'access_key_id': ICP.get_param('attachment_storage.s3.access_key_id', '') or '',
+        cfg = config or self._get_config()
+        bucket = (
+            bucket
+            if bucket is not None
+            else ICP.get_param('attachment_storage.s3.bucket', '')
+        )
+        secret = cfg.get('secret_access_key') or ''
+        fingerprint_config = {
+            'endpoint_url': cfg.get('endpoint_url') or '',
+            'bucket': bucket or '',
+            'region': cfg.get('region') or 'us-east-1',
+            'access_key_id': cfg.get('access_key_id') or '',
+            'secret_access_key_sha256': hashlib.sha256(
+                secret.encode()
+            ).hexdigest(),
         }
-        return self.compute_fingerprint(config)
+        return self.compute_fingerprint(fingerprint_config)
 
     def test_connection(self, config=None, bucket=None):
         ICP = self.env['ir.config_parameter'].sudo()
