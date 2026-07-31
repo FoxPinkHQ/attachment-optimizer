@@ -393,3 +393,14 @@ html .o_web_client > .o_action_manager {
 .o_setup_check_row .fa-times-circle {
     font-size: 1.1rem;
 }
+
+/* Stable stat-button sizing for Bootstrap 4 / Odoo 14. */
+.o_form_view .oe_button_box .oe_stat_button.o_ao_stat_button {
+    width: 160px !important;
+    min-width: 160px !important;
+}
+
+.o_form_view .oe_button_box .o_ao_stat_button .o_stat_info,
+.o_form_view .oe_button_box .o_ao_stat_button .o_stat_text {
+    white-space: nowrap;
+}
