@@ -40,19 +40,17 @@
                     <field name="operation_id" invisible="1"/>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_attachment" type="object"
-                                class="oe_stat_button" icon="fa-file"
+                                class="oe_stat_button o_ao_stat_button" icon="fa-file"
                                 attrs="{'invisible': [('attachment_id', '=', False)]}">
                             <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_text">View</span>
-                                <span class="o_stat_text">Attachment</span>
+                                <span class="o_stat_text">View Attachment</span>
                             </div>
                         </button>
                         <button name="action_view_operation" type="object"
-                                class="oe_stat_button" icon="fa-tasks"
+                                class="oe_stat_button o_ao_stat_button" icon="fa-tasks"
                                 attrs="{'invisible': [('operation_id', '=', False)]}">
                             <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_text">View</span>
-                                <span class="o_stat_text">Operation</span>
+                                <span class="o_stat_text">View Operation</span>
                             </div>
                         </button>
                     </div>
