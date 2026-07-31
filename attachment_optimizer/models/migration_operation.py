@@ -325,6 +325,34 @@ class MigrationOperation(models.Model):
             )
 
     @api.model
+    def action_analyze_storage(self):
+        from ..services.migration_service import MigrationService
+        from ..services.s3_bridge import S3Bridge
+        service = MigrationService(self.env)
+        candidates = service.analyze_candidates()
+        ICP = self.env['ir.config_parameter'].sudo()
+        ICP.set_param(
+            'attachment_storage.last_analysis',
+            fields.Datetime.now().isoformat(),
+        )
+        ICP.set_param(
+            'attachment_storage.analysis_digest',
+            S3Bridge(self.env).get_config_fingerprint(),
+        )
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Storage Analysis Complete'),
+                'message': _(
+                    '%d migration candidate(s) found. No queue was created.'
+                ) % len(candidates),
+                'sticky': False,
+                'type': 'success',
+            },
+        }
+
+    @api.model
     def action_get_queue_impact(self):
         from ..services.migration_service import MigrationService
         service = MigrationService(self.env)

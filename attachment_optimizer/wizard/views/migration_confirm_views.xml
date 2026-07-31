@@ -8,7 +8,8 @@
                 <div class="alert alert-info" role="alert">
                     <i class="fa fa-info-circle"/>
                     You are about to create a migration queue.
-                    This will analyze attachments and prepare them for upload to S3.
+                    This prepares the selected attachments for upload to S3.
+                    Original filestore files will not be deleted.
                 </div>
                 <group>
                     <group>

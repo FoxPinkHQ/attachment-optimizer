@@ -9,24 +9,27 @@
                 <app data-string="Attachment Optimizer" string="Attachment Optimizer" name="attachment_optimizer">
                     <div id="s3_storage">
                         <block title="S3 Storage" name="s3_storage_setting_container">
-                            <setting id="s3_bucket_setting" string="Bucket" help="S3 bucket name">
+                            <setting id="s3_bucket_setting" string="Bucket" help="Existing bucket used to store migrated attachments. The module does not create buckets automatically.">
                                 <field name="s3_bucket" placeholder="my-bucket"/>
+                                <div class="text-muted">Enter an existing bucket name, for example <code>attachments</code>.</div>
                             </setting>
-                            <setting id="s3_region_setting" string="Region" help="AWS region or MinIO region">
+                            <setting id="s3_region_setting" string="Region" help="AWS region. For most MinIO installations, use us-east-1.">
                                 <field name="s3_region" placeholder="us-east-1"/>
                             </setting>
-                            <setting id="s3_endpoint_setting" string="Endpoint URL" help="S3 endpoint URL (for MinIO or compatible)">
-                                <field name="s3_endpoint_url" placeholder="http://localhost:9000"/>
+                            <setting id="s3_endpoint_setting" string="Endpoint URL" help="Leave empty for Amazon S3. For MinIO or another compatible provider, enter its API endpoint.">
+                                <field name="s3_endpoint_url" placeholder="https://s3.example.com"/>
+                                <div class="text-muted">Docker users: <code>localhost</code> points to the Odoo container, not the storage server.</div>
                             </setting>
                         </block>
                     </div>
                     <div id="s3_credentials">
                         <block title="Credentials" name="s3_credentials_setting_container">
-                            <setting id="s3_access_key_setting" string="Access Key" help="S3 Access Key ID">
-                                <field name="s3_access_key_id" placeholder="minioadmin"/>
+                            <setting id="s3_access_key_setting" string="Access Key" help="Access key with read, write, list, and delete permissions on the selected bucket.">
+                                <field name="s3_access_key_id" placeholder="Access key ID"/>
                             </setting>
                             <setting id="s3_secret_key_setting" string="Secret Key" help="S3 Secret Access Key">
                                 <field name="s3_secret_access_key" password="true"/>
+                                <div class="text-muted">Save the settings, then test bucket access before analyzing storage.</div>
                                 <div class="content-group mt16">
                                     <button string="Test Connection"
                                             name="action_test_s3_connection"

@@ -62,6 +62,14 @@ class TestDashboard(TransactionCase):
         self.assertEqual(result['type'], 'ir.actions.client')
         self.assertEqual(result['tag'], 'display_notification')
 
+    def test_06b_analyze_storage_does_not_create_queue(self):
+        Operation = self.env['attachment.migration.operation']
+        before = Operation.search_count([])
+        result = Operation.with_user(self.manager).action_analyze_storage()
+        self.assertEqual(result['tag'], 'display_notification')
+        self.assertEqual(Operation.search_count([]), before)
+        self.assertIn('No queue was created', result['params']['message'])
+
     def test_07_retry_all_failed_returns_notification_when_none_failed(self):
         result = self.env[
             'attachment.migration.operation'

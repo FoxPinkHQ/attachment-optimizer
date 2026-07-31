@@ -17,6 +17,9 @@
         "base",
         "web",
     ],
+    "external_dependencies": {
+        "python": ["boto3"],
+    },
     "data": [
         "security/groups.xml",
         "security/ir.model.access.csv",

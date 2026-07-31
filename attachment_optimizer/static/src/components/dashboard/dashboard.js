@@ -172,7 +172,7 @@ export class StorageDashboard extends Component {
         try {
             const result = await this.orm.call(
                 "attachment.migration.operation",
-                "action_analyze_and_queue",
+                "action_analyze_storage",
                 []
             );
             if (result && result.params) {
@@ -184,7 +184,10 @@ export class StorageDashboard extends Component {
             }
             await this._loadDashboard();
         } catch (err) {
-            this.notification.add("Analyze failed.", { type: "danger" });
+            this.notification.add(
+                err.message || "Storage analysis failed. No data was changed.",
+                { type: "danger" }
+            );
         } finally {
             this.state.analyzing = false;
         }
