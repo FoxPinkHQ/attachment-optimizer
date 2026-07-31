@@ -238,7 +238,8 @@ export class StorageDashboard extends Component {
                 res_model: "attachment.migration.queue.confirm",
                 views: [[false, "form"]],
                 view_mode: "form",
-                target: "new",
+                target: "current",
+            context: { module: "attachment_optimizer" },
                 context: {
                     default_count: impact.count,
                     default_total_size: impact.total_size,
@@ -325,7 +326,8 @@ export class StorageDashboard extends Component {
             res_model: "res.config.settings",
             view_mode: "form",
             views: [[false, "form"]],
-            target: "new",
+            target: "current",
+            context: { module: "attachment_optimizer" },
         }, {
             onClose: () => this._loadDashboard(),
         });
