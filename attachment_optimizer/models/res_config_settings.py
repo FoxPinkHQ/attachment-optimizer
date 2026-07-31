@@ -18,7 +18,7 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='attachment_storage.s3.endpoint_url',
     )
     s3_access_key_id = fields.Char(
-        string='Access Key',
+        string='S3 Access Key',
         config_parameter='attachment_storage.s3.access_key_id',
     )
     s3_secret_access_key = fields.Char(
@@ -35,6 +35,55 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='attachment_storage.recovery.limit',
         default=500,
     )
+
+    @staticmethod
+    def _format_s3_connection_error(error, bucket):
+        """Return an actionable message without exposing provider internals."""
+        normalized = str(error).lower()
+
+        authentication_markers = (
+            '403',
+            'accessdenied',
+            'forbidden',
+            'invalidaccesskeyid',
+            'signaturedoesnotmatch',
+            'invalidtoken',
+            'expiredtoken',
+        )
+        if any(marker in normalized for marker in authentication_markers):
+            return (
+                'Authentication or access failed.\n\n'
+                'Verify the Access Key, Secret Key, and permissions for '
+                'bucket "%s".' % bucket
+            )
+
+        if 'nosuchbucket' in normalized or 'not found' in normalized or '404' in normalized:
+            return (
+                'Bucket "%s" was not found.\n\n'
+                'Verify the bucket name and region, or create the bucket first.'
+                % bucket
+            )
+
+        network_markers = (
+            'endpointconnectionerror',
+            'could not connect',
+            'connection refused',
+            'name or service not known',
+            'timed out',
+            'timeout',
+        )
+        if any(marker in normalized for marker in network_markers):
+            return (
+                'Cannot reach the S3 endpoint.\n\n'
+                'Verify the Endpoint URL and network connectivity from the '
+                'Odoo server.'
+            )
+
+        return (
+            'The S3 connection test failed.\n\n'
+            'Verify the storage configuration and check the Odoo server log '
+            'for technical details.'
+        )
 
     def action_test_s3_connection(self):
         self.ensure_one()
@@ -60,14 +109,7 @@ class ResConfigSettings(models.TransientModel):
             ICP.set_param('attachment_storage.connection_verified_at', fields.Datetime.now().isoformat())
             ICP.set_param('attachment_storage.connection_verified_digest', bridge.get_config_fingerprint())
         except Exception as e:
-            msg = str(e)
-            if 'NoSuchBucket' in msg:
-                raise UserError(
-                    'Cannot connect.\n\nBucket "%s" does not exist.\nCreate it first in S3.' % bucket
-                )
-            raise UserError(
-                'Cannot connect.\n\n%s' % msg
-            )
+            raise UserError(self._format_s3_connection_error(e, bucket))
 
         return {
             'type': 'ir.actions.client',

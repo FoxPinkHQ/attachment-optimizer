@@ -45,14 +45,15 @@ class IrBinaryExtension(models.AbstractModel):
                     # The original filestore data is retained. Fall back to
                     # it on S3 failures so a transient outage is not an
                     # attachment outage.
-                    try:
-                        return super()._get_stream_from(
-                            record, field_name=field_name, filename=filename,
-                            filename_field=filename_field, mimetype=mimetype,
-                            default_mimetype=default_mimetype,
+                    content = record.raw
+                    if content:
+                        return Stream(
+                            data=content,
+                            mimetype=record.mimetype or default_mimetype,
+                            download_name=filename or record.name,
+                            type='data',
                         )
-                    except RuntimeError:
-                        return None
+                    return None
                 return Stream(
                     data=content,
                     mimetype=record.mimetype or default_mimetype,

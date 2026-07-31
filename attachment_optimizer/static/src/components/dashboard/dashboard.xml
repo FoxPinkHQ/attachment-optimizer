@@ -187,7 +187,7 @@
                     <div class="o_kpi_row">
                         <div class="o_kpi_card">
                             <div class="o_kpi_value"><t t-esc="state.kpi.total_attachments.toLocaleString()"/></div>
-                            <div class="o_kpi_label">Total Attachments</div>
+                            <div class="o_kpi_label">Stored Attachments</div>
                         </div>
                         <div class="o_kpi_card o_kpi_success">
                             <div class="o_kpi_value"><t t-esc="state.kpi.migrated.toLocaleString()"/></div>

@@ -1,4 +1,4 @@
-﻿import hashlib
+import hashlib
 
 from odoo.tests import TransactionCase
 
@@ -192,3 +192,53 @@ class TestMigrationService(TransactionCase):
         from unittest.mock import patch
         patch.stopall()
         super().tearDown()
+
+    def test_14_analyze_excludes_previously_failed_attachment(self):
+        self.attachment.write({'store_fname': 'tests/test_store'})
+        self.env['attachment.migration.operation'].create({
+            'attachment_id': self.attachment.id,
+            'state': 'failed',
+            'error_message': 'Previous migration failed',
+        })
+
+        candidates = self.service.analyze_candidates()
+
+        self.assertNotIn(self.attachment, candidates)
+
+    def test_15_failed_upload_does_not_log_success(self):
+        broken = self.env['ir.attachment'].create({
+            'name': 'missing-binary.txt',
+            'type': 'binary',
+        })
+        operation = self.service.create_migration_operations([broken.id])
+
+        result = self.service.process_queue(operation_ids=operation.ids)
+
+        self.assertEqual(result['failed'], 1)
+        logs = self.env['attachment.audit.log'].search([
+            ('operation_id', '=', operation.id),
+            ('action', '=', 'upload'),
+        ])
+        self.assertEqual(len(logs), 1)
+        self.assertEqual(logs.result, 'failure')
+
+    def test_16_analyze_excludes_attachments_from_other_companies(self):
+        other_company = self.env['res.company'].create({
+            'name': 'Migration Other Company',
+        })
+        foreign = self.env['ir.attachment'].sudo().create({
+            'name': 'foreign-company.txt',
+            'raw': b'foreign',
+            'type': 'binary',
+            'company_id': other_company.id,
+        })
+
+        scoped_env = self.env(
+            context=dict(
+                self.env.context,
+                allowed_company_ids=[self.env.company.id],
+            )
+        )
+        candidates = MigrationService(scoped_env).analyze_candidates()
+
+        self.assertNotIn(foreign, candidates)

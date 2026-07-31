@@ -9,17 +9,18 @@ _logger = logging.getLogger(__name__)
 
 STATE_TRANSITIONS = {
     'draft': ['queued'],
-    'queued': ['uploading', 'failed'],
+    'queued': ['uploading', 'failed', 'cancelled'],
     'uploading': ['uploaded', 'failed', 'queued'],
     'uploaded': ['verified', 'failed'],
     'verified': ['finalized'],
     'finalized': [],
     'failed': ['queued'],
+    'cancelled': ['queued'],
 }
 
 ACTIVE_STATES = {'draft', 'queued', 'uploading', 'uploaded', 'verified'}
-TERMINAL_STATES = {'finalized', 'failed'}
-CLEAR_OWNERSHIP_STATES = {'finalized', 'failed', 'queued'}
+TERMINAL_STATES = {'finalized', 'failed', 'cancelled'}
+CLEAR_OWNERSHIP_STATES = {'finalized', 'failed', 'cancelled', 'queued'}
 
 UPLOAD_BATCH_LIMIT = 100
 
@@ -51,6 +52,7 @@ class MigrationOperation(models.Model):
         ('verified', 'Verified'),
         ('finalized', 'Finalized'),
         ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
     ], string='State', default='draft', required=True)
     is_active = fields.Boolean(
         string='Active', default=True, index=True,
@@ -149,6 +151,8 @@ class MigrationOperation(models.Model):
     def write(self, vals):
         if 'state' in vals:
             for record in self:
+                if vals['state'] == record.state:
+                    continue
                 if vals['state'] not in STATE_TRANSITIONS.get(record.state, []):
                     raise ValidationError(
                         _('Invalid state transition: %s → %s') % (
@@ -163,7 +167,7 @@ class MigrationOperation(models.Model):
     def create_queue(self, attachment_ids):
         now = fields.Datetime.now()
         created = self.browse()
-        atts = self.env['ir.attachment'].browse(attachment_ids)
+        atts = self.env['ir.attachment'].sudo().browse(attachment_ids)
         company_map = {
             a.id: a.company_id.id if a.company_id else self.env.company.id
             for a in atts
@@ -281,8 +285,11 @@ class MigrationOperation(models.Model):
             'name': 'Attachment Optimizer Settings',
         }
 
-    def action_retry(self):
+    def _retry_operations(self):
         created = self.env['attachment.migration.operation']
+        self.env['attachment.migration.operation'].flush_model([
+            'attachment_id', 'is_active',
+        ])
         active_attachment_ids = set(
             self.env.cr.execute("""
                 SELECT DISTINCT attachment_id FROM attachment_migration_operation
@@ -315,14 +322,51 @@ class MigrationOperation(models.Model):
             )
         return created
 
+    def action_retry(self):
+        created = self._retry_operations()
+        if len(created) == 1:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Retry Operation'),
+                'res_model': 'attachment.migration.operation',
+                'view_mode': 'form',
+                'res_id': created.id,
+                'target': 'current',
+            }
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Retry'),
+                'message': _(
+                    'Retry skipped because an active operation already exists'
+                ),
+                'type': 'warning',
+                'sticky': False,
+            },
+        }
+
     def action_cancel(self):
-        self.transition_state('draft')
+        self.transition_state(
+            'cancelled', completed_at=fields.Datetime.now()
+        )
         for record in self:
             self.env['attachment.audit.log']._log(
                 'cancel', result='success',
                 attachment_id=record.attachment_id.id,
                 operation_id=record.id,
             )
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Migration Cancelled'),
+                'message': _('%d operation(s) cancelled') % len(self),
+                'type': 'success',
+                'sticky': False,
+                'next': {'type': 'ir.actions.client', 'tag': 'reload'},
+            },
+        }
 
     @api.model
     def action_analyze_storage(self):
@@ -440,6 +484,7 @@ class MigrationOperation(models.Model):
                 'title': _('Upload Complete'),
                 'message': msg,
                 'sticky': remaining > 0,
+                'next': {'type': 'ir.actions.client', 'tag': 'reload'},
             },
         }
 
@@ -470,7 +515,7 @@ class MigrationOperation(models.Model):
                     'sticky': False,
                 },
             }
-        created = failed.action_retry()
+        created = failed._retry_operations()
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',

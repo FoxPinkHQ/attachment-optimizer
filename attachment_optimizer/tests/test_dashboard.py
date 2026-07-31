@@ -1,4 +1,4 @@
-﻿from odoo.tests import TransactionCase
+from odoo.tests import TransactionCase
 
 
 class TestDashboard(TransactionCase):
@@ -93,3 +93,83 @@ class TestDashboard(TransactionCase):
         self.assertEqual(result['type'], 'ir.actions.client')
         self.assertEqual(result['tag'], 'display_notification')
         self.assertIn('re-queued', result['params']['message'])
+
+    def test_09_total_attachments_excludes_view_assets(self):
+        eligible = self.env['ir.attachment'].create({
+            'name': 'eligible.txt',
+            'raw': b'eligible',
+            'type': 'binary',
+            'res_model': 'res.partner',
+        })
+        excluded = self.env['ir.attachment'].create({
+            'name': 'generated-asset.js',
+            'raw': b'generated',
+            'type': 'binary',
+            'res_model': 'ir.ui.view',
+        })
+
+        data = self.env[
+            'attachment.storage.mapping'
+        ].action_get_dashboard_data()
+
+        self.assertTrue(eligible.store_fname)
+        self.assertTrue(excluded.store_fname)
+        expected = self.env['ir.attachment'].search_count([
+            ('type', '=', 'binary'),
+            ('store_fname', '!=', False),
+            ('res_model', '!=', 'ir.ui.view'),
+            ('company_id', 'in', [False] + self.env.companies.ids),
+        ])
+        self.assertEqual(data['total_attachments'], expected)
+
+    def test_09b_total_attachments_excludes_other_companies(self):
+        other_company = self.env['res.company'].create({
+            'name': 'Dashboard Other Company',
+        })
+        self.env['ir.attachment'].sudo().create({
+            'name': 'foreign-company.txt',
+            'raw': b'foreign',
+            'type': 'binary',
+            'company_id': other_company.id,
+        })
+
+        scoped_env = self.env(
+            context=dict(
+                self.env.context,
+                allowed_company_ids=[self.env.company.id],
+            )
+        )
+        data = scoped_env[
+            'attachment.storage.mapping'
+        ].action_get_dashboard_data()
+
+        expected = scoped_env['ir.attachment'].sudo().search_count([
+            ('type', '=', 'binary'),
+            ('store_fname', '!=', False),
+            ('res_model', '!=', 'ir.ui.view'),
+            ('company_id', 'in', [False] + scoped_env.companies.ids),
+        ])
+        self.assertEqual(data['total_attachments'], expected)
+
+    def test_10_manager_can_load_dashboard_with_attachment_operations(self):
+        attachment = self.env['ir.attachment'].create({
+            'name': 'manager-dashboard.txt',
+            'raw': b'dashboard',
+            'type': 'binary',
+            'company_id': self.env.company.id,
+        })
+        self.env['attachment.migration.operation'].create({
+            'attachment_id': attachment.id,
+            'company_id': self.env.company.id,
+            'state': 'failed',
+        })
+
+        data = self.env[
+            'attachment.storage.mapping'
+        ].with_user(self.manager).action_get_dashboard_data()
+
+        self.assertIn('recent_operations', data)
+        self.assertIn(
+            'manager-dashboard.txt',
+            [operation['attachment_name'] for operation in data['recent_operations']],
+        )

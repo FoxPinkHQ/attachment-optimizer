@@ -110,3 +110,14 @@ class TestSecurity(TransactionCase):
         record = env['ir.attachment'].browse(self.attachment.id)
         stream = binary._get_stream_from(record, 'datas')
         self.assertIsNone(stream)
+
+    def test_10_manager_group_is_exposed_as_odoo_privilege(self):
+        group = self.env.ref(
+            'attachment_optimizer.group_storage_optimization_manager'
+        )
+        privilege = self.env.ref(
+            'attachment_optimizer.privilege_storage_optimization'
+        )
+
+        self.assertEqual(group.privilege_id, privilege)
+        self.assertEqual(privilege.category_id.name, 'Storage Optimization')

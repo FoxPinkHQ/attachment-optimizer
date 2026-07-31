@@ -109,6 +109,20 @@ class TestS3Bridge(TransactionCase):
         result = self.bridge.upload(self.test_bucket, 'empty_file', b'')
         self.assertTrue(result)
 
+    def test_12_get_object_does_not_retry_interactive_read(self):
+        from unittest.mock import Mock, patch
+
+        client = Mock()
+        client.get_object.side_effect = ConnectionError('S3 unavailable')
+        with patch.object(self.bridge, '_get_client', return_value=client):
+            with self.assertRaises(S3BridgeError):
+                self.bridge.get_object(self.test_bucket, self.test_key)
+
+        client.get_object.assert_called_once_with(
+            Bucket=self.test_bucket,
+            Key=self.test_key,
+        )
+
     def tearDown(self):
         if getattr(self, '_mock_aws', None):
             self._mock_aws.stop()

@@ -11,3 +11,4 @@ from . import test_read_flow_edge_cases
 from . import test_queue
 from . import test_recovery_engine
 from . import test_health_engine
+from . import test_res_config_settings

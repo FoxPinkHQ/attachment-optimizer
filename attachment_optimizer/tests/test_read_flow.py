@@ -104,9 +104,8 @@ class TestReadFlow(TransactionCase):
 
     def test_06_finalized_mapping_missing_s3_falls_back(self):
         self._create_finalized_mapping(self.attachment)
-        self.assertIsNone(
-            self.binary._get_stream_from(self.attachment, 'datas')
-        )
+        stream = self.binary._get_stream_from(self.attachment, 'datas')
+        self.assertEqual(stream.data, self.test_data)
 
     def test_07_store_fname_unchanged_after_read(self):
         self._setup_mock_s3()

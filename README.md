@@ -1,10 +1,10 @@
-﻿# Attachment Optimizer
+# Attachment Optimizer
 
 > **Reduce Odoo filestore growth while keeping full rollback safety.**
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.0 — **License:** LGPL-3 — **Publisher:** FoxPink — **Validated release available for every Odoo series from 14.0 to 19.0.**
+**Version:** 19.0.1.0.1 — **License:** LGPL-3 — **Publisher:** FoxPink — **Validated release available for every Odoo series from 14.0 to 19.0.**
 
 ---
 

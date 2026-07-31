@@ -7,12 +7,14 @@ class DashboardService:
         self.env = env
 
     def get_kpi_data(self):
-        Attachment = self.env['ir.attachment']
+        Attachment = self.env['ir.attachment'].sudo()
         Operation = self.env['attachment.migration.operation']
 
         total = Attachment.search_count([
             ('type', '=', 'binary'),
             ('store_fname', '!=', False),
+            ('res_model', '!=', 'ir.ui.view'),
+            ('company_id', 'in', [False] + self.env.companies.ids),
         ])
 
         migrated = Operation.search_count([('state', '=', 'finalized')])
@@ -66,7 +68,10 @@ class DashboardService:
         state_map = dict(state_field.selection)
         return [{
             'id': op.id,
-            'attachment_name': op.attachment_id.display_name or op.attachment_id.name,
+            'attachment_name': (
+                op.attachment_id.sudo().display_name
+                or op.attachment_id.sudo().name
+            ),
             'state': op.state,
             'state_label': state_map.get(op.state, op.state),
             'started_at': op.started_at.isoformat() if op.started_at else None,

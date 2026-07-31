@@ -12,7 +12,8 @@
                        decoration-warning="state == 'queued'"
                        decoration-info="state in ('uploading','uploaded')"
                        decoration-success="state in ('verified','finalized')"
-                       decoration-danger="state == 'failed'"/>
+                       decoration-danger="state == 'failed'"
+                       decoration-muted="state == 'cancelled'"/>
                 <field name="started_at"/>
                 <field name="completed_at"/>
                 <field name="duration_display"/>
@@ -32,7 +33,12 @@
                             class="btn-primary"
                             invisible="state != 'queued'"/>
                     <button name="action_retry" string="Retry" type="object"
-                            invisible="state != 'failed'" class="btn-primary"/>
+                            invisible="state not in ('failed', 'cancelled')"
+                            class="btn-primary"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state != 'queued'"
+                            class="btn-secondary"
+                            confirm="Cancel this queued migration operation?"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -52,7 +58,8 @@
                                            decoration-warning="state == 'queued'"
                                            decoration-info="state in ('uploading','uploaded')"
                                            decoration-success="state in ('verified','finalized')"
-                                           decoration-danger="state == 'failed'"/>
+                                           decoration-danger="state == 'failed'"
+                                           decoration-muted="state == 'cancelled'"/>
                                     <field name="mapping_id" readonly="1"/>
                                 </group>
                                 <group>

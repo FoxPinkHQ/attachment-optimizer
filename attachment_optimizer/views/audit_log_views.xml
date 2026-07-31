@@ -32,7 +32,8 @@
             <form edit="false">
                 <sheet>
                     <div class="alert alert-info" role="alert">
-                        <i class="fa fa-lock"/>
+                        <i class="fa fa-lock" title="Immutable audit record"
+                           aria-label="Immutable audit record"/>
                         <strong>READ ONLY</strong>
                         — This record is part of the immutable audit trail and cannot be modified or deleted.
                     </div>

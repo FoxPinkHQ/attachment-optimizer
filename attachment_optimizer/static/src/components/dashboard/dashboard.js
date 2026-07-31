@@ -77,6 +77,9 @@ export class StorageDashboard extends Component {
             this._handlePolling(data.active_operation);
         } catch (err) {
             if (seq === this._loadSeq) {
+                if (err.data?.name === "odoo.exceptions.AccessError") {
+                    throw err;
+                }
                 this.notification.add("Unable to load dashboard", { type: "danger" });
             }
         } finally {
@@ -223,6 +226,12 @@ export class StorageDashboard extends Component {
                 "action_get_queue_impact",
                 []
             );
+            if (impact.count === 0) {
+                this.notification.add("No new migration candidates found.", {
+                    type: "info",
+                });
+                return;
+            }
             await this.action.doAction({
                 type: "ir.actions.act_window",
                 name: "Confirm Migration Queue",

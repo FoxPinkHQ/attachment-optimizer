@@ -156,7 +156,7 @@ class TestQueueConcurrency(TransactionCase):
             'error_message': 'first failure',
         })
 
-        created = old_op.action_retry()
+        created = old_op._retry_operations()
         self.assertEqual(len(created), 1)
         new_op = created[0]
         self.assertEqual(new_op.state, 'queued')
@@ -168,6 +168,23 @@ class TestQueueConcurrency(TransactionCase):
         self.assertIn(new_op.id, claimed.ids)
         self.assertNotIn(old_op.id, claimed.ids)
         self.assertEqual(old_op.state, 'failed')
+
+    def test_09b_retry_button_opens_new_operation(self):
+        attachment = self.env['ir.attachment'].create({
+            'name': 'retry_feedback.txt', 'raw': b'd', 'type': 'binary',
+        })
+        operation = self.env['attachment.migration.operation'].create({
+            'attachment_id': attachment.id, 'state': 'failed',
+            'error_message': 'first failure',
+        })
+
+        action = operation.action_retry()
+
+        self.assertEqual(action['type'], 'ir.actions.act_window')
+        self.assertEqual(
+            action['res_model'], 'attachment.migration.operation'
+        )
+        self.assertTrue(action['res_id'])
 
     def test_10_create_queue_single_sql_no_duplicate(self):
         Operation = self.env['attachment.migration.operation']
@@ -182,6 +199,51 @@ class TestQueueConcurrency(TransactionCase):
 
         ops2 = Operation.create_queue([att.id])
         self.assertEqual(len(ops2), 0)
+
+    def test_11_upload_button_returns_notification_and_reload(self):
+        attachment = self.env['ir.attachment'].create({
+            'name': 'missing_binary.txt', 'type': 'binary',
+        })
+        operation = self.env['attachment.migration.operation'].create({
+            'attachment_id': attachment.id,
+            'state': 'queued',
+        })
+
+        action = operation.action_upload()
+
+        self.assertEqual(operation.state, 'failed')
+        self.assertEqual(action['tag'], 'display_notification')
+        self.assertEqual(action['params']['next']['tag'], 'reload')
+
+    def test_12_cancel_queued_operation_and_retry(self):
+        attachment = self.env['ir.attachment'].create({
+            'name': 'cancel_test.txt', 'raw': b'd', 'type': 'binary',
+        })
+        operation = self.env['attachment.migration.operation'].create({
+            'attachment_id': attachment.id,
+            'state': 'queued',
+        })
+
+        action = operation.action_cancel()
+
+        self.assertEqual(operation.state, 'cancelled')
+        self.assertFalse(operation.is_active)
+        self.assertTrue(operation.completed_at)
+        self.assertEqual(action['tag'], 'display_notification')
+        self.assertEqual(action['params']['next']['tag'], 'reload')
+        audit = self.env['attachment.audit.log'].search([
+            ('operation_id', '=', operation.id),
+            ('action', '=', 'cancel'),
+        ])
+        self.assertEqual(len(audit), 1)
+
+        retry_action = operation.action_retry()
+        self.assertEqual(retry_action['type'], 'ir.actions.act_window')
+        retry = self.env['attachment.migration.operation'].browse(
+            retry_action['res_id']
+        )
+        self.assertEqual(retry.state, 'queued')
+        self.assertEqual(retry.retry_of, operation)
 
 
 class TestQueueStress(TransactionCase):

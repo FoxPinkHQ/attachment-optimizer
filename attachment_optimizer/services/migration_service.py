@@ -34,22 +34,22 @@ class MigrationService:
         domain = [
             ('type', '=', 'binary'),
             ('store_fname', '!=', False),
+            ('company_id', 'in', [False] + self.env.companies.ids),
         ]
         if res_model:
             domain.append(('res_model', '=', res_model))
         domain.append(('res_model', '!=', 'ir.ui.view'))
-        attachments = self.env['ir.attachment'].search(domain)
+        attachments = self.env['ir.attachment'].sudo().search(domain)
         mapped = self.env['attachment.storage.mapping'].search([
             ('attachment_id', 'in', attachments.ids),
             ('status', 'not in', ('failed', 'verification_failed')),
         ])
         mapped_ids = mapped.mapped('attachment_id').ids
-        queued = self.env['attachment.migration.operation'].search([
+        previously_processed = self.env['attachment.migration.operation'].search([
             ('attachment_id', 'in', attachments.ids),
-            ('state', 'not in', ('failed', 'finalized')),
         ])
-        queued_ids = queued.mapped('attachment_id').ids
-        exclude_ids = set(mapped_ids) | set(queued_ids)
+        processed_ids = previously_processed.mapped('attachment_id').ids
+        exclude_ids = set(mapped_ids) | set(processed_ids)
         candidates = attachments.filtered(
             lambda a: a.id not in exclude_ids
         )
@@ -117,13 +117,6 @@ class MigrationService:
             'attachment_storage.s3.region', 'us-east-1'
         )
 
-        self._log_audit(
-            'upload', result='success',
-            attachment_id=attachment.id,
-            attachment_name=attachment.name,
-            operation_id=operation.id,
-        )
-
         binary = self._read_binary(attachment)
         checksum = hashlib.sha256(binary).hexdigest()
         s3_key = 'objects/%s/%s' % (checksum[:2], checksum)
@@ -133,6 +126,13 @@ class MigrationService:
             _logger.info('S3 object already exists, reusing: %s/%s', bucket, s3_key)
         else:
             self._bridge.upload(bucket, s3_key, binary)
+
+        self._log_audit(
+            'upload', result='success',
+            attachment_id=attachment.id,
+            attachment_name=attachment.name,
+            operation_id=operation.id,
+        )
 
         mapping = Mapping.create_mapping(
             attachment_id=attachment.id,

@@ -38,6 +38,7 @@ class S3Bridge:
     def _get_client(self, config=None):
         try:
             import boto3
+            from botocore.config import Config
         except ImportError:
             raise S3BridgeError(_('boto3 is not installed'))
         cfg = config or self._get_config()
@@ -45,6 +46,11 @@ class S3Bridge:
             'aws_access_key_id': cfg['access_key_id'],
             'aws_secret_access_key': cfg['secret_access_key'],
             'region_name': cfg['region'],
+            'config': Config(
+                connect_timeout=2,
+                read_timeout=5,
+                retries={'max_attempts': 1, 'mode': 'standard'},
+            ),
         }
         if cfg.get('endpoint_url'):
             params['endpoint_url'] = cfg['endpoint_url']
@@ -108,11 +114,14 @@ class S3Bridge:
         return self._retry_call(_do_verify)
 
     def get_object(self, bucket, key):
-        def _do_get():
+        try:
             client = self._get_client()
             obj = client.get_object(Bucket=bucket, Key=key)
             return obj['Body'].read()
-        return self._retry_call(_do_get)
+        except S3BridgeError:
+            raise
+        except Exception as e:
+            raise S3BridgeError(_('S3 read failed: %s') % str(e))
 
     def delete(self, bucket, key):
         def _do_delete():

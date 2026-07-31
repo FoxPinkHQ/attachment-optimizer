@@ -1,5 +1,7 @@
 ﻿from odoo.tests import TransactionCase
 
+from .. import _uninstall_hook
+
 
 class TestUninstall(TransactionCase):
 
@@ -70,3 +72,20 @@ class TestUninstall(TransactionCase):
         self.assertEqual(len(remaining_mappings), 0)
         self.assertEqual(len(remaining_ops), 0)
         # audit.log is intentionally protected from deletion
+
+    def test_05_uninstall_hook_removes_only_module_parameters(self):
+        ICP = self.env['ir.config_parameter'].sudo()
+        ICP.set_param(
+            'attachment_storage.s3.secret_access_key', 'sensitive-test-value'
+        )
+        ICP.set_param('unrelated.module.setting', 'keep-me')
+
+        _uninstall_hook(self.env)
+
+        self.assertFalse(ICP.get_param('attachment_storage.s3.region'))
+        self.assertFalse(
+            ICP.get_param('attachment_storage.s3.secret_access_key')
+        )
+        self.assertEqual(
+            ICP.get_param('unrelated.module.setting'), 'keep-me'
+        )
