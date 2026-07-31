@@ -4,7 +4,7 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.1 — **License:** LGPL-3 — **Publisher:** FoxPink — **Validated release available for every Odoo series from 14.0 to 19.0.**
+**Version:** 18.0.1.0.1 — **License:** LGPL-3 — **Publisher:** FoxPink — **Validated release available for every Odoo series from 14.0 to 19.0.**
 
 ---
 
@@ -133,7 +133,7 @@ Migration Service      Health Engine
 **Option 2 — Git:**
 
 ```bash
-git clone -b 19.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 18.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 Before installing the module, install the required Python dependency in the same environment that runs Odoo:
@@ -206,7 +206,7 @@ The planned Pro Edition will focus on measurable storage savings and automation 
 - **Provider-to-provider migration** — move verified objects between supported S3-compatible providers
 - **Operational alerts and reports** — notify administrators about failed queues, storage health, policy violations, and recovery actions
 
-> **Roadmap notice:** Pro features are planned and are not included in version 19.0.1.0.1. The Free Edition remains fully usable for safe, verified S3 replication and migration assessment.
+> **Roadmap notice:** Pro features are planned and are not included in version 18.0.1.0.1. The Free Edition remains fully usable for safe, verified S3 replication and migration assessment.
 
 ---
 
@@ -228,8 +228,8 @@ Every supported Odoo version has its own dedicated branch and release package.
 
 | Odoo Version | Status |
 |---|---|
-| 19.0 | ✅ This branch |
-| 18.0 | [Branch 18.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/18.0) |
+| 19.0 | [Branch 19.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/19.0) |
+| 18.0 | ✅ This branch |
 | 17.0 | [Branch 17.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/17.0) |
 | 16.0 | [Branch 16.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/16.0) |
 | 15.0 | [Branch 15.0](https://github.com/FoxPinkHQ/attachment-optimizer/tree/15.0) |

@@ -1,4 +1,4 @@
-﻿from odoo.tests import TransactionCase
+from odoo.tests import TransactionCase
 from odoo.exceptions import ValidationError
 
 

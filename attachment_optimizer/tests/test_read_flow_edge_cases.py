@@ -417,7 +417,7 @@ class TestReadFlowEdgeCases(TransactionCase):
         vals = {
             'name': login,
             'login': '%s@test.com' % login,
-            'group_ids': groups,
+            'groups_id': groups,
         }
         if company:
             vals['company_id'] = company.id

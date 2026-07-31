@@ -1,4 +1,4 @@
-﻿import hashlib
+import hashlib
 
 from odoo.tests import TransactionCase
 
@@ -141,7 +141,7 @@ class TestReadFlow(TransactionCase):
         no_access_user = self.env['res.users'].create({
             'name': 'No Access',
             'login': 'no_access_acl',
-            'group_ids': [(6, 0, [])],
+            'groups_id': [(6, 0, [])],
         })
         env = self.env(user=no_access_user)
         binary = env['ir.binary']

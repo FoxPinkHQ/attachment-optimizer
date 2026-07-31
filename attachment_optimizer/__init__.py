@@ -8,7 +8,7 @@ def _post_init_hook(env):
         base_user = env.ref('base.group_user')
         group.implied_ids = [(4, base_user.id)]
         admin = env.ref('base.user_admin')
-        group.user_ids = [(4, admin.id)]
+        group.users = [(4, admin.id)]
 
 
 def _uninstall_hook(env):
