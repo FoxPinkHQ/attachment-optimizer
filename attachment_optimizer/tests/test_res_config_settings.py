@@ -1,3 +1,6 @@
+from unittest.mock import patch
+
+from ..services.s3_bridge import S3Bridge
 from odoo.tests import TransactionCase
 
 
@@ -36,3 +39,35 @@ class TestResConfigSettings(TransactionCase):
         )
         self.assertIn('check the Odoo server log', message)
         self.assertNotIn('provider-internal-secret-detail', message)
+
+    def test_05_verification_fingerprints_exact_form_values(self):
+        settings = self.env['res.config.settings'].create({
+            's3_bucket': 'unsaved-bucket',
+            's3_region': 'eu-west-1',
+            's3_endpoint_url': 'https://s3.example.test',
+            's3_access_key_id': 'unsaved-access',
+            's3_secret_access_key': 'unsaved-secret',
+        })
+        expected_config = {
+            'endpoint_url': 'https://s3.example.test',
+            'region': 'eu-west-1',
+            'access_key_id': 'unsaved-access',
+            'secret_access_key': 'unsaved-secret',
+        }
+        with patch.object(
+            S3Bridge, 'test_connection',
+            return_value={'status': 'ok', 'error': None},
+        ), patch.object(
+            S3Bridge, 'get_config_fingerprint', return_value='verified-digest',
+        ) as fingerprint:
+            settings.action_test_s3_connection()
+
+        fingerprint.assert_called_once_with(
+            config=expected_config, bucket='unsaved-bucket',
+        )
+        self.assertEqual(
+            self.env['ir.config_parameter'].sudo().get_param(
+                'attachment_storage.connection_verified_digest'
+            ),
+            'verified-digest',
+        )
