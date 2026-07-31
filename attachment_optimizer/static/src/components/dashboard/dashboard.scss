@@ -432,3 +432,23 @@ html .o_web_client > .o_action_manager {
     color: #212529 !important;
     background-color: #ffc107 !important;
 }
+/* Odoo 14/15 use the same light badge classes in form views. */
+.o_form_view .o_field_badge.bg-success-light {
+    color: #fff !important;
+    background-color: #28a745 !important;
+}
+
+.o_form_view .o_field_badge.bg-danger-light {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+}
+
+.o_form_view .o_field_badge.bg-info-light {
+    color: #fff !important;
+    background-color: #17a2b8 !important;
+}
+
+.o_form_view .o_field_badge.bg-warning-light {
+    color: #212529 !important;
+    background-color: #ffc107 !important;
+}
