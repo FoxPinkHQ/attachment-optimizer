@@ -1,4 +1,4 @@
-﻿import hashlib
+import hashlib
 
 from odoo.tests import TransactionCase
 from odoo.exceptions import UserError
