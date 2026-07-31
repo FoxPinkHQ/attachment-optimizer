@@ -57,7 +57,7 @@
                     <group string="Metadata">
                         <field name="create_date" string="Created" readonly="1"/>
                         <field name="write_date" string="Last Updated" readonly="1"/>
-                        <field name="error_message" readonly="1" invisible="not error_message"/>
+                        <field name="error_message" readonly="1" attrs="{'invisible': [('error_message', '=', False)]}"/>
                     </group>
                 </sheet>
             </form>

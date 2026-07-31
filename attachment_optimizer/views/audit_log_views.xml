@@ -41,12 +41,12 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_attachment" type="object"
                                 class="oe_stat_button" icon="fa-file"
-                                invisible="not attachment_id">
+                                attrs="{'invisible': [('attachment_id', '=', False)]}">
                             View Attachment
                         </button>
                         <button name="action_view_operation" type="object"
                                 class="oe_stat_button" icon="fa-tasks"
-                                invisible="not operation_id">
+                                attrs="{'invisible': [('operation_id', '=', False)]}">
                             View Operation
                         </button>
                     </div>
@@ -62,7 +62,7 @@
                                     <field name="result" widget="badge"
                                            decoration-success="result == 'success'"
                                            decoration-danger="result == 'failure'"/>
-                                    <field name="reason" invisible="not reason"/>
+                                    <field name="reason" attrs="{'invisible': [('reason', '=', False)]}"/>
                                     <field name="create_date" string="Timestamp"/>
                                 </group>
                                 <group>
@@ -73,7 +73,7 @@
                             </group>
                         </page>
                         <page string="Error Context"
-                              invisible="not error_message">
+                              attrs="{'invisible': [('error_message', '=', False)]}">
                             <field name="error_message" nolabel="1"
                                    class="font-monospace bg-light p-3 rounded"/>
                         </page>

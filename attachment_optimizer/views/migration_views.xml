@@ -31,12 +31,12 @@
                 <header>
                     <button name="action_upload" string="Upload to S3" type="object"
                             class="btn-primary"
-                            invisible="state != 'queued'"/>
+                            attrs="{'invisible': [('state', '!=', 'queued')]}"/>
                     <button name="action_retry" string="Retry" type="object"
-                            invisible="state not in ('failed', 'cancelled')"
+                            attrs="{'invisible': [('state', 'not in', ('failed', 'cancelled'))]}"
                             class="btn-primary"/>
                     <button name="action_cancel" string="Cancel" type="object"
-                            invisible="state != 'queued'"
+                            attrs="{'invisible': [('state', '!=', 'queued')]}"
                             class="btn-secondary"
                             confirm="Cancel this queued migration operation?"/>
                 </header>
@@ -91,12 +91,12 @@
                         </page>
 
                         <!-- ═══ Errors Tab ═══ -->
-                        <page string="Errors" invisible="state not in ('failed', 'verification_failed')">
-                            <div class="alert alert-danger" role="alert" invisible="not error_message">
+                        <page string="Errors" attrs="{'invisible': [('state', 'not in', ('failed', 'verification_failed'))]}">
+                            <div class="alert alert-danger" role="alert" attrs="{'invisible': [('error_message', '=', False)]}">
                                 <h4><i class="fa fa-exclamation-circle"/> Migration failed</h4>
                                 <p class="mb-0"><field name="error_message" nolabel="1"/></p>
                             </div>
-                            <div class="alert alert-info" role="alert" invisible="error_message">
+                            <div class="alert alert-info" role="alert" attrs="{'invisible': [('error_message', '!=', False)]}">
                                 <p class="mb-0"><i class="fa fa-check-circle"/> No errors detected.</p>
                             </div>
                             <group string="Suggested Actions">

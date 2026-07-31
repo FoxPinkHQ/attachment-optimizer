@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
-    <t t-name="attachment_optimizer.Dashboard">
+    <t t-name="attachment_optimizer.Dashboard" owl="1">
         <t t-if="state.setupStep === null &amp;&amp; state.loadingDashboard">
             <div class="o_dashboard_spinner_first">
                 <i class="fa fa-spinner fa-spin fa-3x text-muted"/>
