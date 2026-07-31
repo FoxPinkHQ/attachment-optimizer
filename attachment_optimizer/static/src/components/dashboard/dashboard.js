@@ -325,7 +325,8 @@ export class StorageDashboard extends Component {
             res_model: "res.config.settings",
             view_mode: "form",
             views: [[false, "form"]],
-            target: "new",
+            target: "current",
+            context: { module: "attachment_optimizer" },
         }, {
             onClose: () => this._loadDashboard(),
         });

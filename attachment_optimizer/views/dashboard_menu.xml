@@ -13,5 +13,20 @@
               action="attachment_optimizer_dashboard_action"
               groups="attachment_optimizer.group_storage_optimization_manager"
               sequence="5"/>
+
+    <record id="attachment_optimizer_settings_action" model="ir.actions.act_window">
+        <field name="name">Attachment Optimizer Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'attachment_optimizer'}</field>
+    </record>
+
+    <menuitem id="attachment_optimizer_settings_menu"
+              name="Configuration"
+              parent="storage_optimization_menu"
+              action="attachment_optimizer_settings_action"
+              groups="attachment_optimizer.group_storage_optimization_manager"
+              sequence="40"/>
     </data>
 </odoo>
