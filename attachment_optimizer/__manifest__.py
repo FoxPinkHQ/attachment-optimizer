@@ -2,12 +2,14 @@
     "name": "Attachment Optimizer",
     "version": "19.0.1.0.1",
     "category": "Storage",
-    "summary": "Analyze attachment storage and migrate files to S3-compatible object storage.",
+    "summary": "Safely replicate and serve Odoo attachments from S3-compatible storage.",
     "description": """
-        Analyze Odoo attachment storage usage and migrate selected attachments
-        to S3-compatible object storage to reduce filestore footprint.
+        Analyze Odoo attachment storage and replicate selected attachments to
+        S3-compatible object storage with checksum verification, audit logging,
+        retry support, and filestore fallback.
     """,
     "author": "FoxPink",
+    "support": "aduy000@gmail.com",
     "website": "https://github.com/FoxPinkHQ/attachment-optimizer",
     "license": "LGPL-3",
     "images": [
