@@ -296,7 +296,7 @@ export class StorageDashboard extends Component {
             type: "ir.actions.act_window",
             name: "Failed Operations",
             res_model: "attachment.migration.operation",
-            view_mode: "list,form",
+            view_mode: "tree,form",
             views: [[false, "list"], [false, "form"]],
             domain: [["state", "=", "failed"]],
         });
@@ -307,7 +307,7 @@ export class StorageDashboard extends Component {
             type: "ir.actions.act_window",
             name: "Migration Operations",
             res_model: "attachment.migration.operation",
-            view_mode: "list,form",
+            view_mode: "tree,form",
             views: [[false, "list"], [false, "form"]],
         });
     }
