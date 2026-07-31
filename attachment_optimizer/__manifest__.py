@@ -1,6 +1,6 @@
 {
     "name": "Attachment Optimizer",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.2",
     "category": "Storage",
     "summary": "Safely replicate and serve Odoo attachments from S3-compatible storage.",
     "description": """

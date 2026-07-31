@@ -4,7 +4,7 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.1 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 19.0.1.0.2 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ---
 
@@ -206,14 +206,14 @@ The planned Pro Edition will focus on measurable storage savings and automation 
 - **Provider-to-provider migration** — move verified objects between supported S3-compatible providers
 - **Operational alerts and reports** — notify administrators about failed queues, storage health, policy violations, and recovery actions
 
-> **Roadmap notice:** Pro features are planned and are not included in version 19.0.1.0.1. The Free Edition remains fully usable for safe, verified S3 replication and migration assessment.
+> **Roadmap notice:** Pro features are planned and are not included in version 19.0.1.0.2. The Free Edition remains fully usable for safe, verified S3 replication and migration assessment.
 
 ---
 
 ## Technical Notes
 
 - **Original filestore is preserved** — retained for rollback safety
-- **Finalized attachments served from S3** via presigned URL stream
+- **Finalized attachments served from S3** through Odoo with automatic filestore fallback
 - **SHA-256 checksum verification** guarantees integrity on every file
 - **Queue processing is idempotent** — retries never create duplicates
 - **No monkey-patching of core Odoo models**
