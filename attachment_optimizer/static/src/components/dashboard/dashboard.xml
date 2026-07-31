@@ -166,9 +166,6 @@
                             </p>
                         </div>
                         <div class="o_dashboard_actions">
-                            <button class="btn btn-outline-secondary" t-on-click="onOpenConfig">
-                                <i class="fa fa-cog"/> Settings
-                            </button>
                             <button class="btn btn-primary" t-on-click="onAnalyze"
                                     t-att-disabled="state.analyzing">
                                 <i t-if="state.analyzing" class="fa fa-spinner fa-spin"/>
