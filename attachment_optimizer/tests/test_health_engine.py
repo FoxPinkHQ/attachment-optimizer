@@ -107,7 +107,7 @@ class TestHealthContract(TransactionCase):
         before = {op.state for op in ops}
         report = self.engine.check()
         for op in ops:
-            op.invalidate_recordset()
+            op.invalidate_cache()
         after = {op.state for op in ops}
         self.assertEqual(before, after,
                          'Health check must not change operation state')

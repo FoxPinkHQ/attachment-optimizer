@@ -20,10 +20,13 @@ class StorageMapping(models.Model):
     _description = 'Attachment Storage Mapping'
     _rec_name = 'attachment_id'
     _order = 'create_date DESC'
-    _unique_attachment = models.Constraint(
-        'UNIQUE(attachment_id)',
-        'Each attachment can have only one storage mapping.',
-    )
+    _sql_constraints = [
+        (
+            'unique_attachment',
+            'UNIQUE(attachment_id)',
+            'Each attachment can have only one storage mapping.',
+        ),
+    ]
 
     company_id = fields.Many2one(
         'res.company', string='Company',
@@ -148,7 +151,7 @@ class StorageMapping(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'attachment.migration.operation',
-            'view_mode': 'list,form',
+            'view_mode': 'tree,form',
             'domain': [('mapping_id', '=', self.id)],
             'name': 'Migration Operations',
         }
@@ -158,7 +161,7 @@ class StorageMapping(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'attachment.audit.log',
-            'view_mode': 'list,form',
+            'view_mode': 'tree,form',
             'domain': [('mapping_id', '=', self.id)],
             'name': 'Audit Logs',
         }

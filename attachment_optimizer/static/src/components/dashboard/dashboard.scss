@@ -97,7 +97,7 @@ html .o_web_client > .o_action_manager {
 }
 
 .o_kpi_label {
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     color: #718096;
     display: flex;
     align-items: center;
@@ -154,7 +154,7 @@ html .o_web_client > .o_action_manager {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
 }
 
 /* Recent Activity */
@@ -198,17 +198,17 @@ html .o_web_client > .o_action_manager {
     border-radius: 6px;
 
     th {
-        font-size: 0.8rem;
+        font-size: 14px;
         font-weight: 600;
         color: #718096;
         background: #f8f9fa;
         border-bottom: 2px solid #e2e8f0;
-        padding: 8px 10px;
+        padding: 10px 12px;
     }
 
     td {
-        padding: 8px 10px;
-        font-size: 0.875rem;
+        padding: 10px 12px;
+        font-size: 15px;
         vertical-align: middle;
     }
 }

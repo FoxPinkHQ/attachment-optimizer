@@ -266,7 +266,7 @@ class TestReadFlowEdgeCases(TransactionCase):
         original_fname = attachment.store_fname
         self._create_finalized_mapping(attachment, checksum=checksum, key=s3_key)
         self.binary._get_stream_from(attachment, 'datas')
-        attachment.invalidate_recordset()
+        attachment.invalidate_cache()
         self.assertEqual(attachment.store_fname, original_fname)
 
     # ─────────────────────────────────────────────────────────────
@@ -375,7 +375,7 @@ class TestReadFlowEdgeCases(TransactionCase):
         original_fname = attachment.store_fname
         self._create_finalized_mapping(attachment)
         self.binary._get_stream_from(attachment, 'datas')
-        attachment.invalidate_recordset()
+        attachment.invalidate_cache()
         self.assertEqual(attachment.store_fname, original_fname)
 
     def test_19_db_datas_not_cleared(self):
@@ -389,7 +389,7 @@ class TestReadFlowEdgeCases(TransactionCase):
         self.assertIsNot(False, attachment.db_datas or attachment.store_fname)
         self._create_finalized_mapping(attachment)
         self.binary._get_stream_from(attachment, 'datas')
-        attachment.invalidate_recordset()
+        attachment.invalidate_cache()
         self.assertIsNot(False, attachment.db_datas or attachment.store_fname,
             'Either db_datas or store_fname must remain after read')
 
@@ -417,7 +417,7 @@ class TestReadFlowEdgeCases(TransactionCase):
         vals = {
             'name': login,
             'login': '%s@test.com' % login,
-            'group_ids': groups,
+            'groups_id': groups,
         }
         if company:
             vals['company_id'] = company.id

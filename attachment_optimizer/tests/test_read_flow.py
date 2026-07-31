@@ -1,4 +1,4 @@
-﻿import hashlib
+import hashlib
 
 from odoo.tests import TransactionCase
 
@@ -111,7 +111,7 @@ class TestReadFlow(TransactionCase):
         self._setup_mock_s3()
         self._create_finalized_mapping(self.attachment)
         self.binary._get_stream_from(self.attachment, 'datas')
-        self.attachment.invalidate_recordset()
+        self.attachment.invalidate_cache()
         self.assertTrue(self.attachment.store_fname)
 
     def test_08_mapping_lookup_by_attachment_returns_mapping(self):
@@ -141,7 +141,7 @@ class TestReadFlow(TransactionCase):
         no_access_user = self.env['res.users'].create({
             'name': 'No Access',
             'login': 'no_access_acl',
-            'group_ids': [(6, 0, [])],
+            'groups_id': [(6, 0, [])],
         })
         env = self.env(user=no_access_user)
         binary = env['ir.binary']

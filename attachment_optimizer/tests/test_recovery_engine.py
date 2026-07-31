@@ -95,7 +95,7 @@ class TestRecoveryContract(TransactionCase):
         self.assertEqual(r2.recovered, 0, 'Second run: nothing to recover')
         self.assertEqual(r3.recovered, 0, 'Third run: nothing to recover')
         for op in ops:
-            op.invalidate_recordset()
+            op.invalidate_cache()
             self.assertEqual(op.state, 'queued')
 
     # ── D7: Audit only on repair ──────────────────────────
@@ -135,7 +135,7 @@ class TestRecoveryContract(TransactionCase):
             "UPDATE attachment_migration_operation SET state = 'verified' WHERE id = ANY(%s)",
             (ops.ids,),
         )
-        ops.invalidate_recordset()
+        ops.invalidate_cache()
 
         report = self.engine.recover(
             rules=[RecoveryRule.HEARTBEAT_TIMEOUT],
@@ -186,7 +186,7 @@ class TestRecoveryRules(TransactionCase):
         self.assertEqual(report.recovered, 3)
         self.assertEqual(report.heartbeat_timeouts, 3)
         for op in claimed:
-            op.invalidate_recordset()
+            op.invalidate_cache()
             self.assertEqual(op.state, 'queued')
             self.assertFalse(op.processing_token)
             self.assertFalse(op.worker_id)
@@ -223,7 +223,7 @@ class TestRecoveryRules(TransactionCase):
         self.assertEqual(report.recovered, 2)
         self.assertEqual(report.ownership_repairs, 2)
         for op in claimed:
-            op.invalidate_recordset()
+            op.invalidate_cache()
             self.assertEqual(op.state, 'queued')
 
     # ── R5: Verify Mismatch ───────────────────────────────
@@ -246,7 +246,7 @@ class TestRecoveryRules(TransactionCase):
                 "UPDATE attachment_migration_operation SET state = 'failed', mapping_id = %s WHERE id = %s",
                 [mapping.id, ops[i].id],
             )
-            ops[i].invalidate_recordset()
+            ops[i].invalidate_cache()
 
         ops = self.Operation.browse(ops.ids)
         self.assertEqual(ops.mapped('state'), ['failed', 'failed'])
@@ -259,7 +259,7 @@ class TestRecoveryRules(TransactionCase):
         self.assertEqual(report.recovered, 2)
         self.assertEqual(report.verification_repairs, 2)
         for op in ops:
-            op.invalidate_recordset()
+            op.invalidate_cache()
             self.assertEqual(op.state, 'queued')
 
     # ── R5 (Stale Worker) ─────────────────────────────────
@@ -322,7 +322,7 @@ class TestRecoveryRules(TransactionCase):
         self.assertEqual(report.recovered, 0)
         self.assertGreaterEqual(report.scanned, 0)
         for op in ops:
-            op.invalidate_recordset()
+            op.invalidate_cache()
             self.assertEqual(op.state, 'uploading',
                              'DETECT_ONLY must not change state')
 

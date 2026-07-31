@@ -2,7 +2,21 @@ import base64
 import logging
 
 from odoo import models
-from odoo.http import Stream
+
+try:
+    from odoo.http import Stream
+    HAS_NATIVE_STREAM = True
+except ImportError:  # Odoo 15
+    HAS_NATIVE_STREAM = False
+
+    class Stream:
+        """Small compatibility value object matching the Odoo 16 Stream API."""
+
+        def __init__(self, data, mimetype, download_name, type='data'):
+            self.data = data
+            self.mimetype = mimetype
+            self.download_name = download_name
+            self.type = type
 
 from ..services.s3_bridge import S3Bridge, S3BridgeError
 
@@ -14,7 +28,11 @@ class MissingExternalObjectError(Exception):
 
 
 class IrBinaryExtension(models.AbstractModel):
-    _inherit = 'ir.binary'
+    if HAS_NATIVE_STREAM:
+        _inherit = 'ir.binary'
+    else:
+        _name = 'ir.binary'
+        _description = 'Binary Content Compatibility Service'
 
     def _get_stream_from(
         self, record, field_name='raw', filename=None, filename_field='name',
@@ -22,9 +40,13 @@ class IrBinaryExtension(models.AbstractModel):
     ):
         if record._name == 'ir.attachment':
             try:
-                record.check_access('read')
+                check_access = getattr(record, 'check_access', None)
+                if check_access:
+                    check_access('read')
+                else:
+                    record.check('read')
             except Exception:
-                return
+                return None
             mapping = self.env['attachment.storage.mapping'].sudo().search([
                 ('attachment_id', '=', record.id),
                 ('status', '=', 'finalized'),
@@ -33,18 +55,13 @@ class IrBinaryExtension(models.AbstractModel):
             if mapping:
                 bridge = S3Bridge(self.env)
                 try:
-                    content = bridge.get_object(
-                        mapping.s3_bucket, mapping.s3_key
-                    )
-                except S3BridgeError as e:
+                    content = bridge.get_object(mapping.s3_bucket, mapping.s3_key)
+                except S3BridgeError as exc:
                     _logger.error(
                         'S3 object missing for finalized mapping '
                         'attachment=%s bucket=%s key=%s: %s',
-                        record.id, mapping.s3_bucket, mapping.s3_key, e,
+                        record.id, mapping.s3_bucket, mapping.s3_key, exc,
                     )
-                    # The original filestore data is retained. Fall back to
-                    # it on S3 failures so a transient outage is not an
-                    # attachment outage.
                     content = record.raw
                     if content:
                         return Stream(
@@ -60,6 +77,8 @@ class IrBinaryExtension(models.AbstractModel):
                     download_name=filename or record.name,
                     type='data',
                 )
+        if not HAS_NATIVE_STREAM:
+            return None
         try:
             return super()._get_stream_from(
                 record, field_name=field_name, filename=filename,
@@ -68,3 +87,44 @@ class IrBinaryExtension(models.AbstractModel):
             )
         except RuntimeError:
             return None
+
+
+if not HAS_NATIVE_STREAM:
+    class IrHttpBinaryExtension(models.AbstractModel):
+        _inherit = 'ir.http'
+
+        def binary_content(self, xmlid=None, model='ir.attachment', id=None, field='datas',
+                           unique=False, filename=None, filename_field='name', download=False,
+                           mimetype=None, default_mimetype='application/octet-stream',
+                           access_token=None):
+            """Serve finalized S3 objects through the legacy Odoo 15 binary API."""
+            result = super().binary_content(
+                xmlid=xmlid, model=model, id=id, field=field, unique=unique,
+                filename=filename, filename_field=filename_field, download=download,
+                mimetype=mimetype, default_mimetype=default_mimetype,
+                access_token=access_token,
+            )
+            if model != 'ir.attachment' or not id:
+                return result
+
+            record = self.env['ir.attachment'].browse(int(id)).exists()
+            if not record:
+                return result
+            mapping = self.env['attachment.storage.mapping'].sudo().search([
+                ('attachment_id', '=', record.id),
+                ('status', '=', 'finalized'),
+                ('company_id', '=', record.company_id.id),
+            ], limit=1)
+            if not mapping:
+                return result
+            try:
+                content = S3Bridge(self.env).get_object(mapping.s3_bucket, mapping.s3_key)
+            except S3BridgeError as exc:
+                _logger.error(
+                    'S3 object unavailable; using retained filestore attachment=%s: %s',
+                    record.id, exc,
+                )
+                return result
+
+            status, headers, _content = result
+            return status, headers, base64.b64encode(content)

@@ -219,7 +219,7 @@ class MigrationOperation(models.Model):
         self.env.cr.execute(query, ([operation_ids] if operation_ids else []) + [limit, token, worker])
         ids = [r[0] for r in self.env.cr.fetchall()]
         claimed = self.browse(ids)
-        claimed.invalidate_recordset()
+        claimed.invalidate_cache()
         for op in claimed:
             self.env['attachment.audit.log']._log(
                 'claim', result='success',
@@ -287,7 +287,7 @@ class MigrationOperation(models.Model):
 
     def _retry_operations(self):
         created = self.env['attachment.migration.operation']
-        self.env['attachment.migration.operation'].flush_model([
+        self.env['attachment.migration.operation'].flush([
             'attachment_id', 'is_active',
         ])
         active_attachment_ids = set(

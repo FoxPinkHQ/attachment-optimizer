@@ -1,4 +1,4 @@
-﻿import hashlib
+import hashlib
 
 from odoo.tests import TransactionCase
 
@@ -79,7 +79,7 @@ class TestIntegration(TransactionCase):
         self.assertEqual(mapping.checksum_sha256, self.checksum)
 
         # Step 5: Verify operation is finalized
-        op.invalidate_recordset()
+        op.invalidate_cache()
         self.assertEqual(op.state, 'finalized')
         self.assertEqual(op.mapping_id.id, mapping.id)
 
@@ -90,7 +90,7 @@ class TestIntegration(TransactionCase):
         self.assertEqual(stream.mimetype, 'application/pdf')
 
         # Step 7: Verify store_fname unchanged
-        self.attachment.invalidate_recordset()
+        self.attachment.invalidate_cache()
         self.assertTrue(self.attachment.store_fname)
 
         # Step 8: Verify audit log entries

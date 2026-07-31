@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
-import { Component, useState, onWillStart, onWillUnmount } from "@odoo/owl";
+const { Component } = owl;
+const { useState, onWillStart, onWillUnmount } = owl.hooks;
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
@@ -296,7 +297,7 @@ export class StorageDashboard extends Component {
             type: "ir.actions.act_window",
             name: "Failed Operations",
             res_model: "attachment.migration.operation",
-            view_mode: "list,form",
+            view_mode: "tree,form",
             views: [[false, "list"], [false, "form"]],
             domain: [["state", "=", "failed"]],
         });
@@ -307,7 +308,7 @@ export class StorageDashboard extends Component {
             type: "ir.actions.act_window",
             name: "Migration Operations",
             res_model: "attachment.migration.operation",
-            view_mode: "list,form",
+            view_mode: "tree,form",
             views: [[false, "list"], [false, "form"]],
         });
     }
@@ -325,7 +326,8 @@ export class StorageDashboard extends Component {
             res_model: "res.config.settings",
             view_mode: "form",
             views: [[false, "form"]],
-            target: "new",
+            target: "current",
+            context: { module: "attachment_optimizer" },
         }, {
             onClose: () => this._loadDashboard(),
         });

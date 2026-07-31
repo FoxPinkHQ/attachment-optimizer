@@ -1,4 +1,4 @@
-﻿from odoo.tests import TransactionCase
+from odoo.tests import TransactionCase
 
 from .. import _uninstall_hook
 
@@ -41,7 +41,7 @@ class TestUninstall(TransactionCase):
         """Deleting a mapping must not cascade-delete the attachment."""
         mapping = self.mapping
         mapping.unlink()
-        self.attachment.invalidate_recordset()
+        self.attachment.invalidate_cache()
         self.assertTrue(
             self.attachment.exists(),
             'Attachment must survive mapping deletion',
@@ -50,7 +50,7 @@ class TestUninstall(TransactionCase):
     def test_02_attachment_survives_when_mapping_deleted(self):
         """Attachment store_fname must remain intact."""
         self.mapping.unlink()
-        self.attachment.invalidate_recordset()
+        self.attachment.invalidate_cache()
         self.assertEqual(
             self.attachment.store_fname, self.original_fname,
             'store_fname must not change when mapping is deleted',
