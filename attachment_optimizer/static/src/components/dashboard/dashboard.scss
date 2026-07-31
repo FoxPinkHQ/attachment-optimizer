@@ -404,3 +404,31 @@ html .o_web_client > .o_action_manager {
 .o_form_view .oe_button_box .o_ao_stat_button .o_stat_text {
     white-space: nowrap;
 }
+/* Match the semantic badge treatment used by Odoo 16+ list views. */
+.o_list_view .o_field_badge.bg-success-light,
+.o_list_view .o_field_badge.text-success,
+.o_list_view .text-success .o_field_badge {
+    color: #fff !important;
+    background-color: #28a745 !important;
+}
+
+.o_list_view .o_field_badge.bg-danger-light,
+.o_list_view .o_field_badge.text-danger,
+.o_list_view .text-danger .o_field_badge {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+}
+
+.o_list_view .o_field_badge.bg-info-light,
+.o_list_view .o_field_badge.text-info,
+.o_list_view .text-info .o_field_badge {
+    color: #fff !important;
+    background-color: #17a2b8 !important;
+}
+
+.o_list_view .o_field_badge.bg-warning-light,
+.o_list_view .o_field_badge.text-warning,
+.o_list_view .text-warning .o_field_badge {
+    color: #212529 !important;
+    background-color: #ffc107 !important;
+}
