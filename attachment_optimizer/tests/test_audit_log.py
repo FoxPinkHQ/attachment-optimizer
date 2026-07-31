@@ -96,3 +96,19 @@ class TestAuditLog(SavepointCase):
         audit = self._log(action='analyze')
         with self.assertRaises(AccessError):
             audit.unlink()
+
+    def test_11_manager_cannot_forge_audit_record(self):
+        with self.assertRaises(AccessError), mute_logger(
+            'odoo.addons.base.models.ir_model'
+        ):
+            self.env['attachment.audit.log'].with_user(self.manager).create({
+                'action': 'finalize',
+                'result': 'success',
+                'attachment_id': self.attachment.id,
+            })
+
+    def test_12_private_logger_preserves_original_user(self):
+        audit = self.env['attachment.audit.log'].with_user(self.manager)._log(
+            action='analyze', attachment_id=self.attachment.id,
+        )
+        self.assertEqual(audit.user_id, self.manager)

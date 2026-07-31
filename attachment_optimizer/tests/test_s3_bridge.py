@@ -123,6 +123,34 @@ class TestS3Bridge(SavepointCase):
             Key=self.test_key,
         )
 
+
+    def test_13_fingerprint_changes_when_secret_rotates(self):
+        config = {
+            'endpoint_url': 'https://s3.example.test',
+            'region': 'us-east-1',
+            'access_key_id': 'access-key',
+            'secret_access_key': 'secret-one',
+        }
+        first = self.bridge.get_config_fingerprint(
+            config=config, bucket=self.test_bucket,
+        )
+        config['secret_access_key'] = 'secret-two'
+        second = self.bridge.get_config_fingerprint(
+            config=config, bucket=self.test_bucket,
+        )
+        self.assertNotEqual(first, second)
+
+    def test_14_fingerprint_does_not_contain_plaintext_secret(self):
+        config = {
+            'endpoint_url': '',
+            'region': 'us-east-1',
+            'access_key_id': 'access-key',
+            'secret_access_key': 'do-not-store-this-secret',
+        }
+        fingerprint = self.bridge.get_config_fingerprint(
+            config=config, bucket=self.test_bucket,
+        )
+        self.assertNotIn(config['secret_access_key'], fingerprint)
     def tearDown(self):
         if getattr(self, '_mock_aws', None):
             self._mock_aws.stop()
