@@ -224,7 +224,15 @@
                             </div>
                         </div>
                     </div>
-                    <t t-if="state.activeOperation">
+                    <div t-if="state.proUpgrade.show" class="o_pro_upgrade_banner" role="status">
+                        <div>
+                            <strong><t t-esc="state.proUpgrade.verified_display"/> verified on S3</strong>
+                            <p class="mb-0">Local copies remain protected. Pro can reclaim eligible space with retention and restore safety.</p>
+                        </div>
+                        <button class="btn btn-primary" type="button" t-on-click="onExplorePro">
+                            Explore Pro
+                        </button>
+                    </div>                    <t t-if="state.activeOperation">
                         <div class="o_progress_section">
                             <div class="o_progress_header_row">
                                 <h4>Migration In Progress</h4>

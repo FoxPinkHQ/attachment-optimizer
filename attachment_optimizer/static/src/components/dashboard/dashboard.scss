@@ -451,4 +451,22 @@ html .o_web_client > .o_action_manager {
 .o_form_view .o_field_badge.bg-warning-light {
     color: #212529 !important;
     background-color: #ffc107 !important;
+.o_pro_upgrade_banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #1e3a8a;
+}
+
+.o_pro_upgrade_banner p { color: #475569; }
+
+@media (max-width: 600px) {
+    .o_pro_upgrade_banner { align-items: stretch; flex-direction: column; }
+    .o_pro_upgrade_banner .btn { min-height: 44px; }
 }
