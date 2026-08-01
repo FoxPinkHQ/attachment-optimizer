@@ -198,7 +198,8 @@
                         </div>
                         <div class="o_kpi_card o_kpi_info">
                             <div class="o_kpi_value"><t t-esc="state.kpi.saved_display"/></div>
-                            <div class="o_kpi_label">Storage Saved</div>
+                            <div class="o_kpi_label">Verified S3 Copy</div>
+                            <div class="text-muted small">Local copy retained</div>
                         </div>
                         <div class="o_kpi_card" t-att-class="state.kpi.failed > 0 ? 'o_kpi_danger' : ''">
                             <div class="o_kpi_value">
