@@ -114,13 +114,22 @@ class DashboardService:
         ICP = self.env['ir.config_parameter'].sudo()
         bucket = ICP.get_param('attachment_storage.s3.bucket')
         last_analysis = ICP.get_param('attachment_storage.last_analysis')
+        pro_installed = bool(self.env['ir.module.module'].sudo().search_count([
+            ('name', '=', 'attachment_optimizer_pro'),
+            ('state', '=', 'installed'),
+        ]))
+        kpis = self.get_kpi_data()
 
         return {
-            **self.get_kpi_data(),
+            **kpis,
             'active_operation': self.get_active_operation(),
             'recent_operations': self.get_recent_operations(),
             'recent_total': self.env['attachment.migration.operation'].search_count([]),
             's3_warning': not bucket,
             'last_analysis': last_analysis or False,
             'setup_progress': self.get_setup_progress(),
+            'pro_upgrade': {
+                'show': bool(not pro_installed and kpis['migrated']),
+                'verified_display': kpis['saved_display'],
+            },
         }
