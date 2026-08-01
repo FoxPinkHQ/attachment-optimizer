@@ -4,7 +4,7 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 15.0.1.0.2 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 15.0.1.0.3 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ---
 
