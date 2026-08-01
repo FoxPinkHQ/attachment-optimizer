@@ -187,26 +187,23 @@ For Docker deployments, add `boto3` to the Odoo image instead of installing it m
 
 ---
 
-## Free Edition and Pro Roadmap
+## Free Edition and Pro
 
-The Free Edition is designed to make the first step to S3 safe and useful. It includes storage analysis, manual migration queues, SHA-256 verification, transparent reads with filestore fallback, retry and recovery tools, dashboard monitoring, access control, and immutable audit logs. These core safety features are not trial-limited.
+The Free Edition provides the complete verified migration foundation without trial limits. **Attachment Optimizer Pro is now available** for teams that need automated routing, measurable filestore reclamation, and controlled recovery.
 
-### Attachment Optimizer Pro — planned
+### Attachment Optimizer Pro — available now
 
-The planned Pro Edition will focus on measurable storage savings and automation for larger Odoo environments:
+- **Safe local cleanup** — reclaim filestore space after SHA-256 verification, retention, and confirmation
+- **Automatic storage routing** — route new attachments by model, MIME type, size, company, priority, and bucket
+- **One-click restore** — restore selected mappings or complete batches to the Odoo filestore
+- **Scheduled lifecycle policies** — automate migrate, archive, cleanup, and restore actions when due
+- **Multi-bucket and multi-company routing** — isolate storage profiles and rules by company
+- **Background processing** — atomic worker claims, configurable batch limits, scheduled processing, and retry safety
+- **Storage analytics** — report attachment volume, migration progress, reclaimed space, and failures
+- **Advanced security** — manager-only credentials, IAM provider support, server-side encryption settings, and multi-company rules
+- **Operational alerts** — notify administrators about failed queues, stuck operations, and verification failures
 
-- **Safe local cleanup** — reclaim filestore space only after successful checksum verification, with configurable retention and quarantine periods
-- **Automatic storage routing** — send new attachments to S3 by model, MIME type, file size, company, and custom rules
-- **One-click restore** — restore selected files or complete batches from S3 to the Odoo filestore before rollback or uninstall
-- **Scheduled lifecycle policies** — migrate, archive, retain, restore, and clean up attachments automatically
-- **Multi-bucket and multi-company routing** — isolate storage by company, environment, workload, or data policy
-- **Background processing at scale** — scheduled batches, configurable concurrency, throttling, and resumable workers
-- **Storage cost analytics** — compare local and object-storage volume, forecast growth, and report reclaimed space
-- **Advanced security** — IAM role support, server-side encryption options, key rotation guidance, and policy validation
-- **Provider-to-provider migration** — move verified objects between supported S3-compatible providers
-- **Operational alerts and reports** — notify administrators about failed queues, storage health, policy violations, and recovery actions
-
-> **Roadmap notice:** Pro features are planned and are not included in version 18.0.1.0.2. The Free Edition remains fully usable for safe, verified S3 replication and migration assessment.
+> **Pro release:** Version 18.0.1.0.0 is validated for Odoo 18.0 and priced at US$49 one-time per Odoo major version. Provider-to-provider migration, rate throttling, and cost forecasting are not included in this release.
 
 ---
 
