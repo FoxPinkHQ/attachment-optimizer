@@ -4,7 +4,7 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.3 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 19.0.1.0.4 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ---
 
@@ -203,7 +203,7 @@ The Free Edition provides the complete verified migration foundation without tri
 - **Advanced security** — manager-only credentials, IAM provider support, server-side encryption settings, and multi-company rules
 - **Operational alerts** — notify administrators about failed queues, stuck operations, and verification failures
 
-> **Pro release:** Version 19.0.1.0.2 is validated for Odoo 19.0 and priced at US$49 one-time per Odoo major version. Provider-to-provider migration, rate throttling, and cost forecasting are not included in this release.
+> **Pro release:** Version 19.0.1.0.5 is validated for Odoo 19.0 and priced at US$49 one-time per Odoo major version. Provider-to-provider migration, rate throttling, and cost forecasting are not included in this release.
 
 ---
 
