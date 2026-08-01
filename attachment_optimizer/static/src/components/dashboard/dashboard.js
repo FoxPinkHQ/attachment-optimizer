@@ -39,6 +39,7 @@ export class StorageDashboard extends Component {
             recentOperations: [],
             opTotal: 0,
             pollActive: false,
+            proUpgrade: { show: false, verified_display: "0 B" },
         });
 
         onWillStart(async () => {
@@ -74,6 +75,10 @@ export class StorageDashboard extends Component {
             this.state.activeOperation = data.active_operation;
             this.state.recentOperations = data.recent_operations || [];
             this.state.opTotal = data.recent_total || 0;
+            this.state.proUpgrade = data.pro_upgrade || {
+                show: false,
+                verified_display: "0 B",
+            };
             this._handlePolling(data.active_operation);
         } catch (err) {
             if (seq === this._loadSeq) {
@@ -119,6 +124,10 @@ export class StorageDashboard extends Component {
                 this.state.activeOperation = data.active_operation;
                 this.state.recentOperations = data.recent_operations || [];
                 this.state.opTotal = data.recent_total || 0;
+            this.state.proUpgrade = data.pro_upgrade || {
+                show: false,
+                verified_display: "0 B",
+            };
                 if (!data.active_operation) {
                     this._stopPolling();
                 }
@@ -332,6 +341,13 @@ export class StorageDashboard extends Component {
         });
     }
 
+    onExplorePro() {
+        this.action.doAction({
+            type: "ir.actions.act_url",
+            url: "https://apps.odoo.com/apps/modules/browse?search=Attachment%20Optimizer%20Pro",
+            target: "new",
+        });
+    }
 }
 
 registry
