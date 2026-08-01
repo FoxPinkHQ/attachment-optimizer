@@ -173,3 +173,24 @@ class TestDashboard(SavepointCase):
             'manager-dashboard.txt',
             [operation['attachment_name'] for operation in data['recent_operations']],
         )
+    def test_11_pro_upgrade_appears_after_verified_copy(self):
+        attachment = self.env['ir.attachment'].create({
+            'name': 'verified-for-upgrade.txt',
+            'raw': b'verified upgrade',
+            'type': 'binary',
+            'company_id': self.env.company.id,
+        })
+        self.env['attachment.migration.operation'].create({
+            'attachment_id': attachment.id,
+            'company_id': self.env.company.id,
+            'state': 'finalized',
+        })
+        data = self.env[
+            'attachment.storage.mapping'
+        ].action_get_dashboard_data()
+        pro_installed = bool(self.env['ir.module.module'].sudo().search_count([
+            ('name', '=', 'attachment_optimizer_pro'),
+            ('state', '=', 'installed'),
+        ]))
+        self.assertEqual(data['pro_upgrade']['show'], not pro_installed)
+        self.assertIn('verified_display', data['pro_upgrade'])
