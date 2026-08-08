@@ -1,9 +1,9 @@
 .o_dashboard {
-    max-width: 1200px;
     width: 100%;
     flex: 1 1 100%;
-    margin: 0 auto;
+    margin: 0;
     padding: 24px;
+    box-sizing: border-box;
     min-height: 100%;
     position: relative;
 }
