@@ -8,6 +8,12 @@
     position: relative;
 }
 
+html .o_web_client .o_action_manager .o_dashboard {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
 html .o_web_client > .o_action_manager {
     overflow-y: auto;
     overflow-x: hidden;
@@ -78,7 +84,7 @@ html .o_web_client > .o_action_manager {
 /* KPI Cards */
 .o_kpi_row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -472,4 +478,20 @@ html .o_web_client > .o_action_manager {
 @media (max-width: 600px) {
     .o_pro_upgrade_banner { align-items: stretch; flex-direction: column; }
     .o_pro_upgrade_banner .btn { min-height: 44px; }
+}
+
+@media (max-width: 1100px) {
+    .o_kpi_row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+    .o_dashboard { padding: 16px; }
+    .o_dashboard_header { flex-direction: column; gap: 16px; }
+    .o_dashboard_actions { width: 100%; }
+    .o_dashboard_actions .btn { flex: 1; min-height: 44px; }
+}
+
+@media (max-width: 480px) {
+    .o_kpi_row { grid-template-columns: 1fr; }
+    .o_dashboard_actions { flex-direction: column; }
 }
