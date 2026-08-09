@@ -4,7 +4,7 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 19.0.1.0.8 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 19.0.1.0.9 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ---
 
@@ -208,6 +208,7 @@ The Free Edition provides the complete verified migration foundation without tri
 ---
 
 ## Technical Notes
+
 - **Original filestore is preserved** — retained for rollback safety
 - **Finalized attachments served from S3** through Odoo with automatic filestore fallback
 - **SHA-256 checksum verification** guarantees integrity on every file
