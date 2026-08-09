@@ -4,7 +4,7 @@
 
 ![Attachment Optimizer](attachment_optimizer/static/description/preview.png)
 
-**Version:** 16.0.1.0.8 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
+**Version:** 16.0.1.0.9 -- **License:** LGPL-3 -- **Publisher:** FoxPink -- Maintained for **Odoo 14.0-19.0** (one validated build per series)
 
 ---
 
@@ -133,7 +133,7 @@ Migration Service      Health Engine
 **Option 2 — Git:**
 
 ```bash
-git clone -b 17.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
+git clone -b 16.0 https://github.com/FoxPinkHQ/attachment-optimizer addons/attachment_optimizer
 ```
 
 Before installing the module, install the required Python dependency in the same environment that runs Odoo:
